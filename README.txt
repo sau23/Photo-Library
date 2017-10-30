@@ -1,1 +1,20 @@
-Initialized Photos23 Project Repository
+Work Split
+Nick will work on the graphics for login display 
+as well as the event-handling functions of the 
+buttons in the admin user display and the non-admin 
+user display. The graphics will be loosely based on 
+the storyboard's depictions. The buttons in both the
+ admin user display and the non-admin user display
+  will prompt for user input as a means of confirmation.
+   Nick will also work on the various classes required 
+   to hold the data needed to display to the screen,
+    such as the album class and the photo class. 
+
+Sam will work on the graphics for admin user display 
+and the non-admin user display. These graphics will be
+ loosely based on the storyboard's depictions. 
+ Sam will also work on the event-handling functions 
+ for the buttons and tabs in the non-admin user display. 
+ The tabs will represent albums and contain a listview that 
+ lists each photo contained in the selected album. The buttons
+  will also prompt for user input as a means of confirmation.
