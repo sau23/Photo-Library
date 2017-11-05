@@ -18,7 +18,7 @@ public class Album {
 	
 	public Album(String name){
 		
-		this.photos = null;
+		this.photos = new ArrayList<Photo>();
 		this.name = name;
 	}
 	/**
