@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * This class acts as a receptical for Photo objects;
  * It will also perform operations on such collections,
- * such as seraches, orderings, appending, merging, and
+ * such as searches, orderings, appending, merging, and
  * deleting.
  * 
  * @author Samuel Uganiza
@@ -13,17 +13,22 @@ import java.util.ArrayList;
  */
 public class Album {
 	
-	ArrayList<Photo> album;//the list that holds the Photos
-	int size;//number of phots on the library
+	ArrayList<Photo> photos;//the list that holds the Photos
 	
+	public Album(){}
 	/**
 	 * addPhoto() inserts a Photo to the Album
 	 * list.
 	 * @param pic The Photo to be added
 	 */
-	void addPhoto(Photo pic){
+	boolean addPhoto(Photo pic){
 		
-		return;
+		if(this.photos.contains(pic))
+			return false;
+		else
+			this.photos.add(pic);
+			return true;
+			
 	}
 	
 	/**
@@ -32,9 +37,10 @@ public class Album {
 	 * 
 	 * @param pic The target Photo.
 	 */
-	void removePhoto(Photo pic){
+	boolean removePhoto(Photo pic){
 		
-		return;
+		return this.photos.remove(pic);
+		
 	}
 	
 	/**
@@ -47,21 +53,13 @@ public class Album {
 	 */
 	void movePhoto(Photo pic, Album desAlbum){
 		
+		this.photos.remove(pic);
+		desAlbum.addPhoto(pic);
 		return;
-	}
-	
-	/**
-	 * displayPhoto() shows the photo in the viewer
-	 *  
-	 * @param pic Photo to be dsiplayed
-	 */
-	void displayPhoto(Photo pic){
-		
-		return;
-		
 	}
 	
 	void copyPhoto(Photo pic, Album otherAlbum){
+		
 		
 		return;
 	}

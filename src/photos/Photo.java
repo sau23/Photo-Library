@@ -1,5 +1,4 @@
 package photos;
-
 import java.util.Calendar;
 import java.util.ArrayList;
 
@@ -13,16 +12,30 @@ import java.util.ArrayList;
  */
 public class Photo {
 	
-	ArrayList<String> tags;
+	ArrayList<Tag> tags;
 	Calendar date;
+	String name;
+	
+	public Photo(Calendar photoDate, String photoName){
+		
+		this.date = photoDate;
+		this.name = photoName;
+		
+	}
 	
 	/**
-	 * 
-	 * 
-	 * @param addTag
+	 * addTag() inserts a given addTag into the tags
+	 * list of a Photo
+	 * @param addTag Tag to be added to the Photo's tag list
+	 * @return true if the add was successful, false otherwise
 	 */
-	void addTag(String addTag){
+	boolean addTag(Tag addTag){
 		
+		if(this.tags.contains(addTag))
+			return false;
+		else
+			this.tags.contains(addTag);
+			return true;
 		
 	}
 	
@@ -31,14 +44,13 @@ public class Photo {
 	 * @param delTag The tag String to be deleted
 	 * @return true if it was removed; false otherwise
 	 */
-	boolean deleteTag(String delTag){
+	boolean deleteTag(Tag delTag){
 		
-		for(int i = 0; i < this.tags.size(); i++)
-			if(this.tags.remove(delTag))
-				return true;
-			
-		return false;
+		return this.tags.remove(delTag);
+		
 	}
 	
 
 }
+
+

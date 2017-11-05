@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 
-public class Main extends Application {
+public class Photos extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
