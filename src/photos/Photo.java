@@ -18,6 +18,7 @@ public class Photo {
 	
 	public Photo(Calendar photoDate, String photoName){
 		
+		this.tags = null;
 		this.date = photoDate;
 		this.name = photoName;
 		

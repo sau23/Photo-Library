@@ -14,8 +14,13 @@ import java.util.ArrayList;
 public class Album {
 	
 	ArrayList<Photo> photos;//the list that holds the Photos
+	String name;
 	
-	public Album(){}
+	public Album(String name){
+		
+		this.photos = null;
+		this.name = name;
+	}
 	/**
 	 * addPhoto() inserts a Photo to the Album
 	 * list.
