@@ -13,13 +13,13 @@ import java.util.ArrayList;
  */
 public class Album {
 	
-	ArrayList<Photo> photos;//the list that holds the Photos
-	String name;
+	private ArrayList<Photo> photos;//the list that holds the Photos
+	private String user;
 	
 	public Album(String name){
 		
 		this.photos = new ArrayList<Photo>();
-		this.name = name;
+		this.user = name;
 	}
 	/**
 	 * addPhoto() inserts a Photo to the Album
@@ -69,5 +69,15 @@ public class Album {
 		return;
 	}
 	
+	ArrayList<Photo> getPhotos(){
+		
+		return this.photos;
+		
+	}
+	
+	String getUser(){
+		
+		return this.user;
+	}
 	
 }

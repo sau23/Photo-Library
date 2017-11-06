@@ -63,7 +63,7 @@ public class User {
 				for(int j = 0;j < foundPhotos.length;j++) {
 					
 					// TODO: call album constructor
-					toAdd = new Album();
+					toAdd = new Album(this.name);
 					ret.add(toAdd);
 					
 				}	

@@ -13,7 +13,7 @@ public class Photos extends Application {
 		try {
 			
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("/Admin.fxml"));
+			loader.setLocation(getClass().getResource("/Login.fxml"));
 			
 			AnchorPane root = (AnchorPane)loader.load();
 			Scene scene = new Scene(root);

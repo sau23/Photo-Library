@@ -9,8 +9,8 @@ package photos;
  */
 public class Tag {
 
-	String name;
-	String value;
+	private String name;
+	private String value;
 	
 	/**
 	 * The Tag takes in two string to be created
@@ -68,6 +68,14 @@ public class Tag {
 		
 		return this.value.compareTo(compare.value);
 		
+	}
+	
+	String getTagName(){
+		return this.name;
+	}
+	
+	String getTagValue(){
+		return this.value;
 	}
 	
 	

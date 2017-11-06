@@ -12,9 +12,9 @@ import java.util.ArrayList;
  */
 public class Photo {
 	
-	ArrayList<Tag> tags;
-	Calendar date;
-	String name;
+	private ArrayList<Tag> tags;
+	private Calendar date;
+	private String name;
 	
 	public Photo(Calendar photoDate, String photoName){
 		
@@ -48,6 +48,22 @@ public class Photo {
 	boolean deleteTag(Tag delTag){
 		
 		return this.tags.remove(delTag);
+		
+	}
+	
+	ArrayList<Tag> getTags(){
+		
+		return this.tags;
+	}
+	
+	Calendar getDate(){
+		
+		return this.date;
+	}
+	
+	String getName(){
+		
+		return this.name;
 		
 	}
 	
