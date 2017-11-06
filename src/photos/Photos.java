@@ -1,6 +1,9 @@
 package photos;
 	
 import photos.AdminController;
+
+import java.io.File;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -8,17 +11,24 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 
 public class Photos extends Application {
+	
+	// classy debug boolean
+	public static final boolean DEBUG = true;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			
+			// start program on login page
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("/Login.fxml"));
 			
+			// read values from user data textfile if it exists
+			User.createDataDir();
+			User.readFromDatabase();
+			
 			AnchorPane root = (AnchorPane)loader.load();
 			Scene scene = new Scene(root);
-			
-			//primary stage settings
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
