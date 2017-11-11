@@ -1,9 +1,6 @@
 package photos;
-	
-import photos.AdminController;
 
-import java.io.File;
-
+import classes.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -23,8 +20,7 @@ public class Photos extends Application {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("/Login.fxml"));
 			
-			// read values from user data textfile if it exists
-			User.createDataDir();
+			// read values from user data ser file if it exists
 			User.readFromDatabase();
 			
 			AnchorPane root = (AnchorPane)loader.load();

@@ -9,6 +9,8 @@ import javafx.scene.control.ListView;
 
 import java.util.ArrayList;
 
+import classes.User;
+
 public class AdminController {
 	
 	@FXML private Button add, delete, logout;
