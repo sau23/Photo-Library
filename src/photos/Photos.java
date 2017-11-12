@@ -11,22 +11,22 @@ public class Photos extends Application {
 	
 	// classy debug boolean
 	public static final boolean DEBUG = true;
+	Stage stage;
+	Scene login, admin;
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			
-			// start program on login page
+			stage = primaryStage;
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("/Login.fxml"));
-			
-			// read values from user data ser file if it exists
-			User.readFromDatabase();
-			
+			loader.setLocation(getClass().getResource("/Login.fxml"));			
+			LoginController logCon = loader.getController();		
 			AnchorPane root = (AnchorPane)loader.load();
-			Scene scene = new Scene(root);
-			primaryStage.setScene(scene);
+			login = new Scene(root);
+			primaryStage.setScene(login);
 			primaryStage.show();
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
