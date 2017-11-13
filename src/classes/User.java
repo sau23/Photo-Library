@@ -75,14 +75,21 @@ public class User implements Serializable{
 
 	/**
 	 * Creates a new user object to add to the list and updates the database.
+	 * Prohibits adding same user name multiple times, case specific.
 	 * Called when creating an instance through login add button and admin add button.
 	 * 
 	 * @param name The user name to add
 	 * @param pass The user's chosen password
 	 */
 	public static void addUser(String name, String pass) {
-		User user = new User(name, pass);
-		users.add(user);
+		
+		// check to see if user name already exists in the list
+		for(User user : users) {
+			if(name.equals(user.getName())) {
+				return;
+			}
+		}
+		users.add(new User(name, pass));
 		User.writeToDatabase();
 	}
 
@@ -93,7 +100,14 @@ public class User implements Serializable{
 	 * @param name The user name to search for
 	 */
 	public static void deleteUser(String name) {
-		// TODO: delete user from user list
+		
+		// check if user name matches selected name
+		for(User user : users) {
+			if(name.equals(user.getName())) {
+				users.remove(user);
+				return;
+			}
+		}
 	}
 
 	/**

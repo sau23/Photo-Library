@@ -20,11 +20,12 @@ public class Photos extends Application {
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("/Login.fxml"));
 			
+			AnchorPane root = (AnchorPane)loader.load();
+			Scene scene = new Scene(root);
+			
 			// read values from user data ser file if it exists
 			User.readFromDatabase();
 			
-			AnchorPane root = (AnchorPane)loader.load();
-			Scene scene = new Scene(root);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {

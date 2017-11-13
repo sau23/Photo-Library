@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="447.0" prefWidth="432.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="photos.UserController">
+   <children>
+      <BorderPane layoutX="-100.0" layoutY="-100.0" prefHeight="100.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <right>
+            <VBox alignment="CENTER" prefHeight="391.0" prefWidth="135.0" spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Photo Options" />
+                  <Button fx:id="add" minWidth="100.0" mnemonicParsing="false" onAction="#addPhoto" text="Add" />
+                  <Button fx:id="remove" minWidth="100.0" mnemonicParsing="false" onAction="#removePhoto" text="Remove" />
+                  <Button fx:id="caption" minWidth="100.0" mnemonicParsing="false" onAction="#captionPhoto" text="Caption" />
+                  <Button fx:id="display" minWidth="100.0" mnemonicParsing="false" onAction="#displayPhoto" text="Display" />
+                  <Button fx:id="edit" minWidth="100.0" mnemonicParsing="false" onAction="#editPhotoTags" text="Edit Tags" />
+                  <Button fx:id="copy" minWidth="100.0" mnemonicParsing="false" onAction="#copyPhoto" text="Copy To" />
+                  <Button fx:id="move" minWidth="100.0" mnemonicParsing="false" onAction="#movePhoto" text="Move To" />
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </VBox>
+         </right>
+         <center>
+            <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+              <tabs>
+                <Tab fx:id="newAlbumButton" closable="false" onSelectionChanged="#addAlbum" text="+">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <Label layoutX="72.0" layoutY="110.0" prefHeight="131.0" prefWidth="154.0" text="Create a new album by pressing the + button above." textAlignment="CENTER" wrapText="true">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </center>
+         <top>
+            <AnchorPane prefHeight="51.0" prefWidth="432.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label fx:id="userLabel" layoutX="14.0" layoutY="12.0" prefHeight="27.0" prefWidth="172.0" />
+                  <Button fx:id="logout" layoutX="340.0" layoutY="6.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
+                  <Button fx:id="search" layoutX="253.0" layoutY="6.0" mnemonicParsing="false" onAction="#search" text="Search" />
+               </children>
+            </AnchorPane>
+         </top>
+      </BorderPane>
+   </children>
+</AnchorPane>
