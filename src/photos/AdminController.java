@@ -17,5 +17,7 @@ public class AdminController {
 	@FXML private TextField user, pass;
 	
 	private ArrayList<User> users;
+	private User use;
+	
 	
 }

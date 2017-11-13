@@ -11,14 +11,17 @@ public class Photos extends Application {
 	
 	// classy debug boolean
 	public static final boolean DEBUG = true;
+	Stage stage;
+	Scene login, admin;
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			
-			// start program on login page
+			stage = primaryStage;
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("/Login.fxml"));
+			
+			loader.setLocation(getClass().getResource("/User.fxml"));
 			
 			AnchorPane root = (AnchorPane)loader.load();
 			Scene scene = new Scene(root);
@@ -28,6 +31,7 @@ public class Photos extends Application {
 			
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}

@@ -74,7 +74,7 @@ public class UserController {
 	}
 	
 	// Album Controls
-	public void addTab() {
+	public void addAlbum() {
 		if(newAlbumButton.isSelected()) {
 			dialog = new TextInputDialog();
 			dialog.setTitle("New Album");
@@ -90,7 +90,7 @@ public class UserController {
 		}
 	}
 	
-	public void removeTab() {
+	public void removeAlbum() {
 		
 	}
 }
