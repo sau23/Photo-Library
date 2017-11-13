@@ -28,7 +28,7 @@ public class UserController {
 	TextInputDialog dialog;
 	User user;
 	
-	public void start(User user) {
+	public void setUser(User user) {
 		this.user = user;
 	}
 	

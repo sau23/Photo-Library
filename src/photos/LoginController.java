@@ -25,6 +25,8 @@ public class LoginController {
 		String name = useName.getText();
 		String passWord = pass.getText();
 		
+		// write and use User.verifyFromDatabase(name, pass) for checking
+		
 		if(name.compareTo(passWord) != 0){
 
 			Photos.showUser();
