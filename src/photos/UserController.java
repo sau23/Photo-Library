@@ -28,6 +28,10 @@ public class UserController {
 	TextInputDialog dialog;
 	User user;
 	
+	public void start(User user) {
+		this.user = user;
+	}
+	
 	// Photo Controls
 	public void addPhoto() {
 		
