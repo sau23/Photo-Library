@@ -4,7 +4,6 @@ import classes.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 
@@ -50,11 +49,12 @@ public class Photos extends Application {
 		loginLoader = new FXMLLoader();
 		loginLoader.setLocation(Photos.class.getResource("/Login.fxml"));
 
-		loginScene = new Scene((AnchorPane)loginLoader.load());
-		
 		// read values from user data ser file if it exists
 		User.readFromDatabase();
 		
+		loginScene = new Scene((AnchorPane)loginLoader.load());
+		
+		window.setTitle("Login");
 		window.setScene(loginScene);
 		window.show();
 	}
@@ -68,9 +68,13 @@ public class Photos extends Application {
 	public static void showAdmin() throws Exception{
 		adminLoader = new FXMLLoader();
 		adminLoader.setLocation(Photos.class.getResource("/Admin.fxml"));
-
-		adminScene = new Scene((AnchorPane)adminLoader.load());
 		
+		adminScene = new Scene((AnchorPane)adminLoader.load());
+
+		AdminController ac = adminLoader.getController();
+		ac.start();
+		
+		window.setTitle("Admin");
 		window.setScene(adminScene);
 		window.show();
 	}
@@ -86,6 +90,7 @@ public class Photos extends Application {
 
 		userScene = new Scene((AnchorPane)userLoader.load());
 		
+		window.setTitle("User");
 		window.setScene(userScene);
 		window.show();
 	}

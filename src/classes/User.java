@@ -1,19 +1,20 @@
 package classes;
 
-import java.io.Serializable;
-
 import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * User class defines the User object that appears on the list
- * in the admin screen. Holds a name, a pass, and an
- * extendable list of albums.
+ * in the admin screen. Holds a name, a pass, and an extendable
+ * list of albums. This class also holds a global list of Users
+ * for reference in the AdminController class.
  * 
+ * @author Nicholas Petriello
  * @author Samuel Uganiza
  *
  */
@@ -24,10 +25,17 @@ public class User implements Serializable{
 	 */
 	private static final long serialVersionUID = 7089640660698420983L;
 
+	/**
+	 * Global list of users that holds all users in one machine.
+	 */
 	public static ArrayList<User> users;
 
+	// classy debug boolean
 	private static boolean DEBUG = true;
 
+	/**
+	 * User object's username, password, and list of references to different albums.
+	 */
 	private String name;
 	private String pass;
 	private ArrayList<Album> albums;
@@ -39,13 +47,22 @@ public class User implements Serializable{
 	 * @param name Name of user
 	 * @param pass Chosen password
 	 */
-
 	public User(String name, String pass) {
 		this.name = name;
 		this.pass = pass;
 		this.albums = new ArrayList<Album>();
 	}
 
+	/**
+	 * toString override to print username and password of selected user
+	 * 
+	 * @return String containing user's username and password
+	 */
+	@Override
+	public String toString() {
+		return this.name + " " + this.pass;
+	}
+	
 	/**
 	 * Returns name of user.
 	 * 
@@ -80,34 +97,35 @@ public class User implements Serializable{
 	 * 
 	 * @param name The user name to add
 	 * @param pass The user's chosen password
+	 * 
+	 * @return 
 	 */
-	public static void addUser(String name, String pass) {
+	public static boolean addUser(String name, String pass) {
 		
 		// check to see if user name already exists in the list
 		for(User user : users) {
 			if(name.equals(user.getName())) {
-				return;
+				if(DEBUG) System.out.println("User already exists.");
+				return false;
 			}
 		}
+
 		users.add(new User(name, pass));
 		User.writeToDatabase();
+		if(DEBUG) System.out.println("Successfully added new user " + name + ", " + pass + ".");
+		return true;
 	}
 
 	/**
 	 * Searches database for the given user name and deletes it, updating the
 	 * database after the removal.
 	 * 
-	 * @param name The user name to search for
+	 * @param index The index of user to remove
 	 */
-	public static void deleteUser(String name) {
-		
-		// check if user name matches selected name
-		for(User user : users) {
-			if(name.equals(user.getName())) {
-				users.remove(user);
-				return;
-			}
-		}
+	public static void deleteUser(int index) {
+		users.remove(index);
+		User.writeToDatabase();
+		if(DEBUG) System.out.println("Sucesfully deleted user at index " + index);
 	}
 
 	/**
@@ -117,18 +135,26 @@ public class User implements Serializable{
 	@SuppressWarnings("unchecked")
 	public static void readFromDatabase() {
 		try {
-			ObjectInputStream in = new ObjectInputStream(new FileInputStream("data/data.ser"));
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream("data/users.ser"));
 			Object data = in.readObject();
 			if(data instanceof ArrayList<?>) {
 				ArrayList<?> arr = (ArrayList<?>)data;
+	
+				// checks if array list is of right type when reading
 				if(!arr.isEmpty() && arr.get(0) instanceof User) {
 					users = (ArrayList<User>)arr;
+					
+				// otherwise the array list is empty, just make a new one
+				} else {
+					users = new ArrayList<User>();
 				}
+				
 			}
 			in.close();
-			if(DEBUG) System.out.println("Sucessfully read from database.");
+			if(DEBUG) System.out.println("Sucessfully read from user database.");
 		} catch (IOException e) {
-			if(DEBUG) System.out.println("Database not found, creating new one.");
+			if(DEBUG) System.out.println("User database not found, creating new one.");
+			
 			// first time read, if not found then create a new file.
 			users = new ArrayList<User>();
 			writeToDatabase();
@@ -144,12 +170,12 @@ public class User implements Serializable{
 	 */
 	public static void writeToDatabase() {
 		try{
-			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data/data.ser"));
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data/users.ser"));
 			out.writeObject(users);
 			out.close();
-			if(DEBUG) System.out.println("Success writing to database.");
+			if(DEBUG) System.out.println("Successfully wrote to user database.");
 		} catch(IOException e) {
-			if(DEBUG) System.out.println("IO error.");
+			if(DEBUG) System.out.println("IO error with user database.");
 			e.printStackTrace();
 		}
 	}

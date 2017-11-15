@@ -13,7 +13,7 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="273.0" prefWidth="478.0">
                <children>
-                  <ListView layoutX="-25.0" layoutY="44.0" prefHeight="219.0" prefWidth="131.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                  <ListView fx:id="listView" layoutX="-25.0" layoutY="44.0" prefHeight="219.0" prefWidth="131.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -26,9 +26,9 @@
                            </font>
                         </Label>
                         <Label text="New Username" />
-                        <TextField fx:id="new_user" maxWidth="100.0" />
+                        <TextField fx:id="user" maxWidth="100.0" />
                         <Label text="New Password" />
-                        <TextField fx:id="new_pass" maxWidth="100.0" />
+                        <TextField fx:id="pass" maxWidth="100.0" />
                         <Button fx:id="add" mnemonicParsing="false" onAction="#addUser" prefWidth="126.0" text="Add New User" />
                         <Button fx:id="delete" mnemonicParsing="false" onAction="#deleteUser" text="Delete Selected User" />
                         <Button fx:id="logout" mnemonicParsing="false" onAction="#logout" prefWidth="126.0" text="Logout" />

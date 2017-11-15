@@ -1,6 +1,8 @@
 package photos;
 
 import classes.User;
+import classes.Album;
+
 import java.util.Optional;
 
 import javafx.fxml.FXML;
@@ -27,6 +29,7 @@ public class UserController {
 	Alert alert;
 	TextInputDialog dialog;
 	User user;
+	Album album;
 	
 	public void setUser(User user) {
 		this.user = user;
@@ -78,6 +81,11 @@ public class UserController {
 	}
 	
 	// Album Controls
+	
+	public void switchAlbum() {
+		
+	}
+	
 	public void addAlbum() {
 		if(newAlbumButton.isSelected()) {
 			dialog = new TextInputDialog();

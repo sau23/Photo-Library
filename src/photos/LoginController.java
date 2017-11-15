@@ -29,6 +29,9 @@ public class LoginController {
 		
 		if(name.compareTo(passWord) != 0){
 
+			// after getting reference call User.setUser(user) to set the current user
+			
+			// switch to user display
 			Photos.showUser();
 			
 		}else if(name.compareTo("admin") == 0 && passWord.compareTo("admin") == 0){
