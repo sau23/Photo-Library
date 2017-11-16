@@ -32,20 +32,20 @@ public class UserController {
 	
 	private Alert alert;
 	private TextInputDialog dialog;
-	private User user;
+	private int index;
 	private ListView<Album> listView;
 	private ObservableList<Album> albumList;
 	
 	/**
 	 * Sets the private reference user to the incoming User object.
 	 * 
-	 * @param user
+	 * @param index
 	 */
-	public void setUser(int index) {
-		user = User.users.get(index);
-		userLabel.setText(user.getName() + "'s Albums");
+	public void setUserIndex(int index) {
+		this.index = index;
+		userLabel.setText(User.users.get(index).getName() + "'s Albums");
 	}
-	
+
 	// Photo Controls
 	public void addPhoto() {
 		
@@ -60,6 +60,7 @@ public class UserController {
 	}
 	
 	public void displayPhoto() {
+		// create new window
 		
 	}
 	
@@ -109,16 +110,13 @@ public class UserController {
 				
 				// make a new tab with a list view
 				Tab tab = new Tab(result.get());
-	
-				System.out.println(user.getName());
 				
 				// create new album for user
-				ArrayList<Album> temp = user.getAlbums();
+				ArrayList<Album> temp = User.users.get(index).getAlbums();
 				temp.add(new Album(result.get()));
 				
 				// set up list view
-				/*
-				albumList = FXCollections.observableArrayList(user.getAlbums());
+				albumList = FXCollections.observableArrayList(User.users.get(index).getAlbums());
 				listView = new ListView<Album>();
 				listView.setItems(albumList);
 	
@@ -127,10 +125,7 @@ public class UserController {
 				// add tab to tab pane then switch selection
 				tabPane.getTabs().add(tab);
 				tabPane.getSelectionModel().select(tab);
-				*/
-				
 			}
-			
 		}
 	}
 	

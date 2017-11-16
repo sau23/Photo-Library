@@ -90,7 +90,7 @@ public class Photos extends Application {
 		userScene = new Scene((AnchorPane)userLoader.load());
 		
 		UserController uc = userLoader.getController();
-		uc.setUser(index);
+		uc.setUserIndex(index);
 		
 		window.setTitle(User.users.get(index) + "'s Albums");
 		window.setScene(userScene);
