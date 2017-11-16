@@ -80,12 +80,14 @@ public class AdminController {
 	 * Deletes a selected user and prompts an alert for confirmation.
 	 */
 	public void deleteUser() {
-		alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this user?");
-		Optional<ButtonType> result = alert.showAndWait();
-		if (result.isPresent() && result.get() == ButtonType.OK) {
-			int index = listView.getSelectionModel().getSelectedIndex();
-			User.deleteUser(index);
-			userList.remove(index);
+		int index = listView.getSelectionModel().getSelectedIndex();
+		if(index > -1) {
+			alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this user?");
+			Optional<ButtonType> result = alert.showAndWait();
+			if (result.isPresent() && result.get() == ButtonType.OK) {
+				User.deleteUser(index);
+				userList.remove(index);
+			}
 		}
 	}
 	
