@@ -182,17 +182,33 @@ public class User implements Serializable{
 
 	/**
 	 * Checks to see if the given user name and corresponding password exists in the
-	 * user database text file. Returns a user if it finds an exact match, and null 
-	 * if it does not find any match.
+	 * user database text file. Returns the index of a user if it finds an exact match, 
+	 * and an error code if it does not find any match.
 	 * 
 	 * @param name The user name to verify
 	 * @param pass The password to verify
-	 * @return A user object either with valid credentials or a null reference
+	 * @return The index of user object either with valid credentials or an error code
 	 */
-	public static User verifyFromDatabase(String name, String pass) {
+	public static int verifyFromDatabase(String name, String pass) {
 		
-		User ret = null;
+		// default value -1 if not found
+		int ret = -1;
 		
+		for(int i = 0; i < users.size(); i++) {
+			if(name.equals(users.get(i).getName())) {
+				if(pass.equals(users.get(i).getPass())) {
+					
+					// value of index if found
+					ret = i;
+				} else {
+					
+					// value of -2 if found but wrong password
+					ret = -2;
+				}
+				break;
+			}
+		}
+
 		return ret;
 	}
 }

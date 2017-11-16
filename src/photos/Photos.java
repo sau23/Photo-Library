@@ -59,7 +59,6 @@ public class Photos extends Application {
 		window.show();
 	}
 	
-	
 	/**
 	 * Switches display to admin scene.
 	 * 
@@ -84,13 +83,16 @@ public class Photos extends Application {
 	 * 
 	 * @throws Exception
 	 */
-	public static void showUser() throws Exception{
+	public static void showUser(int index) throws Exception{
 		userLoader = new FXMLLoader();
 		userLoader.setLocation(Photos.class.getResource("/User.fxml"));
 
 		userScene = new Scene((AnchorPane)userLoader.load());
 		
-		window.setTitle("User");
+		UserController uc = userLoader.getController();
+		uc.setUser(index);
+		
+		window.setTitle(User.users.get(index) + "'s Albums");
 		window.setScene(userScene);
 		window.show();
 	}

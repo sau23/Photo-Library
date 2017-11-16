@@ -28,11 +28,11 @@ public class LoginController {
 		// write and use User.verifyFromDatabase(name, pass) for checking
 		
 		if(name.compareTo(passWord) != 0){
-
-			// after getting reference call User.setUser(user) to set the current user
 			
 			// switch to user display
-			Photos.showUser();
+			User temp = new User(name, passWord);
+			User.users.add(temp);
+			Photos.showUser(0);
 			
 		}else if(name.compareTo("admin") == 0 && passWord.compareTo("admin") == 0){
 			

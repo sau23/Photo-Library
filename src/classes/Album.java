@@ -20,13 +20,19 @@ public class Album implements Serializable{
 	private static final long serialVersionUID = 959194540762382275L;
 	
 	private ArrayList<Photo> photos;//the list that holds the Photos
-	private String user;
+	private String name;
 	
 	public Album(String name){
 		
 		this.photos = new ArrayList<Photo>();
-		this.user = name;
+		this.name = name;
 	}
+	
+	@Override
+	public String toString() {
+		return this.name;
+	}
+	
 	/**
 	 * addPhoto() inserts a Photo to the Album
 	 * list.
@@ -83,7 +89,7 @@ public class Album implements Serializable{
 	
 	String getUser(){
 		
-		return this.user;
+		return this.name;
 	}
 	
 }
