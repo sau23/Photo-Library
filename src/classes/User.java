@@ -34,10 +34,11 @@ public class User implements Serializable{
 	private static boolean DEBUG = true;
 
 	/**
-	 * User object's username, password, and list of references to different albums.
+	 * User object's username, password, list and index of references to different albums.
 	 */
 	private String name;
 	private String pass;
+	private int index;
 	private ArrayList<Album> albums;
 
 	/**
@@ -50,6 +51,7 @@ public class User implements Serializable{
 	public User(String name, String pass) {
 		this.name = name;
 		this.pass = pass;
+		this.index = users.size();
 		this.albums = new ArrayList<Album>();
 	}
 
@@ -89,7 +91,25 @@ public class User implements Serializable{
 	public ArrayList<Album> getAlbums(){
 		return this.albums;
 	}
-
+	
+	/**
+	 * Returns index of user in users list
+	 * 
+	 * @return index
+	 */
+	public int getIndex(){
+		return this.index;
+	}
+	
+	/**
+	 * Sets the user's index in the list
+	 * 
+	 * @param index Index to be given to user
+	 */
+	public void setIndex(int index){
+		this.index = index;
+	}
+	
 	/**
 	 * Creates a new user object to add to the list and updates the database.
 	 * Prohibits adding same user name multiple times, case specific.
@@ -109,7 +129,6 @@ public class User implements Serializable{
 				return false;
 			}
 		}
-
 		users.add(new User(name, pass));
 		User.writeToDatabase();
 		if(DEBUG) System.out.println("Successfully added new user " + name + ", " + pass + ".");
@@ -118,13 +137,17 @@ public class User implements Serializable{
 
 	/**
 	 * Searches database for the given user name and deletes it, updating the
-	 * database after the removal.
+	 * database after the removal. The indices of the subsequent users from the deleted
+	 * user are also updated.
 	 * 
 	 * @param index The index of user to remove
 	 */
 	public static void deleteUser(int index) {
 		users.remove(index);
 		User.writeToDatabase();
+		for(int i = index; i < users.size(); i++){
+			users.get(i).setIndex(i);
+		}
 		if(DEBUG) System.out.println("Sucesfully deleted user at index " + index);
 	}
 
@@ -182,17 +205,22 @@ public class User implements Serializable{
 
 	/**
 	 * Checks to see if the given user name and corresponding password exists in the
-	 * user database text file. Returns a user if it finds an exact match, and null 
-	 * if it does not find any match.
+	 * user database text file. Returns the user's index in users if it finds an exact
+	 *  match, -1 if the password doesn't match, and -2 if it does not find any match.
 	 * 
 	 * @param name The user name to verify
 	 * @param pass The password to verify
-	 * @return A user object either with valid credentials or a null reference
+	 * @return -2 if there's no match, -1 if password is mismatched, index of user in list if fully matched
 	 */
-	public static User verifyFromDatabase(String name, String pass) {
+	public static int verifyFromDatabase(String name, String pass) {
 		
-		User ret = null;
-		
-		return ret;
+		for(User user : users)
+			if(user.getName().compareTo(name) == 0){
+				if(user.getPass().compareTo(pass) == 0){
+					return user.getIndex();
+				}
+				return -1;
+			}
+		return -2;
 	}
 }
