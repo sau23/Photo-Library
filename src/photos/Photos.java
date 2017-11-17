@@ -92,7 +92,7 @@ public class Photos extends Application {
 		UserController uc = userLoader.getController();
 		uc.setUserIndex(index);
 		
-		window.setTitle(Lists.users.get(index) + "'s Albums");
+		window.setTitle(Lists.users.get(index).getName() + "'s Albums");
 		window.setScene(userScene);
 		window.show();
 	}

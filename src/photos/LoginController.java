@@ -31,7 +31,8 @@ public class LoginController {
 		}else{
 			int checkForUser = Lists.verifyFromDatabase(name, passWord);
 			if(checkForUser == -1){
-				useName.setText("Not a recognized user!");
+				useName.setText("");
+				useName.setPromptText("Not a recognized user!");
 				pass.setText("");
 			}else if(checkForUser == -2){
 				pass.setText("");
@@ -47,13 +48,12 @@ public class LoginController {
 		String name = newUsername.getText();
 		String password = newPassword.getText();
 		
-		int checkForUser = User.verifyFromDatabase(name, password);
+		int checkForUser = Lists.verifyFromDatabase(name, password);
 		
 		if(checkForUser == -1){
 			
-			User newUser = new User(name, password);
-			User.users.add(newUser);
-			Photos.showUser(User.users.size());
+			Lists.addUser(name, password);
+			Photos.showUser(Lists.users.size());
 			
 		}else{
 			
