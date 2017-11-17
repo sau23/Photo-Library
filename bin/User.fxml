@@ -35,9 +35,9 @@
                         <Label fx:id="userLabel" layoutX="14.0" layoutY="12.0" prefHeight="27.0" prefWidth="172.0" />
                         <HBox alignment="CENTER" layoutX="292.0" layoutY="10.0" spacing="10.0">
                            <children>
-                              <Button fx:id="addAlbum" layoutX="276.0" layoutY="6.0" mnemonicParsing="false" onAction="#addNewAlbum" text="Add Album" />
-                              <Button fx:id="search" mnemonicParsing="false" onAction="#search" text="Search" />
-                              <Button fx:id="logout" mnemonicParsing="false" onAction="#logout" text="Logout" />
+                              <Button fx:id="addAlbum" alignment="CENTER" layoutX="276.0" layoutY="6.0" mnemonicParsing="false" onAction="#addNewAlbum" text="Add Album" />
+                              <Button fx:id="search" alignment="CENTER" mnemonicParsing="false" onAction="#search" text="Search" />
+                              <Button fx:id="logout" alignment="CENTER" mnemonicParsing="false" onAction="#logout" text="Logout" />
                            </children>
                         </HBox>
                      </children>

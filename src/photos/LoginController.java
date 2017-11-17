@@ -34,6 +34,7 @@ public class LoginController {
 				useName.setText("");
 				useName.setPromptText("Not a recognized user!");
 				pass.setText("");
+				useName.setPromptText("Please try again");
 			}else if(checkForUser == -2){
 				pass.setText("");
 				pass.setPromptText("Incorrect password ");
@@ -53,7 +54,10 @@ public class LoginController {
 		if(checkForUser == -1){
 			
 			Lists.addUser(name, password);
-			Photos.showUser(Lists.users.size());
+			newUsername.setText("");
+			newUsername.setPromptText("Successfully added");
+			newPassword.setText("");
+			newPassword.setPromptText("Now login above");
 			
 		}else{
 			
