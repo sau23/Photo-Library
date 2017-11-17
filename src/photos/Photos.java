@@ -1,6 +1,6 @@
 package photos;
 
-import classes.User;
+import classes.Lists;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
@@ -50,7 +50,7 @@ public class Photos extends Application {
 		loginLoader.setLocation(Photos.class.getResource("/Login.fxml"));
 
 		// read values from user data ser file if it exists
-		User.readFromDatabase();
+		Lists.readFromDatabase();
 		
 		loginScene = new Scene((AnchorPane)loginLoader.load());
 		
@@ -92,7 +92,7 @@ public class Photos extends Application {
 		UserController uc = userLoader.getController();
 		uc.setUserIndex(index);
 		
-		window.setTitle(User.users.get(index) + "'s Albums");
+		window.setTitle(Lists.users.get(index) + "'s Albums");
 		window.setScene(userScene);
 		window.show();
 	}

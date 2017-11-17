@@ -1,6 +1,6 @@
 package photos;
 
-import classes.User;
+import classes.Lists;
 
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
@@ -29,7 +29,7 @@ public class LoginController {
 			Photos.showAdmin();
 			
 		}else{
-			int checkForUser = User.verifyFromDatabase(name, passWord);
+			int checkForUser = Lists.verifyFromDatabase(name, passWord);
 			if(checkForUser == -1){
 				useName.setText("Not a recognized user!");
 				pass.setText("");

@@ -2,6 +2,7 @@ package photos;
 
 import classes.User;
 import classes.Album;
+import classes.Lists;
 
 import java.util.Optional;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class UserController {
 	 */
 	public void setUserIndex(int index) {
 		this.index = index;
-		userLabel.setText(User.users.get(index).getName() + "'s Albums");
+		userLabel.setText(Lists.users.get(index).getName() + "'s Albums");
 	}
 
 	// Photo Controls
@@ -112,11 +113,11 @@ public class UserController {
 				Tab tab = new Tab(result.get());
 				
 				// create new album for user
-				ArrayList<Album> temp = User.users.get(index).getAlbums();
+				ArrayList<Album> temp = Lists.users.get(index).getAlbums();
 				temp.add(new Album(result.get()));
 				
 				// set up list view
-				albumList = FXCollections.observableArrayList(User.users.get(index).getAlbums());
+				albumList = FXCollections.observableArrayList(Lists.users.get(index).getAlbums());
 				listView = new ListView<Album>();
 				listView.setItems(albumList);
 	
