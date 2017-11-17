@@ -16,6 +16,10 @@ public class Lists {
 	 * Global list of users that holds all users in one machine.
 	 */
 	public static ArrayList<User> users;
+	
+	/**
+	 * Global list of photos references for all albums in one machine.
+	 */
 	public static ArrayList<Photo> photos;
 	
 	/**
@@ -118,25 +122,31 @@ public class Lists {
 	 * @return The index of user object either with valid credentials or an error code
 	 */
 	public static int verifyFromDatabase(String name, String pass) {
-		
-		// default value -1 if not found
-		int ret = -1;
-		
+
 		for(int i = 0; i < users.size(); i++) {
 			if(name.equals(users.get(i).getName())) {
 				if(pass.equals(users.get(i).getPass())) {
 					
 					// value of index if found
-					ret = i;
+					return i;
+					
 				} else {
 					
 					// value of -2 if found but wrong password
-					ret = -2;
+					return -2;
 				}
-				break;
 			}
 		}
-		return ret;
+		
+		// default value -1 if not found
+		return -1;
 	}
 
+	public static void addPhoto() {
+		
+	}
+	
+	public static int checkPhotos() {
+		return 0;
+	}
 }

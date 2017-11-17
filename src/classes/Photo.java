@@ -44,6 +44,11 @@ public class Photo implements Serializable{
 		this.index = index;
 	}
 	
+	@Override
+	public String toString() {
+		return this.name;
+	}
+	
 	/**
 	 * addTag() inserts a given addTag into the tags
 	 * list of a Photo

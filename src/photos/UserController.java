@@ -1,6 +1,7 @@
 package photos;
 
 import classes.Album;
+import classes.Photo;
 import classes.Lists;
 
 import java.util.Optional;
@@ -28,9 +29,8 @@ public class UserController {
 	private Alert alert;
 	private TextInputDialog dialog;
 	private int index;
-	private ListView<Album> listView;
-	private ObservableList<Album> albumList;
-	private SingleSelectionModel<Tab> selectionModel;
+	private ListView<Photo> listView;
+	private ObservableList<Photo> albumList;
 	
 	/**
 	 * Sets the private reference user to the incoming User object.
@@ -40,8 +40,19 @@ public class UserController {
 	public void setUserIndex(int index) {
 		this.index = index;
 		userLabel.setText(Lists.users.get(index).getName() + "'s Albums");
-		selectionModel = tabPane.getSelectionModel();
-		selectionModel.clearSelection();
+		setupAlbumTabs();
+	}
+	
+	private void setupAlbumTabs() {
+		// TODO: add thumbnails to listview
+		ArrayList<Album> albums = Lists.users.get(index).getAlbums();
+		if(!albums.isEmpty()) {
+			ObservableList<Tab> tabs = tabPane.getTabs();
+			for(Album album : albums) {
+				Tab tab = new Tab(album.toString());
+				tab.setContent(listView);
+			}
+		}
 	}
 
 	// Photo Controls
@@ -111,20 +122,24 @@ public class UserController {
 			tab.setClosable(true);
 
 			// create new album for user
-			ArrayList<Album> temp = Lists.users.get(index).getAlbums();
-			temp.add(new Album(result.get()));
+			Album album = new Album(result.get());
+			Lists.users.get(index).getAlbums().add(album);
 
 			// set up list view
-			albumList = FXCollections.observableArrayList(Lists.users.get(index).getAlbums());
-			listView = new ListView<Album>();
-			listView.setItems(albumList);
-
+			ObservableList<Photo> photosList = FXCollections.observableArrayList(album.getPhotos());
+			
+			// TODO: add thumbnails to listview
+			listView = new ListView<Photo>();
+			listView.setItems(photosList);
 			tab.setContent(listView);
+			
+			photosList.add(new Photo(null, "Hello", 0));
 
+			Lists.writeToDatabase();
+			
 			// add tab to tab pane then switch selection
-			tabPane.getTabs().add(tabPane.getTabs().size() - 1, tab);
+			tabPane.getTabs().add(tab);
 			tabPane.getSelectionModel().select(tab);
-
 		}
 	}
 	

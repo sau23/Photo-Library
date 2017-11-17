@@ -81,7 +81,7 @@ public class Album implements Serializable{
 		return;
 	}
 	
-	ArrayList<Photo> getPhotos(){
+	public ArrayList<Photo> getPhotos(){
 		
 		return this.photos;
 		
