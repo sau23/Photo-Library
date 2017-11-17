@@ -9,8 +9,8 @@ import javafx.scene.control.TextField;
 
 public class LoginController {
 
-	@FXML private Button enter;
-	@FXML private TextField useName, pass;
+	@FXML private Button enter, createAccount;
+	@FXML private TextField useName, pass, newUsername, newPassword;
 	
 	/**
 	 * Login controller checks if the fields correspond to a matching user in
@@ -19,7 +19,7 @@ public class LoginController {
 	 * @param event
 	 * @throws Exception
 	 */
-	@FXML public void login(ActionEvent event) throws Exception{
+	@FXML public void login() throws Exception{
 		
 		String name = useName.getText();
 		String passWord = pass.getText();
@@ -34,10 +34,34 @@ public class LoginController {
 				useName.setText("Not a recognized user!");
 				pass.setText("");
 			}else if(checkForUser == -2){
-				pass.setText("Incorrect password ");
+				pass.setText("");
+				pass.setPromptText("Incorrect password ");
 			}else{
 				Photos.showUser(checkForUser);
 			}			
+		}
+	}
+	
+	@FXML public void createNewUser() throws Exception{
+		
+		String name = newUsername.getText();
+		String password = newPassword.getText();
+		
+		int checkForUser = User.verifyFromDatabase(name, password);
+		
+		if(checkForUser == -1){
+			
+			User newUser = new User(name, password);
+			User.users.add(newUser);
+			Photos.showUser(User.users.size());
+			
+		}else{
+			
+			newUsername.setText("");
+			newPassword.setText("");
+			newUsername.setPromptText("User already exists");
+			newPassword.setPromptText("Try another name and pass");
+			
 		}
 	}
 }
