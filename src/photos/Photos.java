@@ -106,24 +106,35 @@ public class Photos extends Application {
 		window.show();
 	}
 	
+	/**
+	 * Creates new display for display scene.
+	 * 
+	 * @throws Exception
+	 */
 	public static void showDisplay() throws Exception{
 		displayLoader = new FXMLLoader();
 		displayLoader.setLocation(Photos.class.getResource("/Display.fxml"));
 		
 		displayScene = new Scene((AnchorPane)displayLoader.load());
 
-		DisplayController dc = displayLoader.getController();
+		//DisplayController dc = displayLoader.getController();
 		
-		window.setTitle("");
-		window.setScene(displayScene);
-		window.show();
+		Stage stage = new Stage();
+		
+		stage.setTitle("");
+		stage.setScene(displayScene);
+		stage.show();
 	}
 	
+	/**
+	 * Adds a stock user account to the list of users with pre-determined file
+	 * locations. Only run once per program start-up.
+	 */
 	public static void addStockUser() {
 		User stock = new User("stock", "");
 		
+		// set album 1 contents
 		Album album1 = new Album("Album 1");
-		
 		Calendar date = Calendar.getInstance();
 		File f = new File("data/stock/niko.png");
 		date.setTimeInMillis(f.lastModified());
@@ -132,6 +143,7 @@ public class Photos extends Application {
 		stock.getAlbums().add(album1);
 		UserList.users.add(stock);
 		
+		// set album 2 contents
 		
 		
 		UserList.writeToUserDatabase();

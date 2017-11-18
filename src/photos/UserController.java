@@ -74,9 +74,7 @@ public class UserController {
 	}
 	
 	public void removePhoto() {
-		
-		// get selected photo from selected album
-		ListView lv = (ListView)tabPane.getSelectionModel().getSelectedItem().getContent();
+
 	}
 	
 	public void captionPhoto() {
