@@ -143,7 +143,7 @@ public class UserController {
 			UserList.users.get(index).getAlbums().add(album);
 		
 			// update database
-			UserList.writeToUserDatabase();
+			UserList.writeToUserDatabase(UserList.users.get(index));
 			
 			// switch to new tab as selection
 			tabPane.getSelectionModel().select(addNewTab(album));
@@ -184,7 +184,7 @@ public class UserController {
 				if (result.isPresent() && result.get() == ButtonType.OK) {
 					int i = tabPane.getSelectionModel().getSelectedIndex();
 					UserList.users.get(index).getAlbums().remove(i);
-					UserList.writeToUserDatabase();
+					UserList.writeToUserDatabase(UserList.users.get(index));
 
 					if(Photos.DEBUG) System.out.println("Succesfully deleted album at index " + i + ".");
 					

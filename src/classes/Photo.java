@@ -35,7 +35,7 @@ public class Photo implements Serializable{
 		
 		this.tags = new ArrayList<Tag>();
 		this.date = photoDate;
-		this.name = removeExtension(f.getName());
+		this.name = UserList.removeExtension(f.getName());
 		this.filePath = filePath;
 	}
 	
@@ -91,20 +91,6 @@ public class Photo implements Serializable{
 		return this.filePath;
 	}
 	
-	/**
-	 * Removes the file extension from the given file name.
-	 * 
-	 * @param fileName The file name with an extension
-	 * 
-	 * @return The file name without the extension
-	 */
-	private String removeExtension(String fileName) {
-		int i = fileName.lastIndexOf(".");
-		if(i > 0) {
-			return fileName.substring(0, i);
-		}
-		return "";
-	}
 }
 
 

@@ -149,6 +149,6 @@ public class Photos extends Application {
 		// set album 2 contents
 		
 		
-		UserList.writeToUserDatabase();
+		UserList.writeToUserDatabase(stock);
 	}
 }

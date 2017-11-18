@@ -1,5 +1,6 @@
 package classes;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -11,12 +12,12 @@ public class UserList {
 
 	// classy debug boolean
 	public static boolean DEBUG = true;
-	
+
 	/**
 	 * Global list of users that holds all users in one machine.
 	 */
 	public static ArrayList<User> users;
-	
+
 	/**
 	 * Creates a new user object to add to the list and updates the database.
 	 * Prohibits adding same user name multiple times, case specific.
@@ -28,7 +29,7 @@ public class UserList {
 	 * @return 
 	 */
 	public static boolean addUser(String name, String pass) {
-		
+
 		// check to see if user name already exists in the list
 		for(User user : users) {
 			if(name.equals(user.getName())) {
@@ -36,81 +37,93 @@ public class UserList {
 				return false;
 			}
 		}
-
-		users.add(new User(name, pass));
-		writeToUserDatabase();
+		User toAdd = new User(name, pass);
+		users.add(toAdd);
+		writeToUserDatabase(toAdd);
 		if(DEBUG) System.out.println("Successfully added new user " + name + ", " + pass + ".");
 		return true;
 	}
 
 	/**
-	 * Searches database for the given user name and deletes it, updating the
-	 * database after the removal.
+	 * Searches database for the given user name and deletes it, deleting the
+	 * corresponding .ser file from the database.
 	 * 
 	 * @param index The index of user to remove
 	 */
 	public static void deleteUser(int index) {
+		File f = new File("data/" + users.get(index).getName() + ".ser");
+		f.delete();
 		users.remove(index);
-		writeToUserDatabase();
 		if(DEBUG) System.out.println("Sucesfully deleted user at index " + index);
 	}
-	
+
 	/**
-	 * Instantiates the user list from an existing user database ser file by
-	 * deserializing the information from data.ser if it finds it.
+	 * Instantiates the user list from the data directory by reading the names
+	 * of .ser files. If no data directory was detected, the data directory is
+	 * empty, or the data directory only contains the stock photos directory,
+	 * this will simply create an empty static reference to the user list.
 	 */
-	@SuppressWarnings("unchecked")
 	public static void readFromUserDatabase() {
-		try {
-			ObjectInputStream in = new ObjectInputStream(new FileInputStream("data/users.ser"));
-			Object data = in.readObject();
-			if(data instanceof ArrayList<?>) {
-				ArrayList<?> arr = (ArrayList<?>)data;
-	
-				// checks if array list is of right type when reading
-				if(!arr.isEmpty() && arr.get(0) instanceof User) {
-					users = (ArrayList<User>)arr;
-					
-				// otherwise the array list is empty, just make a new one
-				} else {
-					users = new ArrayList<User>();
-				}
-				
-			}
-			in.close();
-			if(DEBUG) System.out.println("Successfully read from user database.");
-		} catch (IOException e) {
-			if(DEBUG) System.out.println("User database not found, creating new one.");
-			
+		File f = new File("data");
+		if(!(f.exists() && f.isDirectory())) {
+
 			// first time read, if not found then create a new file.
 			users = new ArrayList<User>();
-			writeToUserDatabase();
-		} catch (ClassNotFoundException c) {
-			if(DEBUG) System.out.println("ArrayList class not found");
-			c.printStackTrace();
+			f.mkdir();
+
+			if(DEBUG) System.out.println("User database not found, creating new directory.");
+			return;
+		}
+		
+		// check if it only contains the stock photos directory
+		if(f.list().length < 2) {
+			users = new ArrayList<User>();
+			if(DEBUG) System.out.println("User database found, but no files exist yet.");
+			return;
+		}
+		
+		// otherwise it builds the user list on whatever files are inside
+		users = new ArrayList<User>();
+		for(File file : f.listFiles()) {
+			if(file.isFile()) {
+				String name = removeExtension(file.getName());
+				try {
+					ObjectInputStream in = new ObjectInputStream(new FileInputStream("data/" + name + ".ser"));
+					users.add((User)in.readObject());
+					in.close();
+					if(DEBUG) System.out.println("Successfully read " + name + " from user database.");
+				} catch (IOException e) {
+					if(DEBUG) System.out.println("Error reading in " + name + ".ser file.");
+				} catch (ClassNotFoundException c) {
+					if(DEBUG) System.out.println("User class not found");
+					c.printStackTrace();
+				}
+			} else {
+				if(DEBUG) System.out.println("File \"" + file.getName() + "\" found was not normal file.");
+			}
 		}
 	}
 
 	/**
-	 * Updates the user database text file by writing the current list into a
-	 * ser file after every add.
+	 * Updates the user database by writing changes to the given user's .ser
+	 * file.
 	 */
-	public static void writeToUserDatabase() {
+	public static void writeToUserDatabase(User user) {
 		try{
-			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data/users.ser"));
-			out.writeObject(users);
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data/" + user.getName() + ".ser"));
+			out.writeObject(user);
 			out.close();
 			if(DEBUG) System.out.println("Successfully wrote to user database.");
 		} catch(IOException e) {
-			if(DEBUG) System.out.println("IO error with user database.");
+			if(DEBUG) System.out.println("Error writing " + user.getName() + ".ser file");
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Checks to see if the given user name and corresponding password exists in the
-	 * user database text file. Returns the index of a user if it finds an exact match, 
-	 * and an error code if it does not find any match.
+	 * user list. Returns the index of a user if it finds an exact match, and an 
+	 * error code if it does not find any match.
 	 * 
 	 * @param name The user name to verify
 	 * @param pass The password to verify
@@ -121,20 +134,34 @@ public class UserList {
 		for(int i = 0; i < users.size(); i++) {
 			if(name.equals(users.get(i).getName())) {
 				if(pass.equals(users.get(i).getPass())) {
-					
+
 					// value of index if found
 					return i;
-					
+
 				} else {
-					
+
 					// value of -2 if found but wrong password
 					return -2;
 				}
 			}
 		}
-		
+
 		// default value -1 if not found
 		return -1;
 	}
-	
+
+	/**
+	 * Removes the file extension from the given file name.
+	 * 
+	 * @param fileName The file name with an extension
+	 * 
+	 * @return The file name without the extension
+	 */
+	public static String removeExtension(String fileName) {
+		int i = fileName.lastIndexOf(".");
+		if(i > 0) {
+			return fileName.substring(0, i);
+		}
+		return "";
+	}
 }
