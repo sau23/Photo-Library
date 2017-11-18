@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * This class acts as a receptical for Photo objects;
+ * This class acts as a receptical for dPhoto objects;
  * It will also perform operations on such collections,
  * such as searches, orderings, appending, merging, and
  * deleting.

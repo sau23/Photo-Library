@@ -9,13 +9,14 @@ import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -37,7 +38,7 @@ public class UserController {
 	/**
 	 * Sets the private reference user to the incoming User object.
 	 * 
-	 * @param index
+	 * @param index Index of the logged in user
 	 */
 	public void setUserIndex(int index) {
 		this.index = index;
@@ -45,24 +46,34 @@ public class UserController {
 		setupAlbumTabs();
 	}
 	
+	/**
+	 * Initializes the tab pane to hold any albums that the user at the
+	 * stored index has when the database is read.
+	 */
 	private void setupAlbumTabs() {
-		// TODO: add thumbnails to listview
+		
+		// if user has any albums, initalize tab pane to present them
 		ArrayList<Album> albums = Lists.users.get(index).getAlbums();
 		if(!albums.isEmpty()) {
-			ObservableList<Tab> tabs = tabPane.getTabs();
 			for(Album album : albums) {
-				Tab tab = new Tab(album.toString());
-				tab.setContent(listView);
+				addNewTab(album);
 			}
+			tabPane.getSelectionModel().select(0);
+			if(Photos.DEBUG) System.out.println("Sucessfully read albums for user " + Lists.users.get(index).getName() + ".");
+			
+		// otherwise, disable buttons
+		} else {
+			enableButtons(false);
+			if(Photos.DEBUG) System.out.println(Lists.users.get(index).getName() + " has no stored albums.");
 		}
 	}
 
 	// Photo Controls
+
 	public void addPhoto() throws Exception {
 		
 		Photos.showNewSong();
-		
-	}
+}
 	
 	public void removePhoto() {
 		
@@ -89,14 +100,6 @@ public class UserController {
 		
 	}
 	
-	private void disableButtons() {
-		
-	}
-	
-	private void enableButtons() {
-		
-	}
-	
 	public void search() {
 		
 	}
@@ -111,6 +114,10 @@ public class UserController {
 		
 	}
 	
+	/**
+	 * Prompts user to create a new album requesting the album's name through
+	 * an input text field as a pop-up dialog box.
+	 */
 	public void addNewAlbum() {
 		
 		dialog = new TextInputDialog();
@@ -121,34 +128,89 @@ public class UserController {
 		Optional<String> result = dialog.showAndWait();
 		if(result.isPresent()) {
 
-			// make a new tab with a list view
-			Tab tab = new Tab(result.get());
-			tab.setClosable(true);
-
 			// create new album for user
 			Album album = new Album(result.get());
 			Lists.users.get(index).getAlbums().add(album);
-
-			// set up list view
-			ObservableList<Photo> photosList = FXCollections.observableArrayList(album.getPhotos());
-			
-			// TODO: add thumbnails to listview
-			listView = new ListView<Photo>();
-			listView.setItems(photosList);
-			tab.setContent(listView);
-			
-			photosList.add(new Photo(null, "Hello", 0));
-
+		
+			// update database
 			Lists.writeToDatabase();
 			
-			// add tab to tab pane then switch selection
-			tabPane.getTabs().add(tab);
-			tabPane.getSelectionModel().select(tab);
+			// switch to new tab as selection
+			tabPane.getSelectionModel().select(addNewTab(album));
+			if(Photos.DEBUG) System.out.println("Succesfully added new album " + album.toString() + ".");
 		}
 	}
 	
-	public void removeAlbum() {
+	// Helper Functions
+	
+	/**
+	 * Adds a new tab to the tab pane using the given album to create the tab's
+	 * label and contents.
+	 * 
+	 * @param album The album whose contents are used in the tab creation
+	 * @return A reference to the newly created album for selection purposes
+	 */
+	private Tab addNewTab(Album album) {
+		// make a new tab with given name
+		Tab ret = new Tab(album.toString());
+
+		// set up list view
+		// TODO: create thumbnails for each entry
+		ObservableList<Photo> photosList = FXCollections.observableArrayList(album.getPhotos());
+		listView = new ListView<Photo>();
+		listView.setItems(photosList);
+		ret.setContent(listView);
+
+		// set event handler for when tab is closed
+		ret.setOnCloseRequest(new EventHandler<Event>() {
+			@Override
+			public void handle(Event e) {
+				int i = tabPane.getSelectionModel().getSelectedIndex();
+				Lists.users.get(index).getAlbums().remove(i);
+				Lists.writeToDatabase();
+
+				if(Photos.DEBUG) System.out.println("Succesfully deleted album at index " + i + ".");
+			}
+		});
 		
+		// separate event handle for when albums list is empty
+		ret.setOnClosed(new EventHandler<Event>() {
+			@Override
+			public void handle(Event e) {
+				if(tabPane.getTabs().isEmpty()) {
+					enableButtons(false);
+					if(Photos.DEBUG) System.out.println("Disabled buttons.");
+				}
+			}
+		});
+
+		// if tabs list was empty, then enable them while the tab is being added
+		if(!tabPane.getTabs().isEmpty()) {
+			if(Photos.DEBUG) System.out.println("Enabled buttons.");
+			enableButtons(true);
+		}
+		
+		// add tab to tab pane
+		tabPane.getTabs().add(ret);
+		enableButtons(true);
+		return ret;
+	}
+
+	/**
+	 * Helper function to turn off buttons when no albums are detected. Prevents
+	 * adding photos to a non-existent album.
+	 * 
+	 * @param isEnabled True enables buttons, false disables buttons
+	 */
+	private void enableButtons(boolean isEnabled) {
+		add.setDisable(!isEnabled);
+		remove.setDisable(!isEnabled);
+		caption.setDisable(!isEnabled);
+		display.setDisable(!isEnabled);
+		edit.setDisable(!isEnabled);
+		copy.setDisable(!isEnabled);
+		move.setDisable(!isEnabled);
+		search.setDisable(!isEnabled);
 	}
 	
 	public void fileFind(){
