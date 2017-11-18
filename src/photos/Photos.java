@@ -27,6 +27,8 @@ public class Photos extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			
+			// add stock user from here
+			
 			window = primaryStage;
 			
 			showLogin();
@@ -50,7 +52,7 @@ public class Photos extends Application {
 		loginLoader.setLocation(Photos.class.getResource("/Login.fxml"));
 
 		// read values from user data ser file if it exists
-		Lists.readFromDatabase();
+		Lists.readFromUserDatabase();
 		
 		loginScene = new Scene((AnchorPane)loginLoader.load());
 		

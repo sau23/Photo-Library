@@ -14,8 +14,12 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.layout.HBox;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -32,6 +36,7 @@ public class UserController {
 	private int index;
 	private ListView<Photo> listView;
 	private ObservableList<Photo> albumList;
+	private Optional<ButtonType> result;
 	
 	/**
 	 * Sets the private reference user to the incoming User object.
@@ -50,7 +55,7 @@ public class UserController {
 	 */
 	private void setupAlbumTabs() {
 		
-		// if user has any albums, initalize tab pane to present them
+		// if user has any albums, initialize tab pane to present them
 		ArrayList<Album> albums = Lists.users.get(index).getAlbums();
 		if(!albums.isEmpty()) {
 			for(Album album : albums) {
@@ -130,7 +135,7 @@ public class UserController {
 			Lists.users.get(index).getAlbums().add(album);
 		
 			// update database
-			Lists.writeToDatabase();
+			Lists.writeToUserDatabase();
 			
 			// switch to new tab as selection
 			tabPane.getSelectionModel().select(addNewTab(album));
@@ -162,11 +167,21 @@ public class UserController {
 		ret.setOnCloseRequest(new EventHandler<Event>() {
 			@Override
 			public void handle(Event e) {
-				int i = tabPane.getSelectionModel().getSelectedIndex();
-				Lists.users.get(index).getAlbums().remove(i);
-				Lists.writeToDatabase();
+				alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this album?");
+				result = alert.showAndWait();
+				
+				// if user confirms, delete tab and album entry
+				if (result.isPresent() && result.get() == ButtonType.OK) {
+					int i = tabPane.getSelectionModel().getSelectedIndex();
+					Lists.users.get(index).getAlbums().remove(i);
+					Lists.writeToUserDatabase();
 
-				if(Photos.DEBUG) System.out.println("Succesfully deleted album at index " + i + ".");
+					if(Photos.DEBUG) System.out.println("Succesfully deleted album at index " + i + ".");
+					
+				// otherwise do nothing (consume event to prevent closing)
+				} else {
+					e.consume();
+				}
 			}
 		});
 		
@@ -183,8 +198,8 @@ public class UserController {
 
 		// if tabs list was empty, then enable them while the tab is being added
 		if(!tabPane.getTabs().isEmpty()) {
-			if(Photos.DEBUG) System.out.println("Enabled buttons.");
 			enableButtons(true);
+			if(Photos.DEBUG) System.out.println("Enabled buttons.");
 		}
 		
 		// add tab to tab pane
@@ -208,5 +223,12 @@ public class UserController {
 		copy.setDisable(!isEnabled);
 		move.setDisable(!isEnabled);
 		search.setDisable(!isEnabled);
+	}
+	
+	private ObservableList<HBox> createPhotoList(ArrayList<Photo> photos) {
+		
+		ObservableList<HBox> list;
+		
+		return null;
 	}
 }

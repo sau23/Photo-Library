@@ -3,7 +3,6 @@ package photos;
 import classes.Lists;
 
 import javafx.fxml.FXML;
-import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
@@ -29,7 +28,7 @@ public class LoginController {
 			Photos.showAdmin();
 			
 		}else{
-			int checkForUser = Lists.verifyFromDatabase(name, passWord);
+			int checkForUser = Lists.verifyFromUserDatabase(name, passWord);
 			if(checkForUser == -1){
 				useName.setText("");
 				useName.setPromptText("Not a recognized user!");
@@ -49,7 +48,7 @@ public class LoginController {
 		String name = newUsername.getText();
 		String password = newPassword.getText();
 		
-		int checkForUser = Lists.verifyFromDatabase(name, password);
+		int checkForUser = Lists.verifyFromUserDatabase(name, password);
 		
 		if(checkForUser == -1){
 			

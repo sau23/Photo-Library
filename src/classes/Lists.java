@@ -35,15 +35,15 @@ public class Lists {
 	public static boolean addUser(String name, String pass) {
 		
 		// check to see if user name already exists in the list
-		for(User user : Lists.users) {
+		for(User user : users) {
 			if(name.equals(user.getName())) {
 				if(DEBUG) System.out.println("User already exists.");
 				return false;
 			}
 		}
 
-		Lists.users.add(new User(name, pass));
-		Lists.writeToDatabase();
+		users.add(new User(name, pass));
+		writeToUserDatabase();
 		if(DEBUG) System.out.println("Successfully added new user " + name + ", " + pass + ".");
 		return true;
 	}
@@ -55,8 +55,8 @@ public class Lists {
 	 * @param index The index of user to remove
 	 */
 	public static void deleteUser(int index) {
-		Lists.users.remove(index);
-		Lists.writeToDatabase();
+		users.remove(index);
+		writeToUserDatabase();
 		if(DEBUG) System.out.println("Sucesfully deleted user at index " + index);
 	}
 	
@@ -65,7 +65,7 @@ public class Lists {
 	 * deserializing the information from data.ser if it finds it.
 	 */
 	@SuppressWarnings("unchecked")
-	public static void readFromDatabase() {
+	public static void readFromUserDatabase() {
 		try {
 			ObjectInputStream in = new ObjectInputStream(new FileInputStream("data/users.ser"));
 			Object data = in.readObject();
@@ -74,22 +74,22 @@ public class Lists {
 	
 				// checks if array list is of right type when reading
 				if(!arr.isEmpty() && arr.get(0) instanceof User) {
-					Lists.users = (ArrayList<User>)arr;
+					users = (ArrayList<User>)arr;
 					
 				// otherwise the array list is empty, just make a new one
 				} else {
-					Lists.users = new ArrayList<User>();
+					users = new ArrayList<User>();
 				}
 				
 			}
 			in.close();
-			if(DEBUG) System.out.println("Sucessfully read from user database.");
+			if(DEBUG) System.out.println("Successfully read from user database.");
 		} catch (IOException e) {
 			if(DEBUG) System.out.println("User database not found, creating new one.");
 			
 			// first time read, if not found then create a new file.
-			Lists.users = new ArrayList<User>();
-			writeToDatabase();
+			users = new ArrayList<User>();
+			writeToUserDatabase();
 		} catch (ClassNotFoundException c) {
 			if(DEBUG) System.out.println("ArrayList class not found");
 			c.printStackTrace();
@@ -100,10 +100,10 @@ public class Lists {
 	 * Updates the user database text file by writing the current list into a
 	 * ser file after every add.
 	 */
-	public static void writeToDatabase() {
+	public static void writeToUserDatabase() {
 		try{
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data/users.ser"));
-			out.writeObject(Lists.users);
+			out.writeObject(users);
 			out.close();
 			if(DEBUG) System.out.println("Successfully wrote to user database.");
 		} catch(IOException e) {
@@ -121,7 +121,7 @@ public class Lists {
 	 * @param pass The password to verify
 	 * @return The index of user object either with valid credentials or an error code
 	 */
-	public static int verifyFromDatabase(String name, String pass) {
+	public static int verifyFromUserDatabase(String name, String pass) {
 
 		for(int i = 0; i < users.size(); i++) {
 			if(name.equals(users.get(i).getName())) {
@@ -148,5 +148,49 @@ public class Lists {
 	
 	public static int checkPhotos() {
 		return 0;
+	}
+	
+	/**
+	 * Instantiates the master photo list from an existing user database ser file 
+	 * by deserializing the information from photos.ser if it finds it.
+	 */
+	@SuppressWarnings("unchecked")
+	public static void readFromPhotosDatabase() {
+		try {
+			ObjectInputStream in = new ObjectInputStream(new FileInputStream("data/photos.ser"));
+			Object data = in.readObject();
+			if(data instanceof ArrayList<?>) {
+				ArrayList<?> arr = (ArrayList<?>)data;
+				if(!arr.isEmpty() && arr.get(0) instanceof Photo) {
+					photos = (ArrayList<Photo>)arr;
+				}
+			}
+			in.close();
+			if(DEBUG) System.out.println("Sucessfully read from photo database.");
+		} catch (IOException e) {
+			if(DEBUG) System.out.println("Photo database not found, creating new one.");
+			// first time read, if not found then create a new file.
+			photos = new ArrayList<Photo>();
+			writeToUserDatabase();
+		} catch (ClassNotFoundException c) {
+			if(DEBUG) System.out.println("ArrayList class not found");
+			c.printStackTrace();
+		}
+	}
+
+	/**
+	 * Updates the photo database text file by writing the current list into a
+	 * ser file after every add.
+	 */
+	public static void writeToPhotoDatabase() {
+		try{
+			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data/photos.ser"));
+			out.writeObject(photos);
+			out.close();
+			if(DEBUG) System.out.println("Success writing to photo database.");
+		} catch(IOException e) {
+			if(DEBUG) System.out.println("IO error with photo database.");
+			e.printStackTrace();
+		}
 	}
 }
