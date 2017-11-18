@@ -59,13 +59,15 @@ public class UserController {
 			tabPane.getSelectionModel().select(0);
 			if(Photos.DEBUG) System.out.println("Sucessfully read albums for user " + Lists.users.get(index).getName() + ".");
 			
-		// otherwise, do nothing
+		// otherwise, disable buttons
 		} else {
+			enableButtons(false);
 			if(Photos.DEBUG) System.out.println(Lists.users.get(index).getName() + " has no stored albums.");
 		}
 	}
 
 	// Photo Controls
+	
 	public void addPhoto() {
 		
 	}
@@ -92,14 +94,6 @@ public class UserController {
 	}
 	
 	public void movePhoto() {
-		
-	}
-	
-	private void disableButtons() {
-		
-	}
-	
-	private void enableButtons() {
 		
 	}
 	
@@ -144,6 +138,8 @@ public class UserController {
 		}
 	}
 	
+	// Helper Functions
+	
 	/**
 	 * Adds a new tab to the tab pane using the given album to create the tab's
 	 * label and contents.
@@ -169,12 +165,48 @@ public class UserController {
 				int i = tabPane.getSelectionModel().getSelectedIndex();
 				Lists.users.get(index).getAlbums().remove(i);
 				Lists.writeToDatabase();
+
 				if(Photos.DEBUG) System.out.println("Succesfully deleted album at index " + i + ".");
 			}
 		});
+		
+		// separate event handle for when albums list is empty
+		ret.setOnClosed(new EventHandler<Event>() {
+			@Override
+			public void handle(Event e) {
+				if(tabPane.getTabs().isEmpty()) {
+					enableButtons(false);
+					if(Photos.DEBUG) System.out.println("Disabled buttons.");
+				}
+			}
+		});
 
+		// if tabs list was empty, then enable them while the tab is being added
+		if(!tabPane.getTabs().isEmpty()) {
+			if(Photos.DEBUG) System.out.println("Enabled buttons.");
+			enableButtons(true);
+		}
+		
 		// add tab to tab pane
 		tabPane.getTabs().add(ret);
+		enableButtons(true);
 		return ret;
+	}
+
+	/**
+	 * Helper function to turn off buttons when no albums are detected. Prevents
+	 * adding photos to a non-existent album.
+	 * 
+	 * @param isEnabled True enables buttons, false disables buttons
+	 */
+	private void enableButtons(boolean isEnabled) {
+		add.setDisable(!isEnabled);
+		remove.setDisable(!isEnabled);
+		caption.setDisable(!isEnabled);
+		display.setDisable(!isEnabled);
+		edit.setDisable(!isEnabled);
+		copy.setDisable(!isEnabled);
+		move.setDisable(!isEnabled);
+		search.setDisable(!isEnabled);
 	}
 }

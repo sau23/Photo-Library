@@ -47,6 +47,9 @@ public class AdminController {
 	 */
 	public void start() {
 		userList = FXCollections.observableArrayList(Lists.users);
+		if(userList.isEmpty()) {
+			enableButtons(false);
+		}
 		listView.setItems(userList);
 		listView.getSelectionModel().select(0);
 	}
@@ -72,6 +75,10 @@ public class AdminController {
 		
 		String passWord = pass.getText();
 		
+		if(userList.isEmpty()) {
+			enableButtons(true);
+		}
+		
 		if(Lists.addUser(userName, passWord)) {
 			userList.add(new User(userName,passWord));
 		}
@@ -82,12 +89,13 @@ public class AdminController {
 	 */
 	public void deleteUser() {
 		int index = listView.getSelectionModel().getSelectedIndex();
-		if(index > -1) {
-			alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this user?");
-			Optional<ButtonType> result = alert.showAndWait();
-			if (result.isPresent() && result.get() == ButtonType.OK) {
-				Lists.deleteUser(index);
-				userList.remove(index);
+		alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this user?");
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.isPresent() && result.get() == ButtonType.OK) {
+			Lists.deleteUser(index);
+			userList.remove(index);
+			if(userList.isEmpty()) {
+				enableButtons(false);
 			}
 		}
 	}
@@ -99,5 +107,15 @@ public class AdminController {
 	 */
 	public void logout() throws Exception{
 		Photos.showLogin();
+	}
+	
+	/**
+	 * Helper function to turn off delete button when no user is detected from
+	 * reading in the database.
+	 * 
+	 * @param isEnabled True enables buttons, false disables buttons
+	 */
+	private void enableButtons(boolean isEnabled) {
+		delete.setDisable(!isEnabled);
 	}
 }
