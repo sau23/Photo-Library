@@ -18,13 +18,15 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TextField;
 
 
 public class UserController {
 
-	@FXML Button add, remove, caption, display, edit, copy, move, addAlbum, search, logout;
+	@FXML Button add, remove, caption, display, edit, copy, move, addAlbum, search, logout, findFromComputerButton, addNewSongButton;
 	@FXML Label userLabel;
 	@FXML TabPane tabPane;
+	@FXML TextField newSongField, newSongDirectory;
 	
 	private Alert alert;
 	private TextInputDialog dialog;
@@ -56,7 +58,9 @@ public class UserController {
 	}
 
 	// Photo Controls
-	public void addPhoto() {
+	public void addPhoto() throws Exception {
+		
+		Photos.showNewSong();
 		
 	}
 	
@@ -145,5 +149,14 @@ public class UserController {
 	
 	public void removeAlbum() {
 		
+	}
+	
+	public void fileFind(){
+		
+	}
+	
+	public void addNewPhoto() throws Exception{
+		
+		Photos.showUser(this.index);
 	}
 }
