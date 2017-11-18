@@ -20,8 +20,8 @@ public class Photos extends Application {
 	/**
 	 * The variables to hold the scenes and their respective loaders;
 	 */
-	public static FXMLLoader loginLoader, adminLoader, userLoader;
-	public static Scene loginScene, adminScene, userScene;
+	public static FXMLLoader loginLoader, adminLoader, userLoader, displayLoader;
+	public static Scene loginScene, adminScene, userScene, displayScene;
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -96,6 +96,19 @@ public class Photos extends Application {
 		
 		window.setTitle(Lists.users.get(index).getName() + "'s Albums");
 		window.setScene(userScene);
+		window.show();
+	}
+	
+	public static void showDisplay() throws Exception{
+		displayLoader = new FXMLLoader();
+		displayLoader.setLocation(Photos.class.getResource("/NewPhoto.fxml"));
+		
+		displayScene = new Scene((AnchorPane)displayLoader.load());
+
+		UserController ac = displayLoader.getController();
+		
+		window.setTitle("");
+		window.setScene(displayScene);
 		window.show();
 	}
 }

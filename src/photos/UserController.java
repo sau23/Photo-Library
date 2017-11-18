@@ -14,16 +14,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.layout.HBox;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-
 
 public class UserController {
 
@@ -35,7 +32,6 @@ public class UserController {
 	private TextInputDialog dialog;
 	private int index;
 	private ListView<Photo> listView;
-	private ObservableList<Photo> albumList;
 	private Optional<ButtonType> result;
 	
 	/**
@@ -72,9 +68,9 @@ public class UserController {
 	}
 
 	// Photo Controls
-	
-	public void addPhoto() {
-		
+
+	public void addPhoto() throws Exception {
+		//Photos.showNewSong();
 	}
 	
 	public void removePhoto() {
@@ -224,11 +220,5 @@ public class UserController {
 		move.setDisable(!isEnabled);
 		search.setDisable(!isEnabled);
 	}
-	
-	private ObservableList<HBox> createPhotoList(ArrayList<Photo> photos) {
-		
-		ObservableList<HBox> list;
-		
-		return null;
-	}
+
 }

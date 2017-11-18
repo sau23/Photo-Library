@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
+<AnchorPane prefHeight="184.0" prefWidth="399.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="photos.UserController">
+   <children>
+      <Label layoutX="172.0" layoutY="6.0" text="New Photo" />
+      <Button fx:id="findFromComputerButton" layoutX="70.0" layoutY="145.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Find From Computer" onAction="#fileFind"/>
+      <Button fx:id="addNewSongButton" layoutX="265.0" layoutY="86.0" mnemonicParsing="false" text="Add New Song" onAction="#addNewPhoto"/>
+      <TextField fx:id="newSongField" layoutX="27.0" layoutY="51.0" prefHeight="25.0" prefWidth="212.0" />
+      <TextField fx:id="newSongDirectory" layoutX="27.0" layoutY="98.0" prefHeight="25.0" prefWidth="212.0" />
+      <Label layoutX="119.0" layoutY="123.0" text="or" />
+      <Label layoutX="34.0" layoutY="31.0" text="New Photo Name" />
+      <Label layoutX="34.0" layoutY="76.0" text="New Photo Directory" />
+   </children>
 </AnchorPane>
-
