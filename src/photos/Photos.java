@@ -101,11 +101,11 @@ public class Photos extends Application {
 	
 	public static void showDisplay() throws Exception{
 		displayLoader = new FXMLLoader();
-		displayLoader.setLocation(Photos.class.getResource("/NewPhoto.fxml"));
+		displayLoader.setLocation(Photos.class.getResource("/Display.fxml"));
 		
 		displayScene = new Scene((AnchorPane)displayLoader.load());
 
-		UserController ac = displayLoader.getController();
+		DisplayController dc = displayLoader.getController();
 		
 		window.setTitle("");
 		window.setScene(displayScene);
