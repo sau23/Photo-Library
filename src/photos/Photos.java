@@ -38,6 +38,9 @@ public class Photos extends Application {
 			// add stock user if the list is empty or first user is not stock user
 			if(UserList.users.isEmpty() || !UserList.users.get(0).getName().equals("stock")) {
 				addStockUser();
+			} else if(UserList.users.get(0).getName().equals("stock") && UserList.users.get(0).getAlbums().isEmpty()) {
+				UserList.deleteUser(0);
+				addStockUser();
 			}
 		
 		} catch(Exception e) {

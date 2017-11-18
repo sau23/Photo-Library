@@ -4,23 +4,30 @@ import classes.Album;
 import classes.Photo;
 import classes.UserList;
 
-import java.util.Optional;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.util.Callback;
 
 public class UserController {
 
@@ -58,7 +65,7 @@ public class UserController {
 				addNewTab(album);
 			}
 			tabPane.getSelectionModel().select(0);
-			if(Photos.DEBUG) System.out.println("Sucessfully read albums for user " + UserList.users.get(index).getName() + ".");
+			if(Photos.DEBUG) System.out.println("Successfully read albums for user " + UserList.users.get(index).getName() + ".");
 			
 		// otherwise, disable buttons
 		} else {
@@ -102,6 +109,11 @@ public class UserController {
 		
 	}
 	
+	/**
+	 * Switches back to the login screen.
+	 * 
+	 * @throws Exception
+	 */
 	public void logout() throws Exception {
 		Photos.showLogin();
 	}
@@ -153,10 +165,12 @@ public class UserController {
 		Tab ret = new Tab(album.toString());
 
 		// set up list view
-		// TODO: create thumbnails for each entry
 		ObservableList<Photo> photosList = FXCollections.observableArrayList(album.getPhotos());
 		listView = new ListView<Photo>();
 		listView.setItems(photosList);
+		
+		// edit list view contents
+		changeCellFactory(listView);
 		ret.setContent(listView);
 
 		// set event handler for when tab is closed
@@ -221,4 +235,49 @@ public class UserController {
 		search.setDisable(!isEnabled);
 	}
 
+	/**
+	 * Overrides the cell creation algorithm for the given listview to create
+	 * cells with graphics instead.
+	 * 
+	 * @param listview
+	 */
+	private void changeCellFactory(ListView<Photo> listview) {
+		listview.setCellFactory(new Callback<ListView<Photo>, ListCell<Photo>>(){
+			@Override
+			public ListCell<Photo> call(ListView<Photo> list){
+				return new PhotoCell();
+			}
+		});
+	}
+	
+	/**
+	 * Private class for the use of showing content on the listview for albums.
+	 * Contains a thumbnail image scaled down to 30 by 30 pixels and the name
+	 * of the file without the extension.
+	 */
+	private class PhotoCell extends ListCell<Photo> {
+		@Override
+		public void updateItem(Photo item, boolean empty) {
+			super.updateItem(item, empty);
+			HBox hbox = new HBox();
+			ImageView image = new ImageView();
+			Label label = new Label();
+			File f;
+			if(item != null) {
+				f = new File(item.getFilePath());
+				
+	           	image.setFitHeight(30);
+            	image.setPreserveRatio(true);
+            	image.setSmooth(true);
+            	image.setCache(true);
+            	image.setImage(new Image(f.toURI().toString()));
+                
+                label.setText(item.toString());
+                hbox.getChildren().addAll(image, label);
+                hbox.setSpacing(10.0);
+                hbox.setAlignment(Pos.CENTER_LEFT);
+                setGraphic(hbox);
+			}
+		}
+	}
 }
