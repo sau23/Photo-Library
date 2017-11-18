@@ -12,7 +12,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ListView;
 
 import photos.Photos;
-import classes.Lists;
+import classes.UserList;
 import classes.User;
 
 /**
@@ -46,7 +46,7 @@ public class AdminController {
 	 * Instantiates the list view when switching to this controller.
 	 */
 	public void start() {
-		userList = FXCollections.observableArrayList(Lists.users);
+		userList = FXCollections.observableArrayList(UserList.users);
 		if(userList.isEmpty()) {
 			enableButtons(false);
 		}
@@ -79,7 +79,7 @@ public class AdminController {
 			enableButtons(true);
 		}
 		
-		if(Lists.addUser(userName, passWord)) {
+		if(UserList.addUser(userName, passWord)) {
 			userList.add(new User(userName,passWord));
 		}
 	}
@@ -92,7 +92,7 @@ public class AdminController {
 		alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this user?");
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.isPresent() && result.get() == ButtonType.OK) {
-			Lists.deleteUser(index);
+			UserList.deleteUser(index);
 			userList.remove(index);
 			if(userList.isEmpty()) {
 				enableButtons(false);

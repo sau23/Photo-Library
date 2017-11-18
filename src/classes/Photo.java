@@ -1,6 +1,7 @@
 package classes;
 
 import java.io.Serializable;
+import java.io.File;
 import java.util.Calendar;
 import java.util.ArrayList;
 
@@ -22,16 +23,20 @@ public class Photo implements Serializable{
 	private ArrayList<Tag> tags;
 	private Calendar date;
 	private String name;
+	private String filePath;
 	
-	// reference to index on master photo list
-	private int index;
-	
-	public Photo(Calendar photoDate, String photoName, int index){
+	public Photo(Calendar photoDate, String filePath){
+		
+		File f = new File(filePath);
+		if(!f.exists()) {
+			System.out.println("File path not found.");
+			return;
+		}
 		
 		this.tags = new ArrayList<Tag>();
 		this.date = photoDate;
-		this.name = photoName;
-		this.index = index;
+		this.name = f.getName();
+		this.filePath = filePath;
 	}
 	
 	@Override
@@ -82,7 +87,9 @@ public class Photo implements Serializable{
 		
 	}
 	
-	// TODO: add getIndex()
+	public String getFilePath() {
+		return this.filePath;
+	}
 	
 }
 

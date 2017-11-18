@@ -1,11 +1,15 @@
 package photos;
 
-import classes.Lists;
+import java.util.Calendar;
+
+import classes.*;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+
+import java.io.File;
 
 public class Photos extends Application {
 	
@@ -27,11 +31,14 @@ public class Photos extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			
-			// add stock user from here
-			
 			window = primaryStage;
 			
 			showLogin();
+			
+			// add stock user if the list is empty or first user is not stock user
+			if(UserList.users.isEmpty() || !UserList.users.get(0).getName().equals("stock")) {
+				addStockUser();
+			}
 		
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -52,7 +59,7 @@ public class Photos extends Application {
 		loginLoader.setLocation(Photos.class.getResource("/Login.fxml"));
 
 		// read values from user data ser file if it exists
-		Lists.readFromUserDatabase();
+		UserList.readFromUserDatabase();
 		
 		loginScene = new Scene((AnchorPane)loginLoader.load());
 		
@@ -94,7 +101,7 @@ public class Photos extends Application {
 		UserController uc = userLoader.getController();
 		uc.setUserIndex(index);
 		
-		window.setTitle(Lists.users.get(index).getName() + "'s Albums");
+		window.setTitle(UserList.users.get(index).getName() + "'s Albums");
 		window.setScene(userScene);
 		window.show();
 	}
@@ -110,5 +117,23 @@ public class Photos extends Application {
 		window.setTitle("");
 		window.setScene(displayScene);
 		window.show();
+	}
+	
+	public static void addStockUser() {
+		User stock = new User("stock", "");
+		
+		Album album1 = new Album("Album 1");
+		
+		Calendar date = Calendar.getInstance();
+		File f = new File("data/stock/niko.png");
+		date.setTimeInMillis(f.lastModified());
+		Photo niko = new Photo(date, "data/stock/niko.png");
+		album1.getPhotos().add(niko);
+		stock.getAlbums().add(album1);
+		UserList.users.add(stock);
+		
+		
+		
+		UserList.writeToUserDatabase();
 	}
 }

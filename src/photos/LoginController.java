@@ -1,6 +1,6 @@
 package photos;
 
-import classes.Lists;
+import classes.UserList;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -28,7 +28,7 @@ public class LoginController {
 			Photos.showAdmin();
 			
 		}else{
-			int checkForUser = Lists.verifyFromUserDatabase(name, passWord);
+			int checkForUser = UserList.verifyFromUserDatabase(name, passWord);
 			if(checkForUser == -1){
 				useName.setText("");
 				useName.setPromptText("Not a recognized user!");
@@ -48,11 +48,11 @@ public class LoginController {
 		String name = newUsername.getText();
 		String password = newPassword.getText();
 		
-		int checkForUser = Lists.verifyFromUserDatabase(name, password);
+		int checkForUser = UserList.verifyFromUserDatabase(name, password);
 		
 		if(checkForUser == -1){
 			
-			Lists.addUser(name, password);
+			UserList.addUser(name, password);
 			newUsername.setText("");
 			newUsername.setPromptText("Successfully added");
 			newPassword.setText("");

@@ -2,7 +2,7 @@ package photos;
 
 import classes.Album;
 import classes.Photo;
-import classes.Lists;
+import classes.UserList;
 
 import java.util.Optional;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class UserController {
 	 */
 	public void setUserIndex(int index) {
 		this.index = index;
-		userLabel.setText(Lists.users.get(index).getName() + "'s Albums");
+		userLabel.setText(UserList.users.get(index).getName() + "'s Albums");
 		setupAlbumTabs();
 	}
 	
@@ -52,29 +52,31 @@ public class UserController {
 	private void setupAlbumTabs() {
 		
 		// if user has any albums, initialize tab pane to present them
-		ArrayList<Album> albums = Lists.users.get(index).getAlbums();
+		ArrayList<Album> albums = UserList.users.get(index).getAlbums();
 		if(!albums.isEmpty()) {
 			for(Album album : albums) {
 				addNewTab(album);
 			}
 			tabPane.getSelectionModel().select(0);
-			if(Photos.DEBUG) System.out.println("Sucessfully read albums for user " + Lists.users.get(index).getName() + ".");
+			if(Photos.DEBUG) System.out.println("Sucessfully read albums for user " + UserList.users.get(index).getName() + ".");
 			
 		// otherwise, disable buttons
 		} else {
 			enableButtons(false);
-			if(Photos.DEBUG) System.out.println(Lists.users.get(index).getName() + " has no stored albums.");
+			if(Photos.DEBUG) System.out.println(UserList.users.get(index).getName() + " has no stored albums.");
 		}
 	}
 
 	// Photo Controls
 
 	public void addPhoto() throws Exception {
-		//Photos.showNewSong();
+
 	}
 	
 	public void removePhoto() {
 		
+		// get selected photo from selected album
+		ListView lv = (ListView)tabPane.getSelectionModel().getSelectedItem().getContent();
 	}
 	
 	public void captionPhoto() {
@@ -128,10 +130,10 @@ public class UserController {
 
 			// create new album for user
 			Album album = new Album(result.get());
-			Lists.users.get(index).getAlbums().add(album);
+			UserList.users.get(index).getAlbums().add(album);
 		
 			// update database
-			Lists.writeToUserDatabase();
+			UserList.writeToUserDatabase();
 			
 			// switch to new tab as selection
 			tabPane.getSelectionModel().select(addNewTab(album));
@@ -169,8 +171,8 @@ public class UserController {
 				// if user confirms, delete tab and album entry
 				if (result.isPresent() && result.get() == ButtonType.OK) {
 					int i = tabPane.getSelectionModel().getSelectedIndex();
-					Lists.users.get(index).getAlbums().remove(i);
-					Lists.writeToUserDatabase();
+					UserList.users.get(index).getAlbums().remove(i);
+					UserList.writeToUserDatabase();
 
 					if(Photos.DEBUG) System.out.println("Succesfully deleted album at index " + i + ".");
 					

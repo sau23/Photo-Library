@@ -7,20 +7,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class Lists {
+public class UserList {
 
 	// classy debug boolean
-	private static boolean DEBUG = true;
+	public static boolean DEBUG = true;
 	
 	/**
 	 * Global list of users that holds all users in one machine.
 	 */
 	public static ArrayList<User> users;
-	
-	/**
-	 * Global list of photos references for all albums in one machine.
-	 */
-	public static ArrayList<Photo> photos;
 	
 	/**
 	 * Creates a new user object to add to the list and updates the database.
@@ -141,56 +136,5 @@ public class Lists {
 		// default value -1 if not found
 		return -1;
 	}
-
-	public static void addPhoto() {
-		
-	}
 	
-	public static int checkPhotos() {
-		return 0;
-	}
-	
-	/**
-	 * Instantiates the master photo list from an existing user database ser file 
-	 * by deserializing the information from photos.ser if it finds it.
-	 */
-	@SuppressWarnings("unchecked")
-	public static void readFromPhotosDatabase() {
-		try {
-			ObjectInputStream in = new ObjectInputStream(new FileInputStream("data/photos.ser"));
-			Object data = in.readObject();
-			if(data instanceof ArrayList<?>) {
-				ArrayList<?> arr = (ArrayList<?>)data;
-				if(!arr.isEmpty() && arr.get(0) instanceof Photo) {
-					photos = (ArrayList<Photo>)arr;
-				}
-			}
-			in.close();
-			if(DEBUG) System.out.println("Sucessfully read from photo database.");
-		} catch (IOException e) {
-			if(DEBUG) System.out.println("Photo database not found, creating new one.");
-			// first time read, if not found then create a new file.
-			photos = new ArrayList<Photo>();
-			writeToUserDatabase();
-		} catch (ClassNotFoundException c) {
-			if(DEBUG) System.out.println("ArrayList class not found");
-			c.printStackTrace();
-		}
-	}
-
-	/**
-	 * Updates the photo database text file by writing the current list into a
-	 * ser file after every add.
-	 */
-	public static void writeToPhotoDatabase() {
-		try{
-			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data/photos.ser"));
-			out.writeObject(photos);
-			out.close();
-			if(DEBUG) System.out.println("Success writing to photo database.");
-		} catch(IOException e) {
-			if(DEBUG) System.out.println("IO error with photo database.");
-			e.printStackTrace();
-		}
-	}
 }

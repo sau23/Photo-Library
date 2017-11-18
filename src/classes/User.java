@@ -26,6 +26,11 @@ public class User implements Serializable{
 	private String name;
 	private String pass;
 	private ArrayList<Album> albums;
+	
+	/**
+	 * List of photo references for this user.
+	 */
+	private ArrayList<Photo> photos;
 
 	/**
 	 * User constructor. Takes name and pass, instantiates
@@ -38,6 +43,7 @@ public class User implements Serializable{
 		this.name = name;
 		this.pass = pass;
 		this.albums = new ArrayList<Album>();
+		this.photos = new ArrayList<Photo>();
 	}
 
 	/**
@@ -75,6 +81,57 @@ public class User implements Serializable{
 	 */
 	public ArrayList<Album> getAlbums(){
 		return this.albums;
+	}
+	
+	/**
+	 * Attempts to add a photo to the master photo list. If it finds a duplicate by file
+	 * path, return the index at which it exists in the master photo list. Otherwise,
+	 * return the last index to indicate that it has been added.
+	 * 
+	 * @param photo The photo to add
+	 * @return The index in reference to the master photo list
+	 */
+	public int checkInPhotos(Photo photo) {
+		
+		// check for duplicates
+		for(int i = 0; i < this.photos.size(); i++) {
+			if(this.photos.get(i).getFilePath().equals(photo.getFilePath())) {
+				return i;
+			}
+		}
+		
+		// otherwise add it
+		this.photos.add(photo);
+		return this.photos.size() - 1;
+	}
+	
+	/**
+	 * Attempts to delete a photo from the master photo list. If it finds that another
+	 * album still keeps a reference to this photo, the photo will not be removed.
+	 * Otherwise, if it is the only album to contain the photo, the photo will then be
+	 * deleted from the master photo list.
+	 * 
+	 * @param photo
+	 */
+	public void deletePhoto(Photo photo) {
+		
+		// check all albums in this user to see if any more albums have same reference to photo
+		int i = 0;
+		for(Album a : this.albums) {
+			for(Photo p : a.getPhotos()) {
+				if(p.getFilePath().equals(photo.getFilePath())) {
+					i++;
+				}
+			}
+		}
+		
+		// if it not found anywhere else, delete it
+		if(i > 1) {
+			if(UserList.DEBUG) System.out.println("File found in other albums, did not delete from pool.");
+		} else {
+			this.photos.remove(photo);
+			if(UserList.DEBUG) System.out.println("Deleted " + photo.getName() + " from pool.");
+		}
 	}
 
 }
