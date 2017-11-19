@@ -102,7 +102,7 @@ public class AdminController {
 	/**
 	 * Toggles generation of the stock user.
 	 */
-	public void toggle() {
+	public void toggleStock() {
 		UserList.stock = !UserList.stock;
 	}
 	
