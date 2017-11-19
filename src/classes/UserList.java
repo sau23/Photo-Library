@@ -22,7 +22,7 @@ public class UserList {
 	/**
 	 * Controls whether or not the stock user is generated.
 	 */
-	public static boolean stock = true;
+	public static boolean generateStock = true;
 	
 	/**
 	 * Creates a new user object to add to the list and updates the database.
@@ -95,7 +95,16 @@ public class UserList {
 				String name = removeExtension(file.getName());
 				try {
 					ObjectInputStream in = new ObjectInputStream(new FileInputStream("data/" + name + ".ser"));
-					users.add((User)in.readObject());
+					User user = (User)in.readObject();
+					if(user.getName().equals("stock")) {
+						if(user.getPass() != null) {
+							users.add(user);
+						} else {
+							UserList.generateStock = false;
+						}
+					} else {
+						users.add(user);
+					}
 					in.close();
 					if(DEBUG) System.out.println("Successfully read " + name + " from user database.");
 				} catch (IOException e) {
@@ -177,7 +186,6 @@ public class UserList {
 	 */
 	public static void addStockUser() {
 		User stock = new User("stock", "");
-		
 		// set album 1 contents
 		Album album1 = new Album("Album 1");
 		Calendar date = Calendar.getInstance();

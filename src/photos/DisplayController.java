@@ -17,6 +17,7 @@ public class DisplayController {
 	@FXML private Button prev, next;
 	@FXML private TextArea captionArea, tagsArea;
 	
+	private Image image;
 	private Album album;
 	
 	public void setAlbum(int userIndex, int albumIndex) {

@@ -52,6 +52,11 @@ public class AdminController {
 		}
 		listView.setItems(userList);
 		listView.getSelectionModel().select(0);
+		if(UserList.generateStock) {
+			toggle.setText("Stock User: ON");
+		} else {
+			toggle.setText("Stock User: OFF");
+		}
 	}
 	
 	/**
@@ -103,7 +108,35 @@ public class AdminController {
 	 * Toggles generation of the stock user.
 	 */
 	public void toggleStock() {
-		UserList.stock = !UserList.stock;
+		UserList.generateStock = !UserList.generateStock;
+		// if switched back on
+		if(UserList.generateStock) {
+			
+			toggle.setText("Stock User: ON");
+			
+			// add fresh stock user to user list
+			UserList.addStockUser();
+			userList.add(new User("stock", ""));
+			
+		// if switched off
+		} else {
+			
+			toggle.setText("Stock User: OFF");
+			
+			// find stock user from list and delete
+			int i = UserList.verifyFromUserDatabase("stock", "");
+			if(i > -1) {
+				UserList.users.remove(i);
+				userList.remove(i);
+				if(userList.isEmpty()) {
+					enableButtons(false);
+				}
+				if(Photos.DEBUG) System.out.println("Deleted stock user from user list.");
+			}
+			
+			// update stock user .ser file to have null password field
+			UserList.writeToUserDatabase(new User("stock", null));
+		}
 	}
 	
 	/**

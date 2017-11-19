@@ -143,11 +143,7 @@ public class UserController {
 	}
 	
 	// Album Controls
-	
-	public void switchAlbum() {
-		
-	}
-	
+
 	/**
 	 * Prompts user to create a new album requesting the album's name through
 	 * an input text field as a pop-up dialog box. If the input album name is
@@ -166,7 +162,6 @@ public class UserController {
 		ok.addEventFilter(ActionEvent.ACTION,
 			event -> {
 				String name = dialog.getEditor().getText();
-				System.out.println(name);
 				for(Album a : UserList.users.get(index).getAlbums()) {
 					if(a.toString().equals(name)) {
 						dialog.getEditor().setText("");
@@ -281,6 +276,12 @@ public class UserController {
 		search.setDisable(!isEnabled);
 	}
 
+	/**
+	 * Helper function to turn off buttons when no photos are detected. Prevents
+	 * accessing non-existent photos from an empty album.
+	 * 
+	 * @param isEnabled True enables buttons, false disables buttons
+	 */
 	private void enablePhotoButtons(boolean isEnabled) {
 		remove.setDisable(!isEnabled);
 		caption.setDisable(!isEnabled);

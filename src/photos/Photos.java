@@ -32,7 +32,7 @@ public class Photos extends Application {
 			showLogin();
 			
 			// add stock user
-			if(UserList.stock) UserList.addStockUser();
+			if(UserList.generateStock) UserList.addStockUser();
 		
 		} catch(Exception e) {
 			e.printStackTrace();
