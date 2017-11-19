@@ -105,14 +105,41 @@ public class UserController {
 
 	}
 	
+	/**
+	 * Prompts the user with a pop-up confirmation box to delete a selected
+	 * photo.
+	 */
+	@SuppressWarnings("unchecked")
 	public void removePhoto() {
+		alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this photo?");
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.isPresent() && result.get() == ButtonType.OK) {
+			int albumIndex = tabPane.getSelectionModel().getSelectedIndex();
+			int photoIndex = ((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getSelectionModel().getSelectedIndex();
 
+			// remove photo from user's album
+			Album album = UserList.users.get(index).getAlbums().get(albumIndex);
+			album.getPhotos().remove(photoIndex);
+
+			// remove photo from user pool if necessary
+			Photo photo = ((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getSelectionModel().getSelectedItem();
+			UserList.users.get(index).deletePhoto(photo);
+
+			// remove entry from list view in tab
+			((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getItems().remove(photoIndex);
+			if(Photos.DEBUG) System.out.println("Succesfully deleted " + photo.getName() + " from album " + album.toString());
+		}
 	}
 	
 	public void captionPhoto() {
 		
 	}
 	
+	/**
+	 * Pops up display window for viewing all the photos in one album.
+	 * 
+	 * @throws Exception
+	 */
 	public void displayPhoto() throws Exception {
 		// create new window
 		@SuppressWarnings("unchecked")

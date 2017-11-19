@@ -134,7 +134,7 @@ public class User implements Serializable{
 			if(UserList.DEBUG) System.out.println("File found in other albums, did not delete from pool.");
 		} else {
 			this.photosPool.remove(photo);
-			if(UserList.DEBUG) System.out.println("Deleted " + photo.getName() + " from pool.");
+			if(UserList.DEBUG) System.out.println("Deleted " + photo.getName() + " from " + this.getName() + "'s pool.");
 		}
 	}
 
