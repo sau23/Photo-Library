@@ -6,6 +6,7 @@ import classes.UserList;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
@@ -30,6 +31,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
 
 public class UserController {
@@ -102,7 +104,35 @@ public class UserController {
 	// Photo Controls
 
 	public void addPhoto() throws Exception {
-
+		//create a file chooser instance
+				FileChooser photoChooser = new FileChooser();
+				photoChooser.setTitle("Choose an Image");
+				
+				//Set filter for images only
+				//TODO need to make filters work
+				FileChooser.ExtensionFilter exten = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.bmp", "*.jpeg", "*.jpe", "*.jif", "*.jfif", ".jfi");
+				photoChooser.getExtensionFilters();
+				
+				
+				//get image
+				File image = photoChooser.showOpenDialog(null);
+				
+				//set photo date
+				if(image == null){
+					
+					return;
+				}
+				Calendar date = Calendar.getInstance();
+				date.set(Calendar.MILLISECOND, 0);
+				//TODO comment further
+				System.out.println(image.getAbsolutePath());
+				Photo newPhoto = new Photo(image.getAbsolutePath());
+				UserList.users.get(index).checkInPhotos(newPhoto);
+				int i = tabPane.getSelectionModel().getSelectedIndex();
+				UserList.users.get(index).getAlbums().get(i).addPhoto(newPhoto);
+				
+				((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getItems().add(newPhoto);
+				UserList.writeToUserDatabase(UserList.users.get(index));
 	}
 	
 	/**
