@@ -194,6 +194,22 @@ public class UserList {
 		stock.getAlbums().add(album1);
 		
 		// set album 2 contents
+		Album album2 = new Album("Album 2");
+		Photo bird, catarpillar, hedhogs, lions, orbweaver, owl;
+		bird = new Photo("data/stock/bird.jpg");
+		stock.checkInPhotos(bird, album2);
+		catarpillar = new Photo("data/stock/catarpillar.jpg");
+		stock.checkInPhotos(catarpillar, album2);
+		hedhogs = new Photo("data/stock/hedhogs.jpg");
+		stock.checkInPhotos(hedhogs, album2);
+		lions = new Photo("data/stock/lions.jpg");
+		stock.checkInPhotos(lions, album1);
+		orbweaver = new Photo("data/stock/substock/orbweaver.jpg");
+		stock.checkInPhotos(orbweaver, album1);
+		owl = new Photo("data/stock/substock/owl.jpg");
+		stock.checkInPhotos(owl, album1);
+		stock.checkInPhotos(niko, album2);
+		stock.getAlbums().add(album2);
 		
 		// delete old stock user file and replace with new copy
 		int i;

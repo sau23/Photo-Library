@@ -598,6 +598,7 @@ public class UserController {
 				f = new File(item.getFilePath());
 				
 	           	image.setFitHeight(30);
+	           	image.setFitWidth(30);
             	image.setPreserveRatio(true);
             	image.setSmooth(true);
             	image.setCache(true);
