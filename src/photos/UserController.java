@@ -69,9 +69,9 @@ public class UserController {
 			@Override
 			public void changed(ObservableValue<? extends Tab> obs, Tab o, Tab n) {
 				if(n != null) {
-					//enableAlbumButtons(true);
 					@SuppressWarnings("unchecked")
 					ListView<Photo> lv = (ListView<Photo>)n.getContent();
+					enableAlbumButtons(true);
 					if(!lv.getItems().isEmpty()) {
 						enablePhotoButtons(true);
 					} else {
