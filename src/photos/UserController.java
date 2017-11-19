@@ -31,6 +31,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
 
 public class UserController {
@@ -95,9 +96,40 @@ public class UserController {
 	}
 
 	// Photo Controls
-
+	/**
+	 * 
+	 * 
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
 	public void addPhoto() throws Exception {
-
+		//create a file chooser instance
+				FileChooser photoChooser = new FileChooser();
+				photoChooser.setTitle("Choose an Image");
+				
+				//Set filter for images only
+				//TODO need to make filters work
+				FileChooser.ExtensionFilter exten = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.bmp", "*.jpeg", "*.jpe", "*.jif", "*.jfif", ".jfi");
+				photoChooser.getExtensionFilters();
+				
+				//get image
+				File image = photoChooser.showOpenDialog(null);
+				
+				//set photo date
+				if(image == null){
+					
+					return;
+				}
+				//TODO comment further
+				System.out.println(image.getAbsolutePath());
+				Photo newPhoto = new Photo(image.getAbsolutePath());
+				int i = tabPane.getSelectionModel().getSelectedIndex();
+				UserList.users.get(index).checkInPhotos(newPhoto, UserList.users.get(index).getAlbums().get(i));
+				
+				//UserList.users.get(index).getAlbums().get(i).addPhoto(newPhoto);
+				
+				((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getItems().add(newPhoto);
+				UserList.writeToUserDatabase(UserList.users.get(index));
 	}
 	
 	/**
@@ -120,8 +152,8 @@ public class UserController {
 			Album album = UserList.users.get(index).getAlbums().get(albumIndex);
 			album.getPhotos().remove(photoIndex);
 			
-			// remove entry from list view in tab
-			((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getItems().remove(photoIndex);
+			// update list view in tab
+			((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).setItems(FXCollections.observableArrayList(UserList.users.get(index).getAlbums().get(albumIndex).getPhotos()));
 			
 			UserList.writeToUserDatabase(UserList.users.get(index));
 			
