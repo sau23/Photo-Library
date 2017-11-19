@@ -56,6 +56,11 @@ public class UserController {
 		this.index = index;
 		userLabel.setText(UserList.users.get(index).getName() + "'s Albums");
 		setupTabPane();
+		if(UserList.users.get(index).getPhotosPool().isEmpty()) {
+			search.setDisable(false);
+		} else {
+			search.setDisable(true);
+		}
 	}
 	
 	/**
@@ -162,12 +167,20 @@ public class UserController {
 		ok.addEventFilter(ActionEvent.ACTION,
 			event -> {
 				String name = dialog.getEditor().getText();
+				if(name.isEmpty()) {
+					dialog.getEditor().setText("");
+					dialog.getEditor().setPromptText("Name cannot be empty");
+					if(Photos.DEBUG) System.out.println("Album name cannot be empty.");
+					event.consume();
+					return;
+				}
 				for(Album a : UserList.users.get(index).getAlbums()) {
 					if(a.toString().equals(name)) {
 						dialog.getEditor().setText("");
 						dialog.getEditor().setPromptText("Album already exists");
 						if(Photos.DEBUG) System.out.println("Album name already exists.");
 						event.consume();
+						return;
 					}
 				}
 			}
@@ -187,7 +200,6 @@ public class UserController {
 			// switch to new tab as selection
 			tabPane.getSelectionModel().select(addNewTab(album));
 			enablePhotoButtons(false);
-			if(Photos.DEBUG) System.out.println("Disabled photo buttons.");
 			if(Photos.DEBUG) System.out.println("Succesfully added new album " + album.toString() + ".");
 		}
 	}
@@ -224,8 +236,15 @@ public class UserController {
 				// if user confirms, delete tab and album entry
 				if (result.isPresent() && result.get() == ButtonType.OK) {
 					int i = tabPane.getSelectionModel().getSelectedIndex();
+					
+					// delete photos from user's master pool if they aren't referenced else where
+					for(Photo p : UserList.users.get(index).getAlbums().get(i).getPhotos()) {
+						UserList.users.get(index).deletePhoto(p);
+					}
+					
 					UserList.users.get(index).getAlbums().remove(i);
 					UserList.writeToUserDatabase(UserList.users.get(index));
+					updateSearchButton();
 
 					if(Photos.DEBUG) System.out.println("Succesfully deleted album at index " + i + ".");
 					
@@ -246,16 +265,11 @@ public class UserController {
 				}
 			}
 		});
-
-		// if tabs list was empty, then enable them while the tab is being added
-		if(!tabPane.getTabs().isEmpty()) {
-			enableAlbumButtons(true);
-			if(Photos.DEBUG) System.out.println("Enabled buttons.");
-		}
 		
 		// add tab to tab pane
 		tabPane.getTabs().add(ret);
 		enableAlbumButtons(true);
+		if(Photos.DEBUG) System.out.println("Enabled buttons.");
 		return ret;
 	}
 
@@ -273,7 +287,6 @@ public class UserController {
 		edit.setDisable(!isEnabled);
 		copy.setDisable(!isEnabled);
 		move.setDisable(!isEnabled);
-		search.setDisable(!isEnabled);
 	}
 
 	/**
@@ -289,6 +302,18 @@ public class UserController {
 		edit.setDisable(!isEnabled);
 		copy.setDisable(!isEnabled);
 		move.setDisable(!isEnabled);
+	}
+	/**
+	 * Helper function to turn off search button if no photos are detected in a
+	 * user's photo pool. Prevents searching for photos if a user has no albums
+	 * or empty albums.
+	 */
+	private void updateSearchButton() {
+		if(UserList.users.get(index).getPhotosPool().isEmpty()) {
+			search.setDisable(true);
+		} else {
+			search.setDisable(false);
+		}
 	}
 	
 	/**

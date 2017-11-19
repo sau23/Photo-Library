@@ -30,7 +30,7 @@ public class User implements Serializable{
 	/**
 	 * List of photo references for this user.
 	 */
-	private ArrayList<Photo> photos;
+	private ArrayList<Photo> photosPool;
 
 	/**
 	 * User constructor. Takes name and pass, instantiates
@@ -43,7 +43,7 @@ public class User implements Serializable{
 		this.name = name;
 		this.pass = pass;
 		this.albums = new ArrayList<Album>();
-		this.photos = new ArrayList<Photo>();
+		this.photosPool = new ArrayList<Photo>();
 	}
 
 	/**
@@ -83,6 +83,10 @@ public class User implements Serializable{
 		return this.albums;
 	}
 	
+	public ArrayList<Photo> getPhotosPool(){
+		return this.photosPool;
+	}
+	
 	/**
 	 * Attempts to add a photo to the master photo list. If it finds a duplicate by file
 	 * path, return the index at which it exists in the master photo list. Otherwise,
@@ -94,15 +98,15 @@ public class User implements Serializable{
 	public int checkInPhotos(Photo photo) {
 		
 		// check for duplicates
-		for(int i = 0; i < this.photos.size(); i++) {
-			if(this.photos.get(i).getFilePath().equals(photo.getFilePath())) {
+		for(int i = 0; i < this.photosPool.size(); i++) {
+			if(this.photosPool.get(i).getFilePath().equals(photo.getFilePath())) {
 				return i;
 			}
 		}
 		
 		// otherwise add it
-		this.photos.add(photo);
-		return this.photos.size() - 1;
+		this.photosPool.add(photo);
+		return this.photosPool.size() - 1;
 	}
 	
 	/**
@@ -129,7 +133,7 @@ public class User implements Serializable{
 		if(i > 1) {
 			if(UserList.DEBUG) System.out.println("File found in other albums, did not delete from pool.");
 		} else {
-			this.photos.remove(photo);
+			this.photosPool.remove(photo);
 			if(UserList.DEBUG) System.out.println("Deleted " + photo.getName() + " from pool.");
 		}
 	}
