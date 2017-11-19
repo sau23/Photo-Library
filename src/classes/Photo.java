@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.io.File;
 import java.util.Calendar;
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 
 /**
  * Photo is an object that holds the actual
@@ -21,11 +22,11 @@ public class Photo implements Serializable{
 	private static final long serialVersionUID = 3063382592784005045L;
 
 	private ArrayList<Tag> tags;
-	private Calendar date;
+	private String date;
 	private String name;
 	private String filePath;
 	
-	public Photo(Calendar photoDate, String filePath){
+	public Photo(String filePath){
 		
 		File f = new File(filePath);
 		if(!f.exists()) {
@@ -33,8 +34,12 @@ public class Photo implements Serializable{
 			return;
 		}
 		
+		Calendar c = Calendar.getInstance();
+		c.setTimeInMillis(f.lastModified());
+		SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+		
 		this.tags = new ArrayList<Tag>();
-		this.date = photoDate;
+		this.date = format.format(c.getTime());
 		this.name = UserList.removeExtension(f.getName());
 		this.filePath = filePath;
 	}
@@ -50,7 +55,7 @@ public class Photo implements Serializable{
 	 * @param addTag Tag to be added to the Photo's tag list
 	 * @return true if the add was successful, false otherwise
 	 */
-	boolean addTag(Tag addTag){
+	public boolean addTag(Tag addTag){
 		
 		if(this.tags.contains(addTag))
 			return false;
@@ -65,23 +70,23 @@ public class Photo implements Serializable{
 	 * @param delTag The tag String to be deleted
 	 * @return true if it was removed; false otherwise
 	 */
-	boolean deleteTag(Tag delTag){
+	public boolean deleteTag(Tag delTag){
 		
 		return this.tags.remove(delTag);
 		
 	}
 	
-	ArrayList<Tag> getTags(){
+	public ArrayList<Tag> getTags(){
 		
 		return this.tags;
 	}
 	
-	Calendar getDate(){
+	public String getDate(){
 		
 		return this.date;
 	}
 	
-	String getName(){
+	public String getName(){
 		
 		return this.name;
 		

@@ -105,14 +105,14 @@ public class Photos extends Application {
 	 * 
 	 * @throws Exception
 	 */
-	public static void showDisplay(int userIndex, int albumIndex) throws Exception{
+	public static void showDisplay(int userIndex, int albumIndex, int photoIndex) throws Exception{
 		displayLoader = new FXMLLoader();
 		displayLoader.setLocation(Photos.class.getResource("/Display.fxml"));
 		
 		displayScene = new Scene((AnchorPane)displayLoader.load());
 
 		DisplayController dc = displayLoader.getController();
-		dc.setAlbum(userIndex, albumIndex);
+		dc.setAlbum(userIndex, albumIndex, photoIndex);
 		
 		Stage stage = new Stage();
 		

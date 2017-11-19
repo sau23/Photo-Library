@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class UserList {
 
@@ -186,12 +185,10 @@ public class UserList {
 	 */
 	public static void addStockUser() {
 		User stock = new User("stock", "");
+		
 		// set album 1 contents
 		Album album1 = new Album("Album 1");
-		Calendar date = Calendar.getInstance();
-		File f = new File("data/stock/niko.png");
-		date.setTimeInMillis(f.lastModified());
-		Photo niko = new Photo(date, "data/stock/niko.png");
+		Photo niko = new Photo("data/stock/niko.png");
 		album1.getPhotos().add(niko);
 		stock.getAlbums().add(album1);
 		

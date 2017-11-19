@@ -56,11 +56,7 @@ public class UserController {
 		this.index = index;
 		userLabel.setText(UserList.users.get(index).getName() + "'s Albums");
 		setupTabPane();
-		if(UserList.users.get(index).getPhotosPool().isEmpty()) {
-			search.setDisable(false);
-		} else {
-			search.setDisable(true);
-		}
+		updateSearchButton();
 	}
 	
 	/**
@@ -72,17 +68,11 @@ public class UserController {
 		// toggle buttons besides add button depending on whether the album is empty
 		tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
 			@Override
-			public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
-				int i = tabPane.getSelectionModel().getSelectedIndex();
-				if(i > -1) {
-					System.out.println("Tab Selection changed to " + t1.getText());
-					if(UserList.users.get(index).getAlbums().get(i).getPhotos().isEmpty()) {
-						enablePhotoButtons(false);
-						if(Photos.DEBUG) System.out.println("Disabled photo buttons.");
-					} else {
-						enablePhotoButtons(true);
-						if(Photos.DEBUG) System.out.println("Enabled photo buttons.");
-					}
+			public void changed(ObservableValue<? extends Tab> obs, Tab o, Tab n) {
+				if(n != null) {
+					enableAlbumButtons(true);
+				} else {
+					enableAlbumButtons(false);
 				}
 			}
 		});
@@ -119,7 +109,11 @@ public class UserController {
 	
 	public void displayPhoto() throws Exception {
 		// create new window
-		Photos.showDisplay(index, tabPane.getSelectionModel().getSelectedIndex());
+		@SuppressWarnings("unchecked")
+		int photoIndex = ((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getSelectionModel().getSelectedIndex();
+		if(photoIndex > -1) {
+			Photos.showDisplay(index, tabPane.getSelectionModel().getSelectedIndex(), photoIndex);
+		}
 	}
 	
 	public void editPhotoTags() {
@@ -172,7 +166,6 @@ public class UserController {
 					dialog.getEditor().setPromptText("Name cannot be empty");
 					if(Photos.DEBUG) System.out.println("Album name cannot be empty.");
 					event.consume();
-					return;
 				}
 				for(Album a : UserList.users.get(index).getAlbums()) {
 					if(a.toString().equals(name)) {
@@ -180,7 +173,6 @@ public class UserController {
 						dialog.getEditor().setPromptText("Album already exists");
 						if(Photos.DEBUG) System.out.println("Album name already exists.");
 						event.consume();
-						return;
 					}
 				}
 			}
@@ -226,6 +218,21 @@ public class UserController {
 		changeCellFactory(listView);
 		ret.setContent(listView);
 
+		// set event handler for when item is selected on list view
+		listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Photo>() {
+			@Override
+			public void changed(ObservableValue<? extends Photo> obs, Photo o, Photo n) {
+				if(n != null) {
+					// enable photo buttons
+					enablePhotoButtons(true);
+				} else {
+					// disable photo buttons
+					enablePhotoButtons(false);
+				}
+			}
+		});
+		
+		
 		// set event handler for when tab is closed
 		ret.setOnCloseRequest(new EventHandler<Event>() {
 			@Override
@@ -251,17 +258,6 @@ public class UserController {
 				// otherwise do nothing (consume event to prevent closing)
 				} else {
 					e.consume();
-				}
-			}
-		});
-		
-		// separate event handle for when albums list is empty
-		ret.setOnClosed(new EventHandler<Event>() {
-			@Override
-			public void handle(Event e) {
-				if(tabPane.getTabs().isEmpty()) {
-					enableAlbumButtons(false);
-					if(Photos.DEBUG) System.out.println("Disabled buttons.");
 				}
 			}
 		});

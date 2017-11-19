@@ -2,6 +2,8 @@ package photos;
 
 import java.util.Optional;
 import javafx.fxml.FXML;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -46,12 +48,29 @@ public class AdminController {
 	 * Instantiates the list view when switching to this controller.
 	 */
 	public void start() {
+		
 		userList = FXCollections.observableArrayList(UserList.users);
-		if(userList.isEmpty()) {
-			enableButtons(false);
-		}
 		listView.setItems(userList);
-		listView.getSelectionModel().select(0);
+		
+		// default to first option in list
+		if(!userList.isEmpty()) {
+			listView.getSelectionModel().select(0);
+		}
+		
+		// set up event handler for when item is selected in list view
+		listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
+			@Override
+			public void changed(ObservableValue<? extends User> obs, User o, User n) {
+				if(n != null) {
+					// enable delete button
+					enableDelete(true);
+				} else {
+					// disable delete button
+					enableDelete(false);
+				}
+			}
+		});
+		
 		if(UserList.generateStock) {
 			toggle.setText("Stock User: ON");
 		} else {
@@ -80,10 +99,6 @@ public class AdminController {
 		
 		String passWord = pass.getText();
 		
-		if(userList.isEmpty()) {
-			enableButtons(true);
-		}
-		
 		if(UserList.addUser(userName, passWord)) {
 			userList.add(new User(userName,passWord));
 		}
@@ -99,9 +114,9 @@ public class AdminController {
 		if (result.isPresent() && result.get() == ButtonType.OK) {
 			UserList.deleteUser(index);
 			userList.remove(index);
-			if(userList.isEmpty()) {
-				enableButtons(false);
-			}
+		}
+		if(!userList.isEmpty()) {
+			listView.getSelectionModel().select(0);
 		}
 	}
 	/**
@@ -117,6 +132,7 @@ public class AdminController {
 			// add fresh stock user to user list
 			UserList.addStockUser();
 			userList.add(new User("stock", ""));
+			listView.getSelectionModel().select(userList.size() - 1);
 			
 		// if switched off
 		} else {
@@ -128,9 +144,6 @@ public class AdminController {
 			if(i > -1) {
 				UserList.users.remove(i);
 				userList.remove(i);
-				if(userList.isEmpty()) {
-					enableButtons(false);
-				}
 				if(Photos.DEBUG) System.out.println("Deleted stock user from user list.");
 			}
 			
@@ -154,7 +167,7 @@ public class AdminController {
 	 * 
 	 * @param isEnabled True enables buttons, false disables buttons
 	 */
-	private void enableButtons(boolean isEnabled) {
+	private void enableDelete(boolean isEnabled) {
 		delete.setDisable(!isEnabled);
 	}
 }
