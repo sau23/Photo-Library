@@ -44,7 +44,6 @@ public class UserController {
 	private Alert alert;
 	private TextInputDialog dialog;
 	private int index;
-	private ListView<Photo> listView;
 	private Optional<ButtonType> result;
 	
 	/**
@@ -70,7 +69,14 @@ public class UserController {
 			@Override
 			public void changed(ObservableValue<? extends Tab> obs, Tab o, Tab n) {
 				if(n != null) {
-					enableAlbumButtons(true);
+					//enableAlbumButtons(true);
+					@SuppressWarnings("unchecked")
+					ListView<Photo> lv = (ListView<Photo>)n.getContent();
+					if(!lv.getItems().isEmpty()) {
+						enablePhotoButtons(true);
+					} else {
+						enablePhotoButtons(false);
+					}
 				} else {
 					enableAlbumButtons(false);
 				}
@@ -191,7 +197,6 @@ public class UserController {
 			
 			// switch to new tab as selection
 			tabPane.getSelectionModel().select(addNewTab(album));
-			enablePhotoButtons(false);
 			if(Photos.DEBUG) System.out.println("Succesfully added new album " + album.toString() + ".");
 		}
 	}
@@ -206,18 +211,19 @@ public class UserController {
 	 * @return A reference to the newly created album for selection purposes
 	 */
 	private Tab addNewTab(Album album) {
+		
 		// make a new tab with given name
 		Tab ret = new Tab(album.toString());
 
 		// set up list view
 		ObservableList<Photo> photosList = FXCollections.observableArrayList(album.getPhotos());
-		listView = new ListView<Photo>();
+		ListView<Photo> listView = new ListView<Photo>();
 		listView.setItems(photosList);
 		
 		// edit list view contents
 		changeCellFactory(listView);
 		ret.setContent(listView);
-
+		
 		// set event handler for when item is selected on list view
 		listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Photo>() {
 			@Override
@@ -230,8 +236,7 @@ public class UserController {
 					enablePhotoButtons(false);
 				}
 			}
-		});
-		
+		});	
 		
 		// set event handler for when tab is closed
 		ret.setOnCloseRequest(new EventHandler<Event>() {
@@ -264,8 +269,11 @@ public class UserController {
 		
 		// add tab to tab pane
 		tabPane.getTabs().add(ret);
-		enableAlbumButtons(true);
-		if(Photos.DEBUG) System.out.println("Enabled buttons.");
+		if(!photosList.isEmpty()) {
+			listView.getSelectionModel().select(0);
+		} else {
+			listView.getSelectionModel().clearSelection();
+		}
 		return ret;
 	}
 
