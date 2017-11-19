@@ -18,6 +18,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -41,10 +42,7 @@ public class UserController {
 	@FXML Label userLabel;
 	@FXML TabPane tabPane;
 	
-	private Alert alert;
-	private TextInputDialog dialog;
 	private int index;
-	private Optional<ButtonType> result;
 	
 	/**
 	 * Sets the private reference user to the incoming User object.
@@ -55,13 +53,17 @@ public class UserController {
 		this.index = index;
 		userLabel.setText(UserList.users.get(index).getName() + "'s Albums");
 		setupTabPane();
-		updateSearchButton();
+		updateAlbumButtons();
+		updatePhotoButtons();
+		updateCopyMove();
+		updateSearch();
 	}
 	
 	/**
 	 * Initializes the tab pane to hold any albums that the user at the
 	 * stored index has when the database is read.
 	 */
+	@SuppressWarnings("unchecked")
 	private void setupTabPane() {
 		
 		// toggle buttons besides add button depending on whether the album is empty
@@ -69,17 +71,11 @@ public class UserController {
 			@Override
 			public void changed(ObservableValue<? extends Tab> obs, Tab o, Tab n) {
 				if(n != null) {
-					@SuppressWarnings("unchecked")
 					ListView<Photo> lv = (ListView<Photo>)n.getContent();
-					enableAlbumButtons(true);
-					if(!lv.getItems().isEmpty()) {
-						enablePhotoButtons(true);
-					} else {
-						enablePhotoButtons(false);
-					}
-				} else {
-					enableAlbumButtons(false);
+					lv.setItems(FXCollections.observableArrayList(UserList.users.get(index).getAlbums().get(tabPane.getSelectionModel().getSelectedIndex()).getPhotos()));
 				}
+				updateAlbumButtons();
+				updatePhotoButtons();
 			}
 		});
 
@@ -90,11 +86,10 @@ public class UserController {
 				addNewTab(album);
 			}
 			tabPane.getSelectionModel().select(0);
-			if(Photos.DEBUG) System.out.println("Successfully read albums for user " + UserList.users.get(index).getName() + ".");
+			if(Photos.DEBUG) System.out.println("Successfully read albums for " + UserList.users.get(index).getName() + ".");
 			
 		// otherwise, disable buttons
 		} else {
-			enableAlbumButtons(false);
 			if(Photos.DEBUG) System.out.println(UserList.users.get(index).getName() + " has no stored albums.");
 		}
 	}
@@ -111,23 +106,29 @@ public class UserController {
 	 */
 	@SuppressWarnings("unchecked")
 	public void removePhoto() {
-		alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this photo?");
+		Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this photo?");
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.isPresent() && result.get() == ButtonType.OK) {
 			int albumIndex = tabPane.getSelectionModel().getSelectedIndex();
 			int photoIndex = ((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getSelectionModel().getSelectedIndex();
 
-			// remove photo from user's album
-			Album album = UserList.users.get(index).getAlbums().get(albumIndex);
-			album.getPhotos().remove(photoIndex);
-
 			// remove photo from user pool if necessary
 			Photo photo = ((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getSelectionModel().getSelectedItem();
 			UserList.users.get(index).deletePhoto(photo);
 
+			// remove photo from user's album
+			Album album = UserList.users.get(index).getAlbums().get(albumIndex);
+			album.getPhotos().remove(photoIndex);
+			
 			// remove entry from list view in tab
 			((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getItems().remove(photoIndex);
-			if(Photos.DEBUG) System.out.println("Succesfully deleted " + photo.getName() + " from album " + album.toString());
+			
+			UserList.writeToUserDatabase(UserList.users.get(index));
+			
+			updatePhotoButtons();
+			updateSearch();
+			
+			if(Photos.DEBUG) System.out.println("Successfully deleted " + photo.getName() + " from album " + album.toString());
 		}
 	}
 	
@@ -140,9 +141,9 @@ public class UserController {
 	 * 
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public void displayPhoto() throws Exception {
 		// create new window
-		@SuppressWarnings("unchecked")
 		int photoIndex = ((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getSelectionModel().getSelectedIndex();
 		if(photoIndex > -1) {
 			Photos.showDisplay(index, tabPane.getSelectionModel().getSelectedIndex(), photoIndex);
@@ -153,12 +154,163 @@ public class UserController {
 		
 	}
 	
+	/**
+	 * Copies the selected photo to a chosen album. The list of chosen albums
+	 * is determined by the albums the user currently has available without
+	 * the currently selected album. If the user has no albums, the button to
+	 * copy a selected photo will not be selectable. The photo selected will
+	 * remain in the chosen album and be referenced in the new album.
+	 */
+	@SuppressWarnings("unchecked")
 	public void copyPhoto() {
 		
+		ArrayList<Album> albums = UserList.users.get(index).getAlbums();
+		Photo photo = ((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getSelectionModel().getSelectedItem();
+		
+		// get current album name
+		String curAlbum = tabPane.getSelectionModel().getSelectedItem().getText();
+		
+		// populate choice list for dialog box
+		ArrayList<String> choices = new ArrayList<String>(UserList.users.get(index).getAlbums().size());
+		for(Album a : albums) {
+			
+			// add new choice only if it is not the current album selected
+			if(!curAlbum.equals(a.toString())) {
+				choices.add(a.toString());
+			}
+		}
+
+		// create choice dialog box
+		ChoiceDialog<String> dialog = new ChoiceDialog<String>(choices.get(0), choices);
+		dialog.setTitle("Copy Photo to Different Album");
+		dialog.setHeaderText(null);
+		dialog.setContentText("Choose an album to copy to:");
+		
+		// edit ok button validation
+		final Button ok = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+		ok.addEventFilter(ActionEvent.ACTION,
+			event -> {
+				String name = dialog.getSelectedItem().toString();
+				
+				Album album = null;
+				for(Album a : albums) {
+					if(name.equals(a.toString())) {
+						album = a;
+					}
+				}
+				
+				for(Photo p : album.getPhotos()) {
+					if(photo.getName().equals(p.getName())) {
+						dialog.setContentText("Album already has file of same name");
+						if(Photos.DEBUG )System.out.println("Album already has file of same name");
+						event.consume();
+					}
+				}
+			}
+		);
+		
+		// pop up dialog box
+		Optional<String> result = dialog.showAndWait();
+		if(result.isPresent()) {
+			
+			// search for input name in list of albums
+			String toMove = result.get();
+			for(int i = 0; i < albums.size(); i++) {
+
+				// perform copy when you find the album
+				if(toMove.equals(albums.get(i).toString())) {
+					UserList.users.get(index).checkInPhotos(photo, albums.get(i));
+					UserList.writeToUserDatabase(UserList.users.get(index));
+					if(Photos.DEBUG) System.out.println("Successfully copied " + photo.toString() + " to " + albums.get(i).toString());
+					break;
+				}
+			}
+		}
 	}
 	
+	/**
+	 * Moves the selected photo to a chosen album. The list of chosen albums
+	 * is determined by the albums the user currently has available without
+	 * the currently selected album. If the user has no albums, the button
+	 * to move a selected photo will not be selectable.
+	 */
+	@SuppressWarnings("unchecked")
 	public void movePhoto() {
 		
+		ArrayList<Album> albums = UserList.users.get(index).getAlbums();
+		Photo photo = ((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getSelectionModel().getSelectedItem();
+		
+		// get current album name
+		Album curAlbum = UserList.users.get(index).getAlbums().get(tabPane.getSelectionModel().getSelectedIndex());
+		
+		// populate choice list for dialog box
+		ArrayList<String> choices = new ArrayList<String>(UserList.users.get(index).getAlbums().size());
+		for(Album a : albums) {
+			
+			// add new choice only if it is not the current album selected
+			if(!curAlbum.toString().equals(a.toString())) {
+				choices.add(a.toString());
+			}
+		}
+
+		// create choice dialog box
+		ChoiceDialog<String> dialog = new ChoiceDialog<String>(choices.get(0), choices);
+		dialog.setTitle("Move Photo to Different Album");
+		dialog.setHeaderText(null);
+		
+		// edit ok button validation
+		final Button ok = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+		ok.addEventFilter(ActionEvent.ACTION,
+			event -> {
+				String name = dialog.getSelectedItem().toString();
+
+				Album album = null;
+				for(Album a : albums) {
+					if(name.equals(a.toString())) {
+						album = a;
+					}
+				}
+
+				for(Photo p : album.getPhotos()) {
+					if(photo.getName().equals(p.getName())) {
+						dialog.setContentText("Album already has file of same name");
+						if(Photos.DEBUG )System.out.println("Album already has file of same name");
+						event.consume();
+					}
+				}
+			}
+		);
+		
+		// pop up dialog box
+		Optional<String> result = dialog.showAndWait();
+		if(result.isPresent()) {
+			
+			// search for input name in list of albums
+			String toMove = result.get();
+			for(int i = 0; i < albums.size(); i++) {
+				
+				// perform copy when you find the album
+				if(toMove.equals(albums.get(i).toString())) {
+					
+					
+					UserList.users.get(index).checkInPhotos(photo, albums.get(i));
+					
+					// remove photo from current album
+					curAlbum.getPhotos().remove(photo);
+					
+					// remove photo from list view
+					((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getItems().remove(photo);
+					
+					// update the photo buttons depending on whether the deletion was the last photo
+					updatePhotoButtons();
+					
+					UserList.writeToUserDatabase(UserList.users.get(index));
+					
+					if(Photos.DEBUG) System.out.println("Successfully moved " + photo.toString() + " to " + albums.get(i).toString());
+					break;
+				}
+			}
+		}
 	}
 	
 	public void search() {
@@ -184,9 +336,9 @@ public class UserController {
 	 */
 	public void addNewAlbum() {
 		
-		dialog = new TextInputDialog();
+		TextInputDialog dialog = new TextInputDialog();
 		dialog.setTitle("New Album");
-		dialog.setHeaderText("Create a new album");
+		dialog.setHeaderText(null);
 		dialog.setContentText("Enter a name for your new album:");
 
 		// edit ok button validation
@@ -222,9 +374,12 @@ public class UserController {
 			// update database
 			UserList.writeToUserDatabase(UserList.users.get(index));
 			
-			// switch to new tab as selection
-			tabPane.getSelectionModel().select(addNewTab(album));
-			if(Photos.DEBUG) System.out.println("Succesfully added new album " + album.toString() + ".");
+			addNewTab(album);
+			
+			updateAlbumButtons();
+			updatePhotoButtons();
+			
+			if(Photos.DEBUG) System.out.println("Successfully added new album " + album.toString() + ".");
 		}
 	}
 	
@@ -235,12 +390,11 @@ public class UserController {
 	 * label and contents.
 	 * 
 	 * @param album The album whose contents are used in the tab creation
-	 * @return A reference to the newly created album for selection purposes
 	 */
-	private Tab addNewTab(Album album) {
+	private void addNewTab(Album album) {
 		
 		// make a new tab with given name
-		Tab ret = new Tab(album.toString());
+		Tab toAdd = new Tab(album.toString());
 
 		// set up list view
 		ObservableList<Photo> photosList = FXCollections.observableArrayList(album.getPhotos());
@@ -249,28 +403,22 @@ public class UserController {
 		
 		// edit list view contents
 		changeCellFactory(listView);
-		ret.setContent(listView);
+		toAdd.setContent(listView);
 		
 		// set event handler for when item is selected on list view
 		listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Photo>() {
 			@Override
 			public void changed(ObservableValue<? extends Photo> obs, Photo o, Photo n) {
-				if(n != null) {
-					// enable photo buttons
-					enablePhotoButtons(true);
-				} else {
-					// disable photo buttons
-					enablePhotoButtons(false);
-				}
+				updatePhotoButtons();
 			}
-		});	
+		});
 		
 		// set event handler for when tab is closed
-		ret.setOnCloseRequest(new EventHandler<Event>() {
+		toAdd.setOnCloseRequest(new EventHandler<Event>() {
 			@Override
 			public void handle(Event e) {
-				alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this album?");
-				result = alert.showAndWait();
+				Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this album?");
+				Optional<ButtonType> result = alert.showAndWait();
 				
 				// if user confirms, delete tab and album entry
 				if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -283,9 +431,11 @@ public class UserController {
 					
 					UserList.users.get(index).getAlbums().remove(i);
 					UserList.writeToUserDatabase(UserList.users.get(index));
-					updateSearchButton();
-
-					if(Photos.DEBUG) System.out.println("Succesfully deleted album at index " + i + ".");
+					updateAlbumButtons();
+					updateCopyMove();
+					updateSearch();
+					
+					if(Photos.DEBUG) System.out.println("Successfully deleted album at index " + i + ".");
 					
 				// otherwise do nothing (consume event to prevent closing)
 				} else {
@@ -295,51 +445,88 @@ public class UserController {
 		});
 		
 		// add tab to tab pane
-		tabPane.getTabs().add(ret);
+		tabPane.getTabs().add(toAdd);
 		if(!photosList.isEmpty()) {
 			listView.getSelectionModel().select(0);
 		} else {
 			listView.getSelectionModel().clearSelection();
 		}
-		return ret;
+		
+		// if there was 0 or 1 tabs, enable/disable copy and move buttons
+		updateCopyMove();
 	}
-
+	
 	/**
 	 * Helper function to turn off buttons when no albums are detected. Prevents
 	 * adding photos to a non-existent album.
-	 * 
-	 * @param isEnabled True enables buttons, false disables buttons
 	 */
-	private void enableAlbumButtons(boolean isEnabled) {
-		add.setDisable(!isEnabled);
-		remove.setDisable(!isEnabled);
-		caption.setDisable(!isEnabled);
-		display.setDisable(!isEnabled);
-		edit.setDisable(!isEnabled);
-		copy.setDisable(!isEnabled);
-		move.setDisable(!isEnabled);
+	private void updateAlbumButtons() {
+		if(tabPane.getTabs().isEmpty()) {
+			add.setDisable(true);
+			remove.setDisable(true);
+			caption.setDisable(true);
+			display.setDisable(true);
+			edit.setDisable(true);
+			copy.setDisable(true);
+			move.setDisable(true);
+		} else {
+			add.setDisable(false);
+			remove.setDisable(false);
+			caption.setDisable(false);
+			display.setDisable(false);
+			edit.setDisable(false);
+			copy.setDisable(false);
+			move.setDisable(false);
+		}
 	}
 
 	/**
 	 * Helper function to turn off buttons when no photos are detected. Prevents
 	 * accessing non-existent photos from an empty album.
-	 * 
-	 * @param isEnabled True enables buttons, false disables buttons
 	 */
-	private void enablePhotoButtons(boolean isEnabled) {
-		remove.setDisable(!isEnabled);
-		caption.setDisable(!isEnabled);
-		display.setDisable(!isEnabled);
-		edit.setDisable(!isEnabled);
-		copy.setDisable(!isEnabled);
-		move.setDisable(!isEnabled);
+	@SuppressWarnings("unchecked")
+	private void updatePhotoButtons() {
+		if(tabPane.getSelectionModel().getSelectedIndex() < 0) {
+			return;
+		}
+		if(((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getItems().isEmpty()) {
+			remove.setDisable(true);
+			caption.setDisable(true);
+			display.setDisable(true);
+			edit.setDisable(true);
+			copy.setDisable(true);
+			move.setDisable(true);
+		} else {
+			remove.setDisable(false);
+			caption.setDisable(false);
+			display.setDisable(false);
+			edit.setDisable(false);
+			copy.setDisable(false);
+			move.setDisable(false);
+		}
 	}
+	
+	/**
+	 * Helper function to turn off copy and move buttons when no albums are
+	 * detected. Prevents attempting to move or copy photos to non-existent
+	 * albums.
+	 */
+	private void updateCopyMove() {
+		if(tabPane.getTabs().size() < 2) {
+			copy.setDisable(true);
+			move.setDisable(true);
+		} else {
+			copy.setDisable(false);
+			move.setDisable(false);
+		}
+	}
+	
 	/**
 	 * Helper function to turn off search button if no photos are detected in a
 	 * user's photo pool. Prevents searching for photos if a user has no albums
 	 * or empty albums.
 	 */
-	private void updateSearchButton() {
+	private void updateSearch() {
 		if(UserList.users.get(index).getPhotosPool().isEmpty()) {
 			search.setDisable(true);
 		} else {

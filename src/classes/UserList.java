@@ -59,7 +59,7 @@ public class UserList {
 		File f = new File("data/" + users.get(index).getName() + ".ser");
 		f.delete();
 		users.remove(index);
-		if(DEBUG) System.out.println("Sucesfully deleted user at index " + index);
+		if(DEBUG) System.out.println("Successfully deleted user at index " + index);
 	}
 
 	/**
@@ -127,7 +127,7 @@ public class UserList {
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data/" + user.getName() + ".ser"));
 			out.writeObject(user);
 			out.close();
-			if(DEBUG) System.out.println("Successfully wrote to user database.");
+			if(DEBUG) System.out.println("Successfully wrote " + user.getName() + " to database.");
 		} catch(IOException e) {
 			if(DEBUG) System.out.println("Error writing " + user.getName() + ".ser file");
 			e.printStackTrace();
@@ -141,6 +141,7 @@ public class UserList {
 	 * 
 	 * @param name The user name to verify
 	 * @param pass The password to verify
+	 * 
 	 * @return The index of user object either with valid credentials or an error code
 	 */
 	public static int verifyFromUserDatabase(String name, String pass) {
@@ -189,7 +190,7 @@ public class UserList {
 		// set album 1 contents
 		Album album1 = new Album("Album 1");
 		Photo niko = new Photo("data/stock/niko.png");
-		album1.getPhotos().add(niko);
+		stock.checkInPhotos(niko, album1);
 		stock.getAlbums().add(album1);
 		
 		// set album 2 contents

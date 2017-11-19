@@ -57,7 +57,7 @@ public class User implements Serializable{
 	}
 	
 	/**
-	 * Returns name of user.
+	 * Returns user name of user.
 	 * 
 	 * @return name
 	 */
@@ -66,7 +66,7 @@ public class User implements Serializable{
 	}
 
 	/**
-	 * Returns pass of user.
+	 * Returns password of user.
 	 * 
 	 * @return pass
 	 */
@@ -83,30 +83,38 @@ public class User implements Serializable{
 		return this.albums;
 	}
 	
+	/**
+	 * Returns list of photos used in all albums of this user.
+	 * 
+	 * @return
+	 */
 	public ArrayList<Photo> getPhotosPool(){
 		return this.photosPool;
 	}
 	
 	/**
 	 * Attempts to add a photo to the master photo list. If it finds a duplicate by file
-	 * path, return the index at which it exists in the master photo list. Otherwise,
-	 * return the last index to indicate that it has been added.
+	 * path, simple add the photo to the given album. Otherwise, add the given photo to
+	 * the master list before adding it to the given album.
 	 * 
 	 * @param photo The photo to add
-	 * @return The index in reference to the master photo list
+	 * @param album The album to add the photo to
 	 */
-	public int checkInPhotos(Photo photo) {
+	public void checkInPhotos(Photo photo, Album album) {
 		
 		// check for duplicates
 		for(int i = 0; i < this.photosPool.size(); i++) {
 			if(this.photosPool.get(i).getFilePath().equals(photo.getFilePath())) {
-				return i;
+				if(UserList.DEBUG) System.out.println(photo.toString() + " found in " + this.getName() + "'s pool");
+				album.addPhoto(photo);
+				return;
 			}
 		}
 		
 		// otherwise add it
 		this.photosPool.add(photo);
-		return this.photosPool.size() - 1;
+		album.addPhoto(photo);
+		if(UserList.DEBUG) System.out.println("Adding " + photo.toString() + " to " + this.getName() + "'s pool");
 	}
 	
 	/**
