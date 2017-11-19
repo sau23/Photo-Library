@@ -1,19 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="184.0" prefWidth="399.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="photos.UserController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="431.0" prefWidth="276.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Label layoutX="172.0" layoutY="6.0" text="New Photo" />
-      <Button fx:id="findFromComputerButton" layoutX="70.0" layoutY="145.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="126.0" text="Find From Computer" onAction="#fileFind"/>
-      <Button fx:id="addNewSongButton" layoutX="265.0" layoutY="86.0" mnemonicParsing="false" text="Add New Song" onAction="#addNewPhoto"/>
-      <TextField fx:id="newSongField" layoutX="27.0" layoutY="51.0" prefHeight="25.0" prefWidth="212.0" />
-      <TextField fx:id="newSongDirectory" layoutX="27.0" layoutY="98.0" prefHeight="25.0" prefWidth="212.0" />
-      <Label layoutX="119.0" layoutY="123.0" text="or" />
-      <Label layoutX="34.0" layoutY="31.0" text="New Photo Name" />
-      <Label layoutX="34.0" layoutY="76.0" text="New Photo Directory" />
+      <BorderPane layoutX="38.0" layoutY="83.0" prefHeight="365.0" prefWidth="276.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <ImageView fx:id="imageView" fitHeight="200.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER" />
+         </center>
+         <left>
+            <Button fx:id="prev" minWidth="25.0" mnemonicParsing="false" onAction="#prevPhoto" prefHeight="200.0" prefWidth="25.0" text="&lt;" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <Button fx:id="next" minWidth="25.0" mnemonicParsing="false" onAction="#nextPhoto" prefHeight="200.0" prefWidth="25.0" text="&gt;" BorderPane.alignment="CENTER" />
+         </right>
+         <top>
+            <Label fx:id="photoLabel" BorderPane.alignment="CENTER" />
+         </top>
+         <bottom>
+            <VBox alignment="TOP_CENTER" prefHeight="215.0" prefWidth="276.0" spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Date" />
+                  <Label fx:id="dateField" />
+                  <Label text="Caption" />
+                  <TextArea fx:id="captionArea" maxWidth="200.0" prefHeight="45.0" />
+                  <Label text="Tags" />
+                  <TextArea fx:id="tagsArea" maxWidth="200.0" prefHeight="45.0" />
+               </children>
+            </VBox>
+         </bottom>
+      </BorderPane>
    </children>
 </AnchorPane>

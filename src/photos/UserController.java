@@ -8,8 +8,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -31,6 +34,9 @@ import javafx.util.Callback;
 
 public class UserController {
 
+	/**
+	 * FXML references to scene.
+	 */
 	@FXML Button add, remove, caption, display, edit, copy, move, addAlbum, search, logout;
 	@FXML Label userLabel;
 	@FXML TabPane tabPane;
@@ -49,15 +55,33 @@ public class UserController {
 	public void setUserIndex(int index) {
 		this.index = index;
 		userLabel.setText(UserList.users.get(index).getName() + "'s Albums");
-		setupAlbumTabs();
+		setupTabPane();
 	}
 	
 	/**
 	 * Initializes the tab pane to hold any albums that the user at the
 	 * stored index has when the database is read.
 	 */
-	private void setupAlbumTabs() {
+	private void setupTabPane() {
 		
+		// toggle buttons besides add button depending on whether the album is empty
+		tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+			@Override
+			public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
+				int i = tabPane.getSelectionModel().getSelectedIndex();
+				if(i > -1) {
+					System.out.println("Tab Selection changed to " + t1.getText());
+					if(UserList.users.get(index).getAlbums().get(i).getPhotos().isEmpty()) {
+						enablePhotoButtons(false);
+						if(Photos.DEBUG) System.out.println("Disabled photo buttons.");
+					} else {
+						enablePhotoButtons(true);
+						if(Photos.DEBUG) System.out.println("Enabled photo buttons.");
+					}
+				}
+			}
+		});
+
 		// if user has any albums, initialize tab pane to present them
 		ArrayList<Album> albums = UserList.users.get(index).getAlbums();
 		if(!albums.isEmpty()) {
@@ -69,7 +93,7 @@ public class UserController {
 			
 		// otherwise, disable buttons
 		} else {
-			enableButtons(false);
+			enableAlbumButtons(false);
 			if(Photos.DEBUG) System.out.println(UserList.users.get(index).getName() + " has no stored albums.");
 		}
 	}
@@ -88,9 +112,9 @@ public class UserController {
 		
 	}
 	
-	public void displayPhoto() {
+	public void displayPhoto() throws Exception {
 		// create new window
-		
+		Photos.showDisplay(index, tabPane.getSelectionModel().getSelectedIndex());
 	}
 	
 	public void editPhotoTags() {
@@ -126,7 +150,9 @@ public class UserController {
 	
 	/**
 	 * Prompts user to create a new album requesting the album's name through
-	 * an input text field as a pop-up dialog box.
+	 * an input text field as a pop-up dialog box. If the input album name is
+	 * already taken by another album, the dialog box will prompt for a new
+	 * name.
 	 */
 	public void addNewAlbum() {
 		
@@ -135,9 +161,27 @@ public class UserController {
 		dialog.setHeaderText("Create a new album");
 		dialog.setContentText("Enter a name for your new album:");
 
+		// edit ok button validation
+		final Button ok = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+		ok.addEventFilter(ActionEvent.ACTION,
+			event -> {
+				String name = dialog.getEditor().getText();
+				System.out.println(name);
+				for(Album a : UserList.users.get(index).getAlbums()) {
+					if(a.toString().equals(name)) {
+						dialog.getEditor().setText("");
+						dialog.getEditor().setPromptText("Album already exists");
+						if(Photos.DEBUG) System.out.println("Album name already exists.");
+						event.consume();
+					}
+				}
+			}
+		);
+		
+		// show dialog box
 		Optional<String> result = dialog.showAndWait();
 		if(result.isPresent()) {
-
+			
 			// create new album for user
 			Album album = new Album(result.get());
 			UserList.users.get(index).getAlbums().add(album);
@@ -147,6 +191,8 @@ public class UserController {
 			
 			// switch to new tab as selection
 			tabPane.getSelectionModel().select(addNewTab(album));
+			enablePhotoButtons(false);
+			if(Photos.DEBUG) System.out.println("Disabled photo buttons.");
 			if(Photos.DEBUG) System.out.println("Succesfully added new album " + album.toString() + ".");
 		}
 	}
@@ -200,7 +246,7 @@ public class UserController {
 			@Override
 			public void handle(Event e) {
 				if(tabPane.getTabs().isEmpty()) {
-					enableButtons(false);
+					enableAlbumButtons(false);
 					if(Photos.DEBUG) System.out.println("Disabled buttons.");
 				}
 			}
@@ -208,13 +254,13 @@ public class UserController {
 
 		// if tabs list was empty, then enable them while the tab is being added
 		if(!tabPane.getTabs().isEmpty()) {
-			enableButtons(true);
+			enableAlbumButtons(true);
 			if(Photos.DEBUG) System.out.println("Enabled buttons.");
 		}
 		
 		// add tab to tab pane
 		tabPane.getTabs().add(ret);
-		enableButtons(true);
+		enableAlbumButtons(true);
 		return ret;
 	}
 
@@ -224,7 +270,7 @@ public class UserController {
 	 * 
 	 * @param isEnabled True enables buttons, false disables buttons
 	 */
-	private void enableButtons(boolean isEnabled) {
+	private void enableAlbumButtons(boolean isEnabled) {
 		add.setDisable(!isEnabled);
 		remove.setDisable(!isEnabled);
 		caption.setDisable(!isEnabled);
@@ -235,6 +281,15 @@ public class UserController {
 		search.setDisable(!isEnabled);
 	}
 
+	private void enablePhotoButtons(boolean isEnabled) {
+		remove.setDisable(!isEnabled);
+		caption.setDisable(!isEnabled);
+		display.setDisable(!isEnabled);
+		edit.setDisable(!isEnabled);
+		copy.setDisable(!isEnabled);
+		move.setDisable(!isEnabled);
+	}
+	
 	/**
 	 * Overrides the cell creation algorithm for the given listview to create
 	 * cells with graphics instead.

@@ -28,7 +28,7 @@ public class AdminController {
 	/**
 	 * FXML references to nodes in Admin.fxml.
 	 */
-	@FXML private Button add, delete, logout;
+	@FXML private Button add, delete, toggle, logout;
 	@FXML private TextField user, pass;
 	@FXML private ListView<User> listView = new ListView<User>();
 	
@@ -98,6 +98,12 @@ public class AdminController {
 				enableButtons(false);
 			}
 		}
+	}
+	/**
+	 * Toggles generation of the stock user.
+	 */
+	public void toggle() {
+		UserList.stock = !UserList.stock;
 	}
 	
 	/**

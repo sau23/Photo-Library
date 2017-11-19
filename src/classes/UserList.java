@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class UserList {
 
@@ -17,7 +18,12 @@ public class UserList {
 	 * Global list of users that holds all users in one machine.
 	 */
 	public static ArrayList<User> users;
-
+	
+	/**
+	 * Controls whether or not the stock user is generated.
+	 */
+	public static boolean stock = true;
+	
 	/**
 	 * Creates a new user object to add to the list and updates the database.
 	 * Prohibits adding same user name multiple times, case specific.
@@ -163,5 +169,32 @@ public class UserList {
 			return fileName.substring(0, i);
 		}
 		return "";
+	}
+	
+	/**
+	 * Adds a stock user account to the list of users with pre-determined file
+	 * locations. Only run once per program start-up.
+	 */
+	public static void addStockUser() {
+		User stock = new User("stock", "");
+		
+		// set album 1 contents
+		Album album1 = new Album("Album 1");
+		Calendar date = Calendar.getInstance();
+		File f = new File("data/stock/niko.png");
+		date.setTimeInMillis(f.lastModified());
+		Photo niko = new Photo(date, "data/stock/niko.png");
+		album1.getPhotos().add(niko);
+		stock.getAlbums().add(album1);
+		
+		// set album 2 contents
+		
+		// delete old stock user file and replace with new copy
+		int i;
+		if((i = UserList.verifyFromUserDatabase("stock", "")) > -1) {
+			UserList.deleteUser(i);
+		}
+		UserList.users.add(stock);
+		UserList.writeToUserDatabase(stock);
 	}
 }
