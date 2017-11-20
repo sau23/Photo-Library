@@ -26,9 +26,9 @@
                            </font>
                         </Label>
                         <Label text="New Username" />
-                        <TextField fx:id="user" maxWidth="100.0" />
+                        <TextField fx:id="user" maxWidth="140.0" />
                         <Label text="New Password" />
-                        <TextField fx:id="pass" maxWidth="100.0" />
+                        <TextField fx:id="pass" maxWidth="140.0" />
                         <Button fx:id="add" mnemonicParsing="false" onAction="#addUser" prefWidth="126.0" text="Add New User" />
                         <Button fx:id="delete" mnemonicParsing="false" onAction="#deleteUser" prefWidth="126.0" text="Delete Selected User" />
                         <Button fx:id="toggle" mnemonicParsing="false" onAction="#toggleStock" prefWidth="126.0" />

@@ -86,21 +86,26 @@ public class AdminController {
 	 */
 	public void addUser() {
 		String userName = user.getText();
-		
+		user.setText("");
 		if(userName.isEmpty()) {
+			user.setPromptText("Cannot be empty");
 			if (Photos.DEBUG) System.out.println("Cannot add user with empty field.");
 			return;
 		}
 		
 		if(userName.equalsIgnoreCase("admin")) {
+			user.setPromptText("Cannot be admin");
 			if (Photos.DEBUG) System.out.println("Cannot add a new admin user.");
 			return;
 		}
 		
 		String passWord = pass.getText();
-		
+
+		pass.setText("");
 		if(UserList.addUser(userName, passWord)) {
 			userList.add(new User(userName,passWord));
+		} else {
+			user.setPromptText("Username taken");
 		}
 	}
 	

@@ -181,6 +181,37 @@ public class UserList {
 	}
 	
 	/**
+	 * Checks the photos pool of the given user to see if all the file references
+	 * contained in the list exists. If a photo does not exist at its given file
+	 * path, delete it from all albums then update the user's .ser file.
+	 * 
+	 * @param index
+	 */
+	public static ArrayList<String> checkPhotosPool(int index) {
+		ArrayList<String> ret = new ArrayList<String>();
+		ArrayList<Photo> toRemove = new ArrayList<Photo>();
+		File f;
+		for(Photo p : users.get(index).getPhotosPool()) {
+			f = new File(p.getFilePath());
+			if(!f.exists()) {
+				for(Album a : users.get(index).getAlbums()) {
+					a.removePhoto(p);
+				}
+				toRemove.add(p);
+			}
+		}
+		for(Photo p : toRemove) {
+			for(Album a : users.get(index).getAlbums()) {
+				a.removePhoto(p);
+			}
+			users.get(index).deletePhoto(p);
+			ret.add(p.getFilePath());
+		}
+		writeToUserDatabase(users.get(index));
+		return ret;
+	}
+	
+	/**
 	 * Adds a stock user account to the list of users with pre-determined file
 	 * locations. Only run once per program start-up.
 	 */
