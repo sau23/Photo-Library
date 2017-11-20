@@ -53,6 +53,28 @@ public class UserController {
 	public void setUserIndex(int index) {
 		this.index = index;
 		userLabel.setText(UserList.users.get(index).getName() + "'s Albums");
+		
+		// check to see if any photos cannot be linked to properly
+		ObservableList<String> errorList = FXCollections.observableArrayList(UserList.checkPhotosPool(index));
+		if(!errorList.isEmpty()) {
+			if(Photos.DEBUG) {
+				System.out.println("Photos cannot be found at given file paths:");
+				for(String s : errorList) {
+					System.out.println(s);
+				}
+			}
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setTitle("Photo Loading Error");
+			alert.setHeaderText("Photo Loading Error");
+			alert.setContentText("Could not find photos: ");
+			ListView<String> lv = new ListView<String>();
+			lv.setItems(errorList);
+			lv.setMouseTransparent(true);
+			alert.getDialogPane().setExpandableContent(lv);
+			alert.getDialogPane().setExpanded(true);
+			alert.showAndWait();
+		}
+		
 		setupTabPane();
 		updateAlbumButtons();
 		updatePhotoButtons();
@@ -121,11 +143,12 @@ public class UserController {
 					
 					return;
 				}
-				
+
 				//Debug statement
 				System.out.println(image.getAbsolutePath());
 				
 				//create photo instance
+
 				Photo newPhoto = new Photo(image.getAbsolutePath());
 				
 				//check if there's a duplicate; if not the photo is added to the pool
@@ -133,8 +156,13 @@ public class UserController {
 				UserList.users.get(index).checkInPhotos(newPhoto, UserList.users.get(index).getAlbums().get(i));
 				
 				//User .ser file is updated for the selected user.
+
 				((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getItems().add(newPhoto);
 				UserList.writeToUserDatabase(UserList.users.get(index));
+				updatePhotoButtons();
+				updateCopyMove();
+				updateSearch();
+				if(Photos.DEBUG) System.out.println("Successfully added " + newPhoto.getName() + " to " + tabPane.getSelectionModel().getSelectedItem().getText());
 	}
 	
 	/**
@@ -447,6 +475,7 @@ public class UserController {
 			@Override
 			public void changed(ObservableValue<? extends Photo> obs, Photo o, Photo n) {
 				updatePhotoButtons();
+				updateCopyMove();
 			}
 		});
 		
@@ -468,9 +497,10 @@ public class UserController {
 					
 					UserList.users.get(index).getAlbums().remove(i);
 					UserList.writeToUserDatabase(UserList.users.get(index));
+					
 					updateAlbumButtons();
 					updateCopyMove();
-					updateSearch();
+					updateSearch();	
 					
 					if(Photos.DEBUG) System.out.println("Successfully deleted album at index " + i + ".");
 					
@@ -478,6 +508,16 @@ public class UserController {
 				} else {
 					e.consume();
 				}
+			}
+		});
+		
+		toAdd.setOnClosed(new EventHandler<Event>() {
+			@Override
+			public void handle(Event e) {
+				updateAlbumButtons();
+				updatePhotoButtons();
+				updateCopyMove();
+				updateSearch();
 			}
 		});
 		
@@ -548,8 +588,9 @@ public class UserController {
 	 * detected. Prevents attempting to move or copy photos to non-existent
 	 * albums.
 	 */
+	@SuppressWarnings("unchecked")
 	private void updateCopyMove() {
-		if(tabPane.getTabs().size() < 2) {
+		if(tabPane.getTabs().size() < 2 || ((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getItems().isEmpty()) {
 			copy.setDisable(true);
 			move.setDisable(true);
 		} else {
@@ -601,10 +642,10 @@ public class UserController {
 			File f;
 			if(item != null) {
 				f = new File(item.getFilePath());
-				
+
 	           	image.setFitHeight(30);
 	           	image.setFitWidth(30);
-            	image.setPreserveRatio(true);
+				image.setPreserveRatio(true);
             	image.setSmooth(true);
             	image.setCache(true);
             	image.setImage(new Image(f.toURI().toString()));

@@ -30,11 +30,7 @@ public class Photo implements Serializable{
 	public Photo(String filePath){
 		
 		File f = new File(filePath);
-		if(!f.exists()) {
-			System.out.println("File path not found.");
-			return;
-		}
-		
+
 		Calendar c = Calendar.getInstance();
 		c.setTimeInMillis(f.lastModified());
 		SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
