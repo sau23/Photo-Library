@@ -121,14 +121,18 @@ public class UserController {
 					
 					return;
 				}
-				//TODO comment further
+				
+				//Debug statement
 				System.out.println(image.getAbsolutePath());
+				
+				//create photo instance
 				Photo newPhoto = new Photo(image.getAbsolutePath());
+				
+				//check if there's a duplicate; if not the photo is added to the pool
 				int i = tabPane.getSelectionModel().getSelectedIndex();
 				UserList.users.get(index).checkInPhotos(newPhoto, UserList.users.get(index).getAlbums().get(i));
 				
-				//UserList.users.get(index).getAlbums().get(i).addPhoto(newPhoto);
-				
+				//User .ser file is updated for the selected user.
 				((ListView<Photo>)tabPane.getSelectionModel().getSelectedItem().getContent()).getItems().add(newPhoto);
 				UserList.writeToUserDatabase(UserList.users.get(index));
 	}

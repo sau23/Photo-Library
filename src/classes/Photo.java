@@ -25,6 +25,7 @@ public class Photo implements Serializable{
 	private String date;
 	private String name;
 	private String filePath;
+	private String caption;
 	
 	public Photo(String filePath){
 		
@@ -42,6 +43,7 @@ public class Photo implements Serializable{
 		this.date = format.format(c.getTime());
 		this.name = UserList.removeExtension(f.getName());
 		this.filePath = filePath;
+		this.caption = "";
 	}
 	
 	@Override
@@ -94,6 +96,18 @@ public class Photo implements Serializable{
 	
 	public String getFilePath() {
 		return this.filePath;
+	}
+	
+	public void setCaption(String newCap){
+		
+		this.caption = newCap;
+		
+	}
+	
+	public String getCaption(){
+		
+		return this.caption;
+		
 	}
 	
 }

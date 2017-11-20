@@ -40,7 +40,7 @@ public class Tag implements Serializable{
 	 * @return int showing how similar to the caller Tag
 	 * is to compare. 0 = equal.
 	 */
-	int compareTo(Tag compare){
+	public int compareTo(Tag compare){
 		
 		return this.name.compareTo(compare.name) + 
 				this.value.compareTo(compare.value);
@@ -57,7 +57,7 @@ public class Tag implements Serializable{
 	 * @return int showing how similar to the caller Tag
 	 * is to compare. 0 = equal.
 	 */
-	int compareNames(Tag compare){
+	public int compareNames(Tag compare){
 		
 		return this.name.compareTo(compare.name);
 		
@@ -71,17 +71,17 @@ public class Tag implements Serializable{
 	 * @return int showing how similar to the caller Tag 
 	 * is to compare. 0 = equal.
 	 */
-	int compareValues(Tag compare){
+	public int compareValues(Tag compare){
 		
 		return this.value.compareTo(compare.value);
 		
 	}
 	
-	String getTagName(){
+	public String getTagName(){
 		return this.name;
 	}
 	
-	String getTagValue(){
+	public String getTagValue(){
 		return this.value;
 	}
 	
