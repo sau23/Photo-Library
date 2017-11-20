@@ -96,6 +96,7 @@ public class UserController {
 	}
 
 	// Photo Controls
+	
 	/**
 	 * 
 	 * 
@@ -609,6 +610,9 @@ public class UserController {
                 hbox.setSpacing(10.0);
                 hbox.setAlignment(Pos.CENTER_LEFT);
                 setGraphic(hbox);
+			} else {
+				setDisable(false);
+				setGraphic(null);
 			}
 		}
 	}
