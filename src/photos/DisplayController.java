@@ -93,37 +93,22 @@ public class DisplayController {
 		String name = "";
 		String value = "";
 		
-		List<String> names = new ArrayList();
-		names.add("Location");
-		names.add("Person");
-		names.add("Event");
-		names.add("Custom");
-		
-		ChoiceDialog<String> dialog = new ChoiceDialog<>("Location", names);
+		TextInputDialog dialog = new TextInputDialog();
 		dialog.setTitle("New Tag");
-		dialog.setContentText("Pick a type name for your tag");
+		dialog.setContentText("Enter new tag name, i.e. Location, Person, etc.");
 		
 		Optional<String> result = dialog.showAndWait();
 		if(result.isPresent()){
 			name = result.get();
-			if(result.get().compareTo("Custom") == 0){
-				TextInputDialog newName = new TextInputDialog(null);
-				newName.setTitle("New Tag Name");
-				newName.setContentText("Enter new tag name, i.e. Location, Person, etc.");
-				
-				Optional<String> newTagName = dialog.showAndWait();
-				if(newTagName.isPresent()){
-					name = newTagName.get(); 
-				}
-			}
-			TextInputDialog newValue = new TextInputDialog(null);
-			newValue.setTitle("New Tag Value");
-			newValue.setContentText("Enter the value for the tag");
+		}
+		
+		TextInputDialog newValue = new TextInputDialog(null);
+		newValue.setTitle("New Tag Value");
+		newValue.setContentText("Enter the value for the tag");
 			
-			Optional<String> newTagValue = newValue.showAndWait();
-			if(newTagValue.isPresent()){
-				value = newTagValue.get();
-			}
+		Optional<String> newTagValue = newValue.showAndWait();
+		if(newTagValue.isPresent()){
+			value = newTagValue.get();
 		}
 		
 		Tag newTag = new Tag(name, value);
