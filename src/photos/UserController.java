@@ -633,17 +633,13 @@ public class UserController {
 		if(tabPane.getTabs().isEmpty()) {
 			add.setDisable(true);
 			remove.setDisable(true);
-			caption.setDisable(true);
 			display.setDisable(true);
-			edit.setDisable(true);
 			copy.setDisable(true);
 			move.setDisable(true);
 		} else {
 			add.setDisable(false);
 			remove.setDisable(false);
-			caption.setDisable(false);
 			display.setDisable(false);
-			edit.setDisable(false);
 			copy.setDisable(false);
 			move.setDisable(false);
 		}
@@ -661,16 +657,12 @@ public class UserController {
 		}
 		if(((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems().isEmpty()) {
 			remove.setDisable(true);
-			caption.setDisable(true);
 			display.setDisable(true);
-			edit.setDisable(true);
 			copy.setDisable(true);
 			move.setDisable(true);
 		} else {
 			remove.setDisable(false);
-			caption.setDisable(false);
 			display.setDisable(false);
-			edit.setDisable(false);
 			copy.setDisable(false);
 			move.setDisable(false);
 		}
