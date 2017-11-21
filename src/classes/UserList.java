@@ -239,18 +239,6 @@ public class UserList {
 		stock.checkInPhotos(niko, album2);
 		stock.getAlbums().add(album2);
 		
-		// set album 3 contents
-		Album album3 = new Album("Album 3");
-		Photo cat, fox, frog;
-		cat = new Photo("data/stock/substock/cat.jpg");
-		stock.checkInPhotos(cat, album3);
-		stock.checkInPhotos(niko, album3);
-		fox = new Photo("data/stock/substock/fox.jpg");
-		stock.checkInPhotos(fox, album3);
-		frog = new Photo("data/stock/substock/frog.jpg");
-		stock.checkInPhotos(frog, album3);
-		stock.getAlbums().add(album3);
-		
 		// delete old stock user file and replace with new copy
 		int i;
 		if((i = UserList.verifyFromUserDatabase("stock", "")) > -1) {
