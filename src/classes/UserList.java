@@ -8,6 +8,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+/**
+ * The UserList class contains the global list of users in one machine,
+ * read in by .ser files stored in the data directory. This class also
+ * reads and writes to the .ser files as well as checks to see if a user
+ * attempting to log in has provided valid information.
+ * 
+ * @author Nicholas Petriello
+ * @author Samuel Uganiza
+ */
 public class UserList {
 
 	// classy debug boolean
@@ -16,12 +25,31 @@ public class UserList {
 	/**
 	 * Global list of users that holds all users in one machine.
 	 */
-	public static ArrayList<User> users;
+	private static ArrayList<User> users;
 	
 	/**
 	 * Controls whether or not the stock user is generated.
 	 */
 	public static boolean generateStock = true;
+	
+	/**
+	 * Returns the user list.
+	 * 
+	 * @return The user list
+	 */
+	public static ArrayList<User> getUsers() {
+		return users;
+	}
+	
+	/**
+	 * Returns a user at the given index.
+	 * 
+	 * @param index The index of user to get
+	 * @return The user at the given index
+	 */
+	public static User getUser(int index) {
+		return users.get(index);
+	}
 	
 	/**
 	 * Creates a new user object to add to the list and updates the database.
@@ -179,38 +207,7 @@ public class UserList {
 		}
 		return "";
 	}
-	
-	/**
-	 * Checks the photos pool of the given user to see if all the file references
-	 * contained in the list exists. If a photo does not exist at its given file
-	 * path, delete it from all albums then update the user's .ser file.
-	 * 
-	 * @param index
-	 */
-	public static ArrayList<String> checkPhotosPool(int index) {
-		ArrayList<String> ret = new ArrayList<String>();
-		ArrayList<Photo> toRemove = new ArrayList<Photo>();
-		File f;
-		for(Photo p : users.get(index).getPhotosPool()) {
-			f = new File(p.getFilePath());
-			if(!f.exists()) {
-				for(Album a : users.get(index).getAlbums()) {
-					a.removePhoto(p);
-				}
-				toRemove.add(p);
-			}
-		}
-		for(Photo p : toRemove) {
-			for(Album a : users.get(index).getAlbums()) {
-				a.removePhoto(p);
-			}
-			users.get(index).deletePhoto(p);
-			ret.add(p.getFilePath());
-		}
-		writeToUserDatabase(users.get(index));
-		return ret;
-	}
-	
+		
 	/**
 	 * Adds a stock user account to the list of users with pre-determined file
 	 * locations. Only run once per program start-up.

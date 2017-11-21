@@ -1,5 +1,8 @@
 package photos;
 
+import classes.User;
+import classes.UserList;
+import photos.Photos;
 import java.util.Optional;
 import javafx.fxml.FXML;
 import javafx.beans.value.ChangeListener;
@@ -7,15 +10,11 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ListView;
-
-import photos.Photos;
-import classes.UserList;
-import classes.User;
 
 /**
  * AdminController class controls the functions of buttons held in the Admin.fxml
@@ -23,7 +22,6 @@ import classes.User;
  * 
  * @author Nicholas Petriello
  * @author Samuel Uganiza
- *
  */
 public class AdminController {
 	
@@ -44,12 +42,14 @@ public class AdminController {
 	 */
 	private Alert alert;
 
+	// Main Functions
+	
 	/**
 	 * Instantiates the list view when switching to this controller.
 	 */
 	public void start() {
 		
-		userList = FXCollections.observableArrayList(UserList.users);
+		userList = FXCollections.observableArrayList(UserList.getUsers());
 		listView.setItems(userList);
 		
 		// default to first option in list
@@ -124,6 +124,7 @@ public class AdminController {
 			listView.getSelectionModel().select(0);
 		}
 	}
+	
 	/**
 	 * Toggles generation of the stock user.
 	 */
@@ -147,7 +148,7 @@ public class AdminController {
 			// find stock user from list and delete
 			int i = UserList.verifyFromUserDatabase("stock", "");
 			if(i > -1) {
-				UserList.users.remove(i);
+				UserList.getUsers().remove(i);
 				userList.remove(i);
 				if(Photos.DEBUG) System.out.println("Deleted stock user from user list.");
 			}
@@ -165,6 +166,8 @@ public class AdminController {
 	public void logout() throws Exception{
 		Photos.showLogin();
 	}
+	
+	// Helper Functions
 	
 	/**
 	 * Helper function to turn off delete button when no user is detected from

@@ -36,10 +36,10 @@ public class DisplayController {
 	private User currentUser;
 	
 	public void setAlbum(int userIndex, int albumIndex, int photoIndex) {
-		photos = UserList.users.get(userIndex).getAlbums().get(albumIndex).getPhotos();
+		photos = UserList.getUser(userIndex).getAlbums().get(albumIndex).getPhotos();
 		setData(photoIndex);
 		currentPhoto = photos.get(photoIndex);
-		currentUser = UserList.users.get(userIndex);
+		currentUser = UserList.getUser(userIndex);
 	}
 	
 	public void prevPhoto() {
@@ -64,7 +64,7 @@ public class DisplayController {
 		photoLabel.setText(photo.toString());
 		
 		// set date
-		dateField.setText(photo.getDate());
+		dateField.setText(photo.getDateString());
 		
 		// set captions
 		if(photos.get(photoIndex).getCaption() == null || photos.get(photoIndex).getCaption().compareTo("") == 0){
