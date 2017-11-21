@@ -7,7 +7,7 @@ import java.io.Serializable;
  * to each picture as per the user
  * 
  * @author Nicholas Petriello
- *
+ * @author Samuel Uganiza
  */
 public class Tag implements Serializable{
 
@@ -16,18 +16,21 @@ public class Tag implements Serializable{
 	 */
 	private static final long serialVersionUID = 8216510983416262539L;
 	
-	private String name;
+	/**
+	 * Tag object's type and value.
+	 */
+	private String type;
 	private String value;
 	
 	/**
 	 * The Tag takes in two string to be created
 	 * 
-	 * @param tagName This is name of the Tag
+	 * @param tagType This is type of the Tag
 	 * @param tagValue This is the value of the Tag
 	 */
-	public Tag(String tagName, String tagValue){
+	public Tag(String tagType, String tagValue){
 		
-		this.name = tagName;
+		this.type = tagType;
 		this.value = tagValue;
 		
 	}
@@ -42,7 +45,7 @@ public class Tag implements Serializable{
 	 */
 	public int compareTo(Tag compare){
 		
-		return this.name.compareTo(compare.name) + 
+		return this.type.compareTo(compare.type) + 
 				this.value.compareTo(compare.value);
 		
 	}
@@ -59,7 +62,7 @@ public class Tag implements Serializable{
 	 */
 	public int compareNames(Tag compare){
 		
-		return this.name.compareTo(compare.name);
+		return this.type.compareTo(compare.type);
 		
 	}
 	
@@ -77,10 +80,20 @@ public class Tag implements Serializable{
 		
 	}
 	
-	public String getTagName(){
-		return this.name;
+	/**
+	 * Returns this tag's type
+	 * 
+	 * @return
+	 */
+	public String getTagType(){
+		return this.type;
 	}
 	
+	/**
+	 * Returns this tag's value
+	 * 
+	 * @return
+	 */
 	public String getTagValue(){
 		return this.value;
 	}

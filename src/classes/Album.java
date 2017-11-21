@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * This class acts as a receptical for Photo objects;
+ * This class acts as a receptacle for Photo objects;
  * It will also perform operations on such collections,
  * such as searches, orderings, appending, merging, and
  * deleting.
@@ -19,18 +19,37 @@ public class Album implements Serializable{
 	 */
 	private static final long serialVersionUID = 959194540762382275L;
 	
+	/**
+	 * Album object's name and list of different photos.
+	 */
 	private ArrayList<Photo> photos;//the list that holds the Photos
 	private String name;
 	
+	/**
+	 * Creates an album with the given name and instantiates the album's
+	 * photo list to be empty.
+	 * 
+	 * @param name The name of the album
+	 */
 	public Album(String name){
-		
 		this.photos = new ArrayList<Photo>();
 		this.name = name;
 	}
 	
+	/**
+	 * Returns this album's name.
+	 */
 	@Override
 	public String toString() {
 		return this.name;
+	}
+	
+	/**
+	 * Returns this album's list of photos.
+	 * @return The array list reference to this album's photos
+	 */
+	public ArrayList<Photo> getPhotos(){
+		return this.photos;
 	}
 	
 	/**
@@ -75,21 +94,16 @@ public class Album implements Serializable{
 		return;
 	}
 	
+	/**
+	 * 
+	 * @param pic
+	 * @param otherAlbum
+	 */
 	public void copyPhoto(Photo pic, Album otherAlbum){
 		
 		
 		return;
 	}
 	
-	public ArrayList<Photo> getPhotos(){
-		
-		return this.photos;
-		
-	}
-	
-	String getUser(){
-		
-		return this.name;
-	}
-	
+
 }

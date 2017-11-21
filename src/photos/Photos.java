@@ -7,6 +7,13 @@ import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * Main runner class responsible for switching between scenes and provides
+ * each scene with their necessary data.
+ * 
+ * @author Nicholas Petriello
+ * @author Samuel Uganiza
+ */
 public class Photos extends Application {
 	
 	// classy debug boolean
@@ -23,6 +30,10 @@ public class Photos extends Application {
 	public static FXMLLoader loginLoader, adminLoader, userLoader, displayLoader;
 	public static Scene loginScene, adminScene, userScene, displayScene;
 	
+	/**
+	 * Program begins here by showing the login screen first and adds the
+	 * stock user if the toggle has been turned on in the admin scene.
+	 */
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -39,6 +50,11 @@ public class Photos extends Application {
 		}
 	}
 	
+	/**
+	 * Main function.
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -93,9 +109,9 @@ public class Photos extends Application {
 		userScene = new Scene((AnchorPane)userLoader.load());
 		
 		UserController uc = userLoader.getController();
-		uc.setUserIndex(index);
+		uc.setUser(index);
 		
-		window.setTitle(UserList.users.get(index).getName() + "'s Albums");
+		window.setTitle(UserList.getUser(index).getName() + "'s Albums");
 		window.setScene(userScene);
 		window.show();
 	}

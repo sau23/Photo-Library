@@ -1,5 +1,6 @@
 package classes;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -11,7 +12,6 @@ import java.util.ArrayList;
  * 
  * @author Nicholas Petriello
  * @author Samuel Uganiza
- *
  */
 public class User implements Serializable{
 
@@ -21,7 +21,7 @@ public class User implements Serializable{
 	private static final long serialVersionUID = 7089640660698420983L;
 
 	/**
-	 * User object's username, password, and list of references to different albums.
+	 * User object's username, password, and list of different albums.
 	 */
 	private String name;
 	private String pass;
@@ -92,6 +92,7 @@ public class User implements Serializable{
 		return this.photosPool;
 	}
 	
+	// TODO: Review check in photos
 	/**
 	 * Attempts to add a photo to the master photo list. If it finds a duplicate by file
 	 * path, simple add the photo to the given album. Otherwise, add the given photo to
@@ -142,8 +143,38 @@ public class User implements Serializable{
 			if(UserList.DEBUG) System.out.println("File found in other albums, did not delete from pool.");
 		} else {
 			this.photosPool.remove(photo);
-			if(UserList.DEBUG) System.out.println("Deleted " + photo.getName() + " from " + this.getName() + "'s pool.");
+			if(UserList.DEBUG) System.out.println("Deleted " + photo.toString() + " from " + this.getName() + "'s pool.");
 		}
 	}
 
+	/**
+	 * Checks the photos pool of the given user to see if all the file references
+	 * contained in the list exists. If a photo does not exist at its given file
+	 * path, delete it from all albums then update the user's .ser file.
+	 * 
+	 * @param index
+	 */
+	public ArrayList<String> checkPhotosPool() {
+		ArrayList<String> ret = new ArrayList<String>();
+		ArrayList<Photo> toRemove = new ArrayList<Photo>();
+		File f;
+		for(Photo p : this.photosPool) {
+			f = new File(p.getFilePath());
+			if(!f.exists()) {
+				for(Album a : this.albums) {
+					a.removePhoto(p);
+				}
+				toRemove.add(p);
+			}
+		}
+		for(Photo p : toRemove) {
+			for(Album a : this.albums) {
+				a.removePhoto(p);
+			}
+			deletePhoto(p);
+			ret.add(p.getFilePath());
+		}
+		UserList.writeToUserDatabase(this);
+		return ret;
+	}
 }

@@ -1,19 +1,28 @@
 package photos;
 
 import classes.UserList;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
+/**
+ * LoginController class controls the functions of buttons held in the Login.fxml
+ * and is responsible for verifying users and creating new users.
+ * 
+ * @author Nicholas Petriello
+ * @author Samuel Uganiza
+ */
 public class LoginController {
 
+	/**
+	 * FXML references to nodes in Login.fxml.
+	 */
 	@FXML private Button enter, createAccount;
 	@FXML private TextField useName, pass, newUsername, newPassword;
 	
 	/**
 	 * Login controller checks if the fields correspond to a matching user in
-	 * the global users list in User
+	 * the global users list in UserList.
 	 * 
 	 * @param event
 	 * @throws Exception
@@ -31,7 +40,7 @@ public class LoginController {
 			int checkForUser = UserList.verifyFromUserDatabase(name, passWord);
 			if(checkForUser == -1){
 				useName.setText("");
-				useName.setPromptText("Not a recognized user!");
+				useName.setPromptText("Not a recognized user");
 				pass.setText("");
 				useName.setPromptText("Please try again");
 			}else if(checkForUser == -2){
@@ -43,23 +52,30 @@ public class LoginController {
 		}
 	}
 	
+	/**
+	 * Attempts to create a new user if the provided user name has not yet
+	 * been taken.
+	 * 
+	 * @throws Exception
+	 */
 	@FXML public void createNewUser() throws Exception{
 		
 		String name = newUsername.getText();
 		String password = newPassword.getText();
 		
 		int checkForUser = UserList.verifyFromUserDatabase(name, password);
-		
+		if(name.isEmpty()) {
+			newUsername.setText("");
+			newUsername.setPromptText("Username cannot be empty");
+			return;
+		}
 		if(checkForUser == -1){
-			
 			UserList.addUser(name, password);
 			newUsername.setText("");
 			newUsername.setPromptText("Successfully added");
 			newPassword.setText("");
 			newPassword.setPromptText("Now login above");
-			
 		}else{
-			
 			newUsername.setText("");
 			newPassword.setText("");
 			newUsername.setPromptText("User already exists");
