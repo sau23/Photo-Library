@@ -19,9 +19,7 @@
                   <Label text="Photo Options" />
                   <Button fx:id="add" minWidth="100.0" mnemonicParsing="false" onAction="#addPhoto" text="Add" />
                   <Button fx:id="remove" minWidth="100.0" mnemonicParsing="false" onAction="#removePhoto" text="Remove" />
-                  <Button fx:id="caption" minWidth="100.0" mnemonicParsing="false" onAction="#captionPhoto" text="Caption" />
                   <Button fx:id="display" minWidth="100.0" mnemonicParsing="false" onAction="#displayPhoto" text="Display" />
-                  <Button fx:id="edit" minWidth="100.0" mnemonicParsing="false" onAction="#editPhotoTags" text="Edit Tags" />
                   <Button fx:id="copy" minWidth="100.0" mnemonicParsing="false" onAction="#copyPhoto" text="Copy To" />
                   <Button fx:id="move" minWidth="100.0" mnemonicParsing="false" onAction="#movePhoto" text="Move To" />
                </children>

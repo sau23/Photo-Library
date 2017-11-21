@@ -52,7 +52,7 @@ public class UserController {
 	/**
 	 * FXML references to UserController.fxml.
 	 */
-	@FXML Button add, remove, caption, display, edit, copy, move, addAlbum, search, logout;
+	@FXML Button add, remove, display, copy, move, addAlbum, search, logout;
 	@FXML Label userLabel;
 	@FXML TabPane tabPane;
 	
@@ -230,13 +230,6 @@ public class UserController {
 	}
 	
 	/**
-	 * 
-	 */
-	public void captionPhoto() {
-		
-	}
-	
-	/**
 	 * Pops up display window for viewing all the photos in one album and
 	 * sets the display to be the currently selected photo.
 	 * 
@@ -250,14 +243,7 @@ public class UserController {
 			Photos.showDisplay(index, singleSelectionModel.getSelectedIndex(), photoIndex);
 		}
 	}
-	
-	/**
-	 * 
-	 */
-	public void editPhotoTags() {
-		
-	}
-	
+
 	/**
 	 * Copies the selected photo to a chosen album. The list of chosen albums
 	 * is determined by the albums the user currently has available without
