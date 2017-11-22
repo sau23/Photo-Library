@@ -26,14 +26,14 @@ public class DisplayController {
 	@FXML private ImageView imageView;
 	@FXML private Button prev, next, reCaption, addTag, deleteTag;
 	@FXML private TextArea captionArea;
-	@FXML private ListView<String> tagsList = new ListView<String>();
+	@FXML private ListView<Tag> tagsList = new ListView<Tag>();
 	
 	private File f;
 	private ObservableList<Photo> photos;
 	private Photo currentPhoto;
 	private User currentUser;
 	
-	private ObservableList<String> displayTags = FXCollections.observableArrayList();
+	private ObservableList<Tag> displayTags = FXCollections.observableArrayList();
 	
 	public void setAlbum(int userIndex, int photoIndex, ObservableList<Photo> photos) {
 		this.photos = photos;
@@ -88,10 +88,10 @@ public class DisplayController {
 		displayTags.clear();
 		if(photo.getTags().size() == 0){
 			
-			displayTags.add("Add some tags");
+			displayTags.add(new Tag("-Add some tags", ""));
 		}else{
 			
-			displayTags.addAll(photo.getDisplayTags());
+			displayTags.addAll(photo.getTags());
 		}
 		
 		tagsList.setItems(displayTags);
@@ -135,8 +135,11 @@ public class DisplayController {
 		}
 		
 		Tag newTag = new Tag(name, value);
-
-		displayTags.add(newTag.toString());
+		
+		if(currentPhoto.getTags().size() == 0){
+			displayTags.clear();
+		}
+		displayTags.add(newTag);
 		currentPhoto.addTag(newTag);
 		UserList.writeToUserDatabase(currentUser);
 		tagsList.setItems(displayTags);
@@ -145,19 +148,16 @@ public class DisplayController {
 	
 	public void deleteTag(){
 		
-		String delDisplayTag = tagsList.getSelectionModel().getSelectedItem();
-		if(delDisplayTag == null || delDisplayTag.compareTo("Add some tags") == 0){
-			displayTags.clear();
-			tagsList.getItems().clear();
-			displayTags.add("Add some tags");
-			tagsList.setItems(displayTags);
+		Tag delTag = tagsList.getSelectionModel().getSelectedItem();
+		if(delTag.compareTo(new Tag("-Add some tags", "")) == 0 && currentPhoto.getTags().size() == 0){
 			return;
 		}
-		String tag[] = delDisplayTag.split("-");
-		Tag delTag = new Tag(tag[0], tag[1]);
-		currentPhoto.deleteTag(delTag);
-		UserList.writeToUserDatabase(currentUser);
-		setData(photos.indexOf(delTag));
+		currentPhoto.getTags().remove(delTag);
+		displayTags.remove(delTag);
+		if(currentPhoto.getTags().size() == 0){
+			displayTags.add(new Tag("-Add some tags", ""));
+		}
+		tagsList.setItems(displayTags);
 		
 		
 		
