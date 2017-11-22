@@ -99,6 +99,8 @@ public class Photo implements Serializable{
 	public ArrayList<String> getDisplayTags(){
 		
 		ArrayList<String> list = new ArrayList<String>();
+		if(this.tags.size() == 0)
+			return list;
 		for(Tag tag: this.getTags()){
 			list.add(tag.getTagType() + "-" + tag.getTagValue());
 		}

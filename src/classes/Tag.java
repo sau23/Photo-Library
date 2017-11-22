@@ -98,7 +98,9 @@ public class Tag implements Serializable{
 		return this.value;
 	}
 	
-	
+	public String toString(){
+		return this.type + "-" + this.value;
+	}
 		
 	
 }
