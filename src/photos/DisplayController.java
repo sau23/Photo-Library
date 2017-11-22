@@ -6,8 +6,6 @@ import classes.User;
 import classes.UserList;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javafx.collections.FXCollections;
@@ -28,17 +26,17 @@ public class DisplayController {
 	@FXML private ImageView imageView;
 	@FXML private Button prev, next, reCaption, addTag, deleteTag;
 	@FXML private TextArea captionArea;
-	@FXML private ListView<String> tagsList;
+	@FXML private ListView<String> tagsList = new ListView<String>();
 	
 	private File f;
-	private ArrayList<Photo> photos;
+	private ObservableList<Photo> photos;
 	private Photo currentPhoto;
 	private User currentUser;
 	
 	private ObservableList<String> displayTags = FXCollections.observableArrayList();
 	
-	public void setAlbum(int userIndex, int albumIndex, int photoIndex) {
-		photos = UserList.getUser(userIndex).getAlbums().get(albumIndex).getPhotos();
+	public void setAlbum(int userIndex, int photoIndex, ObservableList<Photo> photos) {
+		this.photos = photos;
 		setData(photoIndex);
 		currentPhoto = photos.get(photoIndex);
 		currentUser = UserList.getUser(userIndex);
@@ -97,8 +95,7 @@ public class DisplayController {
 		}
 		
 		tagsList.setItems(displayTags);
-		
-		
+
 		
 	}
 	
@@ -115,7 +112,7 @@ public class DisplayController {
 	}
 	
 	public void addTag(){
-		
+
 		String name = "";
 		String value = "";
 		
@@ -138,11 +135,12 @@ public class DisplayController {
 		}
 		
 		Tag newTag = new Tag(name, value);
+
 		displayTags.add(newTag.toString());
 		currentPhoto.addTag(newTag);
 		UserList.writeToUserDatabase(currentUser);
 		tagsList.setItems(displayTags);
-		
+
 	}
 	
 	public void deleteTag(){

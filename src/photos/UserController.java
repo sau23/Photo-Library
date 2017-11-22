@@ -53,7 +53,7 @@ public class UserController {
 	/**
 	 * FXML references to UserController.fxml.
 	 */
-	@FXML Button add, remove, display, copy, move, addAlbum, search, logout;
+	@FXML Button add, remove, display, copy, move, addAlbum, search, create, logout;
 	@FXML Label userLabel;
 	@FXML TabPane tabPane;
 	
@@ -113,41 +113,6 @@ public class UserController {
 		updateSearch();
 	}
 	
-	/**
-	 * Initializes the tab pane to hold any albums that the user at the
-	 * stored index has when the database is read.
-	 */
-	@SuppressWarnings("unchecked")
-	private void setupTabPane() {
-		
-		// toggle buttons besides add button depending on whether the album is empty
-		singleSelectionModel.selectedItemProperty().addListener(new ChangeListener<Tab>() {
-			@Override
-			public void changed(ObservableValue<? extends Tab> obs, Tab o, Tab n) {
-				if(n != null) {
-					ListView<Photo> lv = (ListView<Photo>)n.getContent();
-					int albumIndex = singleSelectionModel.getSelectedIndex();
-					lv.setItems(FXCollections.observableArrayList(albums.get(albumIndex).getPhotos()));
-				}
-				updateAlbumButtons();
-				updatePhotoButtons();
-			}
-		});
-
-		// if user has any albums, initialize tab pane to present them
-		if(!albums.isEmpty()) {
-			for(Album a : albums) {
-				addNewTab(a);
-			}
-			singleSelectionModel.select(0);
-			if(Photos.DEBUG) System.out.println("Successfully read albums for " + user.getName() + ".");
-			
-		// otherwise, disable buttons
-		} else {
-			if(Photos.DEBUG) System.out.println(user.getName() + " has no stored albums.");
-		}
-	}
-
 	// Photo Controls
 	
 	/**
@@ -159,50 +124,51 @@ public class UserController {
 	public void addPhoto() throws Exception {
 		
 		//create a file chooser instance
-				FileChooser photoChooser = new FileChooser();
-				photoChooser.setTitle("Choose an Image");
+
+		FileChooser photoChooser = new FileChooser();
+		photoChooser.setTitle("Choose an Image");
+			
+		//Set filter for images only
+		photoChooser.getExtensionFilters().addAll( 
+				new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.bmp", "*.jpeg", "*.jpe", "*.jif", "*.jfif", ".jfi"));
 				
-				//Set filter for images only
-				photoChooser.getExtensionFilters().addAll( 
-						new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.bmp", "*.jpeg", "*.jpe", "*.jif", "*.jfif", ".jfi"));
+		//get image
+		File image;
+		try{
+			image = photoChooser.showOpenDialog(null);
+		}catch(Exception e){
+			image = null;
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("File Error");
+			alert.setContentText("Invalid file: can't make a shortcut an image.");
+			alert.showAndWait();
+		}
 				
-				//get image
-				File image;
-				try{
-					image = photoChooser.showOpenDialog(null);
-				}catch(Exception e){
-					image = null;
-					Alert alert = new Alert(AlertType.INFORMATION);
-					alert.setTitle("File Error");
-					alert.setContentText("Invalid file: can't make a shortcut an image.");
-					alert.showAndWait();
-				}
-				
-				//set photo date
-				if(image == null){
+		//set photo date
+		if(image == null){
 					
-					return;
-				}
+			return;
+		}
 
-				//Debug statement
-				System.out.println(image.getAbsolutePath());
-				
-				//create photo instance
+		if(Photos.DEBUG) System.out.println(image.getAbsolutePath());
 
-				Photo newPhoto = new Photo(image.getAbsolutePath());
-				
-				//check if there's a duplicate; if not the photo is added to the pool
-				int i = singleSelectionModel.getSelectedIndex();
-				user.checkInPhotos(newPhoto, albums.get(i));
-				
-				//User .ser file is updated for the selected user.
+		//create photo instance
 
-				((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems().add(newPhoto);
-				UserList.writeToUserDatabase(user);
-				updatePhotoButtons();
-				updateCopyMove();
-				updateSearch();
-				if(Photos.DEBUG) System.out.println("Successfully added " + newPhoto.toString() + " to " + singleSelectionModel.getSelectedItem().getText());
+		Photo newPhoto = new Photo(image.getAbsolutePath());
+
+		//check if there's a duplicate; if not the photo is added to the pool
+		int i = singleSelectionModel.getSelectedIndex();
+		user.checkInPhotos(newPhoto, albums.get(i));
+
+		//User .ser file is updated for the selected user.
+
+		((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems().add(newPhoto);
+		((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getSelectionModel().select(newPhoto);
+		UserList.writeToUserDatabase(user);
+		updatePhotoButtons();
+		updateCopyMove();
+		updateSearch();
+		if(Photos.DEBUG) System.out.println("Successfully added " + newPhoto.toString() + " to " + singleSelectionModel.getSelectedItem().getText());
 	}
 	
 	/**
@@ -246,11 +212,11 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public void displayPhoto() throws Exception {
-		// create new window
+	public void displayPhoto() throws Exception {		
 		int photoIndex = ((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getSelectionModel().getSelectedIndex();
 		if(photoIndex > -1) {
-			Photos.showDisplay(index, singleSelectionModel.getSelectedIndex(), photoIndex);
+			ObservableList<Photo> photos = ((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems();
+			Photos.showDisplay(index, photoIndex, photos);
 		}
 	}
 
@@ -302,9 +268,9 @@ public class UserController {
 				
 				// check if the album already has a photo of same name
 				for(Photo p : album.getPhotos()) {
-					if(photo.toString().equals(p.toString())) {
-						dialog.setContentText("Album already has file of same name");
-						if(Photos.DEBUG )System.out.println("Album already has file of same name");
+					if(photo.getFilePath().equals(p.getFilePath())) {
+						dialog.setContentText("Album already has file of same path");
+						if(Photos.DEBUG )System.out.println("Album already has file of same path");
 						event.consume();
 					}
 				}
@@ -377,9 +343,9 @@ public class UserController {
 
 				// check if the album already has a photo of the same name
 				for(Photo p : album.getPhotos()) {
-					if(photo.toString().equals(p.toString())) {
-						dialog.setContentText("Album already has file of same name");
-						if(Photos.DEBUG )System.out.println("Album already has file of same name");
+					if(photo.getFilePath().equals(p.getFilePath())) {
+						dialog.setContentText("Album already has file of same path");
+						if(Photos.DEBUG )System.out.println("Album already has file of same path");
 						event.consume();
 					}
 				}
@@ -442,14 +408,14 @@ public class UserController {
 		// pop up dialog box
 		Optional<ButtonType> result = alert.showAndWait();
 		ArrayList<Photo> toDisplay = new ArrayList<Photo>();
-		Pair<String, String> search;
+		Pair<String, String> reponse;
 		
 		// switch to new dialog depending on output
 		if (result.get() == buttonTypeOne){
-		    search = createDialog(true);
-		    if(search != null) {
-		    	String startDate = search.getKey();
-		    	String endDate = search.getValue();
+		    reponse = createDialog(true);
+		    if(reponse != null) {
+		    	String startDate = reponse.getKey();
+		    	String endDate = reponse.getValue();
 		    	for(Photo p : photosPool) {
 		    		if(p.isWithinRange(startDate, endDate)) {
 		    			toDisplay.add(p);
@@ -458,10 +424,10 @@ public class UserController {
 		    	}
 		    }
 		} else if (result.get() == buttonTypeTwo) {
-			search = createDialog(false);
-			if(search != null) {
-				String tagType = search.getKey();
-				String tagValue = search.getValue();
+			reponse = createDialog(false);
+			if(reponse != null) {
+				String tagType = reponse.getKey();
+				String tagValue = reponse.getValue();
 				for(Photo p : photosPool) {
 					if(p.searchTags(tagType, tagValue)) {
 						toDisplay.add(p);
@@ -474,17 +440,96 @@ public class UserController {
 		// if results did not come up empty
 		if(!toDisplay.isEmpty()) {
 			Tab searchResults = new Tab("Search");
+			searchResults.setId("");
 			ListView<Photo> lv = new ListView<Photo>();
 			changeCellFactory(lv);
 			ObservableList<Photo> photos = FXCollections.observableArrayList(toDisplay);
 			lv.setItems(photos);
 			searchResults.setContent(lv);
-			tabPane.getTabs().add(searchResults);
 			
-			// TODO: Add button to add to albums, allow display of photos, disable everything else
+			// check to see if search tab already exists
+			int check = tabPane.getTabs().size() - 1;
+			if(check > 0 && tabPane.getTabs().get(check).getId() != null) {
+				tabPane.getTabs().remove(check);
+				if(Photos.DEBUG) System.out.println("Removed search tab.");
+			}
+			
+			tabPane.getTabs().add(searchResults);
+			singleSelectionModel.select(searchResults);
+			add.setDisable(true);
+			remove.setDisable(true);
+			copy.setDisable(true);
+			move.setDisable(true);
+			
+			create.setDisable(false);
 		}
 	}
 
+	/**
+	 * Creates a new album based on the search results.
+	 */
+	@SuppressWarnings("unchecked")
+	public void create() {
+		TextInputDialog dialog = new TextInputDialog();
+		dialog.setTitle("New Album");
+		dialog.setHeaderText(null);
+		dialog.setGraphic(null);
+		dialog.setContentText("Enter a name for your new album:");
+
+		// edit ok button validation
+		final Button ok = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+		ok.addEventFilter(ActionEvent.ACTION,
+			event -> {
+				String name = dialog.getEditor().getText();
+				if(name.isEmpty()) {
+					dialog.getEditor().setText("");
+					dialog.getEditor().setPromptText("Name cannot be empty");
+					if(Photos.DEBUG) System.out.println("Album name cannot be empty.");
+					event.consume();
+				}
+				for(Album a : albums) {
+					if(a.toString().equals(name)) {
+						dialog.getEditor().setText("");
+						dialog.getEditor().setPromptText("Album already exists");
+						if(Photos.DEBUG) System.out.println("Album name already exists.");
+						event.consume();
+					}
+				}
+			}
+		);
+		
+		// show dialog box
+		Optional<String> result = dialog.showAndWait();
+		if(result.isPresent()) {
+
+			// get the search results
+			ObservableList<Photo> searchResults = ((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems();
+			
+			// force a switch to the last album
+			singleSelectionModel.select(albums.size() - 1);
+			
+			// create new album for user based on the results of the search
+			Album album = new Album(result.get());
+			albums.add(album);
+			for(Photo p : searchResults) {
+				album.addPhoto(p);
+			}
+		
+			// update database
+			UserList.writeToUserDatabase(user);
+				
+			addNewTab(album);
+			
+			// force a switch to the newly added album
+			singleSelectionModel.select(albums.size() - 1);
+
+			updateAlbumButtons();
+			updatePhotoButtons();
+			
+			if(Photos.DEBUG) System.out.println("Successfully added new album " + album.toString() + ".");
+		}
+	}
+	
 	/**
 	 * Switches back to the login screen.
 	 * 
@@ -534,13 +579,21 @@ public class UserController {
 		Optional<String> result = dialog.showAndWait();
 		if(result.isPresent()) {
 			
+			// check if search tab exists
+			int check = tabPane.getTabs().size() - 1;
+			if(check > 0 && tabPane.getTabs().get(check).getId() != null) {
+				// force a switch to the last album
+				singleSelectionModel.select(albums.size() - 1);
+				if(Photos.DEBUG) System.out.println("Removed search tab.");
+			}
+			
 			// create new album for user
 			Album album = new Album(result.get());
 			albums.add(album);
 		
 			// update database
 			UserList.writeToUserDatabase(user);
-			
+				
 			addNewTab(album);
 			
 			updateAlbumButtons();
@@ -551,6 +604,61 @@ public class UserController {
 	}
 	
 	// Helper Functions
+	
+	/**
+	 * Initializes the tab pane to hold any albums that the user at the
+	 * stored index has when the database is read.
+	 */
+	@SuppressWarnings("unchecked")
+	private void setupTabPane() {
+		
+		// toggle buttons besides add button depending on whether the album is empty
+		singleSelectionModel.selectedItemProperty().addListener(new ChangeListener<Tab>() {
+			@Override
+			public void changed(ObservableValue<? extends Tab> obs, Tab o, Tab n) {
+				if(n != null) {
+					
+					// check if search tab exists
+					if(o != null && o.getId() != null && tabPane.getTabs().size() != albums.size()) {
+						tabPane.getTabs().remove(albums.size());
+						create.setDisable(true);
+						if(Photos.DEBUG) System.out.println("Removed search tab.");
+					}
+					
+					ListView<Photo> lv = (ListView<Photo>)n.getContent();
+					int albumIndex = singleSelectionModel.getSelectedIndex();
+					if(albumIndex < albums.size()) {
+						lv.setItems(FXCollections.observableArrayList(albums.get(albumIndex).getPhotos()));
+					}
+						// TODO: is creating a new listview necessary?
+						/*
+						ListView<Photo> nlv = new ListView<Photo>();
+						changeCellFactory(nlv);
+						nlv.setItems(FXCollections.observableArrayList(albums.get(albumIndex).getPhotos()));
+						n.setContent(nlv);
+						*/
+						
+					// check if attempting to create a search tab while the old search tab is already open
+					
+				}
+				updateAlbumButtons();
+				updatePhotoButtons();
+			}
+		});
+
+		// if user has any albums, initialize tab pane to present them
+		if(!albums.isEmpty()) {
+			for(Album a : albums) {
+				addNewTab(a);
+			}
+			singleSelectionModel.select(0);
+			if(Photos.DEBUG) System.out.println("Successfully read albums for " + user.getName() + ".");
+			
+		// otherwise, disable buttons
+		} else {
+			if(Photos.DEBUG) System.out.println(user.getName() + " has no stored albums.");
+		}
+	}
 	
 	/**
 	 * Adds a new tab to the tab pane using the given album to create the tab's
@@ -621,7 +729,7 @@ public class UserController {
 				updateCopyMove();
 				updateSearch();
 			}
-		});
+		});		
 		
 		// add tab to tab pane
 		tabPane.getTabs().add(toAdd);
@@ -655,7 +763,6 @@ public class UserController {
 		}
 	}
 	
-
 	/**
 	 * Helper function to turn off buttons when no photos are detected. Prevents
 	 * accessing non-existent photos from an empty album.
@@ -685,7 +792,7 @@ public class UserController {
 	 */
 	@SuppressWarnings("unchecked")
 	private void updateCopyMove() {
-		if(tabPane.getTabs().size() < 2 || ((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems().isEmpty()) {
+		if(albums.size() < 2 || ((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems().isEmpty()) {
 			copy.setDisable(true);
 			move.setDisable(true);
 		} else {
@@ -733,7 +840,8 @@ public class UserController {
 			super.updateItem(item, empty);
 			HBox hbox = new HBox();
 			ImageView image = new ImageView();
-			Label label = new Label();
+			Label name = new Label();
+			Label caption = new Label();
 			File f;
 			if(item != null) {
 				f = new File(item.getFilePath());
@@ -745,8 +853,10 @@ public class UserController {
             	image.setCache(true);
             	image.setImage(new Image(f.toURI().toString()));
                 
-                label.setText(item.toString());
-                hbox.getChildren().addAll(image, label);
+                name.setText(item.toString());
+                caption.setText(item.getCaption());
+                
+                hbox.getChildren().addAll(image, name, caption);
                 hbox.setSpacing(10.0);
                 hbox.setAlignment(Pos.CENTER_LEFT);
                 setGraphic(hbox);
@@ -781,15 +891,15 @@ public class UserController {
 		// set up text fields
 		TextField text1 = new TextField();
 		TextField text2 = new TextField();
-		String prompt1 = isDateRange ? "MM-dd-yyyy" : "Tag type";
-		String prompt2 = isDateRange ? "MM-dd-yyyy" : "Tag value";
+		String prompt1 = isDateRange ? "MM-DD-YYYY" : "Tag type";
+		String prompt2 = isDateRange ? "MM-DD-YYYY" : "Tag value";
 		text1.setPromptText(prompt1);
 		text2.setPromptText(prompt2);
 		
 		// if is date range, add listeners to ensure date format is correct
 		if(isDateRange) {
 			((Button)dialog.getDialogPane().lookupButton(ButtonType.OK)).setDisable(true);
-			String regex = "(0[1-9]|1[0-2])-(0[1-9]|1[0-9]|2[0-9]|3[0-1])-([1-2][0-9][0-9][0-9])";
+			String regex = "([1-9]|0[1-9]|1[0-2])-([1-9]|0[1-9]|1[0-9]|2[0-9]|3[0-1])-([1-2][0-9][0-9][0-9])";
 			text1.textProperty().addListener((obs, o, n) -> {
 			    if(n.trim().matches(regex) && text2.getText().matches(regex)) {
 			    	((Button)dialog.getDialogPane().lookupButton(ButtonType.OK)).setDisable(false);

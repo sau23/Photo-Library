@@ -218,7 +218,8 @@ public class UserList {
 		// set album 1 contents
 		Album album1 = new Album("Album 1");
 		Photo niko = new Photo("data/stock/niko.png");
-		niko.addTag(new Tag("Anime", "Niko"));
+		niko.setCaption("Meow");
+		niko.addTag("animal", "cat");
 		stock.checkInPhotos(niko, album1);
 		stock.getAlbums().add(album1);
 		

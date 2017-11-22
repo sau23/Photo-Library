@@ -56,6 +56,10 @@ public class Photo implements Serializable{
 		return this.name;
 	}
 	
+	public void addTag(String type, String value) {
+		this.tags.add(new Tag(type, value));
+	}
+	
 	/**
 	 * addTag() inserts a given addTag into the tags
 	 * list of a Photo
@@ -96,16 +100,18 @@ public class Photo implements Serializable{
 	 * 
 	 * @return
 	 */
+	
 	public ArrayList<String> getDisplayTags(){
-		
 		ArrayList<String> list = new ArrayList<String>();
-		if(this.tags.size() == 0)
+		if(this.tags.size() == 0){
 			return list;
-		for(Tag tag: this.getTags()){
-			list.add(tag.getTagType() + "-" + tag.getTagValue());
+		}
+		for(Tag tag: this.tags){
+			list.add(tag.toString());
 		}
 		return list;
 	}
+
 	/**
 	 * Returns this photo's calendar object.
 	 * 
@@ -185,8 +191,14 @@ public class Photo implements Serializable{
 	 * @throws Exception Parse exception ignored due to proper formatting
 	 */
 	public boolean isWithinRange(String startDate, String endDate) throws Exception {
-		return !(this.calendar.getTime().before(new SimpleDateFormat("MM-dd-yyyy").parse(startDate)) 
-				|| this.calendar.getTime().after(new SimpleDateFormat("MM-dd-yyyy").parse(endDate)));
+		
+		// format end date to be 1 day ahead
+		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+		Calendar c = Calendar.getInstance();
+		c.setTime(sdf.parse(endDate));
+		c.add(Calendar.DATE, 1);
+		return sdf.parse(startDate).compareTo(this.calendar.getTime()) * 
+				this.calendar.getTime().compareTo(c.getTime()) >= 0;
 	}
 }
 
