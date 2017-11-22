@@ -59,31 +59,20 @@ public class Photo implements Serializable{
 	}
 	
 	/**
-	 * addTag() Takes two strings and creates a Tag
-	 * object.
-	 * 
-	 * @param type First string input
-	 * @param value Second string input
-	 */
-	public void addTag(String type, String value) {
-		this.tags.add(new Tag(type, value));
-	}
-	
-	/**
-	 * addTag() inserts a given addTag into the tags
+	 * addTag() inserts addTag into the tags
 	 * list of a Photo
 	 * 
 	 * @param addTag Tag to be added to the Photo's tag list
 	 * 
 	 * @return true if the add was successful, false otherwise
 	 */
-	public boolean addTag(Tag addTag){
-
+	public void addTag(Tag addTag) {
+		
 		if(this.tags.contains(addTag)){
-			return false;
+			return;
 		}else{
-			this.tags.contains(addTag);
-			return true;
+			this.tags.add(addTag);
+			return;
 		}
 		
 	}

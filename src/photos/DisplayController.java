@@ -93,45 +93,7 @@ public class DisplayController {
 		}
 	}
 	
-	/**
-	 * setData
-	 * @param photoIndex
-	 */
-	private void setData(int photoIndex) {
-		
-		Photo photo = photos.get(photoIndex);
-		
-		// set image view
-		f = new File(photo.getFilePath());
-		imageView.setImage(new Image(f.toURI().toString()));
-		
-		// set label
-		photoLabel.setText(photo.toString());
-		
-		// set date
-		dateField.setText(photo.getDateString());
-		
-		// set captions
-		if(photos.get(photoIndex).getCaption() == null || photos.get(photoIndex).getCaption().compareTo("") == 0){
-			captionArea.setText("");
-			captionArea.setPromptText("Add a caption");
-		}else{
-			captionArea.setText(photos.get(photoIndex).getCaption());
-		}
-		// set tags
-		displayTags.clear();
-		if(photo.getTags().size() == 0){
-			
-			displayTags.add(new Tag("-Add some tags", ""));
-		}else{
-			
-			displayTags.addAll(photo.getTags());
-		}
-		//initialize tagsList with current photo info
-		tagsList.setItems(displayTags);
-
-		
-	}
+	
 	
 	public void reCaption(){
 		String newCaption = captionArea.getText();
@@ -173,9 +135,10 @@ public class DisplayController {
 		if(currentPhoto.getTags().size() == 0){
 			displayTags.clear();
 		}
-		displayTags.add(newTag);
 		currentPhoto.addTag(newTag);
+		displayTags.clear();
 		UserList.writeToUserDatabase(currentUser);
+		displayTags.addAll(currentPhoto.getTags());
 		tagsList.setItems(displayTags);
 
 	}
@@ -193,9 +156,45 @@ public class DisplayController {
 		}
 		tagsList.setItems(displayTags);
 		
-		
-		
 	}
 	
+	/**
+	 * setData
+	 * @param photoIndex
+	 */
+	private void setData(int photoIndex) {
+		
+		Photo photo = photos.get(photoIndex);
+		
+		// set image view
+		f = new File(photo.getFilePath());
+		imageView.setImage(new Image(f.toURI().toString()));
+		
+		// set label
+		photoLabel.setText(photo.toString());
+		
+		// set date
+		dateField.setText(photo.getDateString());
+		
+		// set captions
+		if(photos.get(photoIndex).getCaption() == null || photos.get(photoIndex).getCaption().compareTo("") == 0){
+			captionArea.setText("");
+			captionArea.setPromptText("Add a caption");
+		}else{
+			captionArea.setText(photos.get(photoIndex).getCaption());
+		}
+		// set tags
+
+		tagsList.getItems().clear();
+		if(photo.getTags().size() == 0){
+			displayTags.add(new Tag("-Add some tags", ""));
+		}else{
+			
+			displayTags.addAll(photo.getTags());
+		}
+		//initialize tagsList with current photo info
+		tagsList.setItems(displayTags);
+		
+	}
 	
 }
