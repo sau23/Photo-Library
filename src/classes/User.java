@@ -105,17 +105,19 @@ public class User implements Serializable{
 		
 		// check for duplicates
 		for(int i = 0; i < this.photosPool.size(); i++) {
+			
 			if(this.photosPool.get(i).getFilePath().equals(photo.getFilePath())) {
 				if(UserList.DEBUG) System.out.println(photo.toString() + " found in " + this.getName() + "'s pool");
 				album.addPhoto(photo);
 				return;
 			}
+			
 		}
-		
 		// otherwise add it
 		this.photosPool.add(photo);
 		album.addPhoto(photo);
 		if(UserList.DEBUG) System.out.println("Adding " + photo.toString() + " to " + this.getName() + "'s pool");
+		
 	}
 	
 	/**
@@ -124,18 +126,22 @@ public class User implements Serializable{
 	 * Otherwise, if it is the only album to contain the photo, the photo will then be
 	 * deleted from the master photo list.
 	 * 
-	 * @param photo
+	 * @param photo Photo to be deleted from 
 	 */
 	public void deletePhoto(Photo photo) {
 		
 		// check all albums in this user to see if any more albums have same reference to photo
 		int i = 0;
 		for(Album a : this.albums) {
+			
 			for(Photo p : a.getPhotos()) {
+				
 				if(p.getFilePath().equals(photo.getFilePath())) {
 					i++;
 				}
+				
 			}
+			
 		}
 		
 		// if it not found anywhere else, delete it
@@ -145,6 +151,7 @@ public class User implements Serializable{
 			this.photosPool.remove(photo);
 			if(UserList.DEBUG) System.out.println("Deleted " + photo.toString() + " from " + this.getName() + "'s pool.");
 		}
+		
 	}
 
 	/**
@@ -155,10 +162,15 @@ public class User implements Serializable{
 	 * @param index
 	 */
 	public ArrayList<String> checkPhotosPool() {
+		
 		ArrayList<String> ret = new ArrayList<String>();
 		ArrayList<Photo> toRemove = new ArrayList<Photo>();
 		File f;
+		
+		//Check photo pool
 		for(Photo p : this.photosPool) {
+			
+			//create instance of target photo
 			f = new File(p.getFilePath());
 			if(!f.exists()) {
 				for(Album a : this.albums) {
@@ -166,15 +178,22 @@ public class User implements Serializable{
 				}
 				toRemove.add(p);
 			}
+			
 		}
+		
+		//Check albums for instance and remove
 		for(Photo p : toRemove) {
+			
 			for(Album a : this.albums) {
 				a.removePhoto(p);
 			}
 			deletePhoto(p);
 			ret.add(p.getFilePath());
+			
 		}
 		UserList.writeToUserDatabase(this);
 		return ret;
+		
 	}
+	
 }
