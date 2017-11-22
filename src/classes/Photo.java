@@ -56,6 +56,10 @@ public class Photo implements Serializable{
 		return this.name;
 	}
 	
+	public void addTag(String type, String value) {
+		this.tags.add(new Tag(type, value));
+	}
+	
 	/**
 	 * addTag() inserts a given addTag into the tags
 	 * list of a Photo
@@ -96,16 +100,11 @@ public class Photo implements Serializable{
 	 * 
 	 * @return
 	 */
-	public ArrayList<String> getDisplayTags(){
-		
-		ArrayList<String> list = new ArrayList<String>();
-		if(this.tags.size() == 0)
-			return list;
-		for(Tag tag: this.getTags()){
-			list.add(tag.getTagType() + "-" + tag.getTagValue());
-		}
-		return list;
+	
+	public ArrayList<Tag> getDisplayTags(){
+		return this.tags;
 	}
+
 	/**
 	 * Returns this photo's calendar object.
 	 * 

@@ -28,7 +28,7 @@ public class DisplayController {
 	@FXML private ImageView imageView;
 	@FXML private Button prev, next, reCaption, addTag, deleteTag;
 	@FXML private TextArea captionArea;
-	@FXML private ListView<String> tagsList;
+	@FXML private ListView<Tag> tagsList = new ListView<Tag>();
 	
 	private File f;
 	private ArrayList<Photo> photos;
@@ -66,7 +66,7 @@ public class DisplayController {
 	private void setData(int photoIndex) {
 		
 		Photo photo = photos.get(photoIndex);
-		ObservableList<String> tags = FXCollections.observableArrayList(photo.getDisplayTags());		
+		ObservableList<Tag> tags = FXCollections.observableArrayList(photo.getDisplayTags());
 		
 		// set image view
 		f = new File(photo.getFilePath());
@@ -86,7 +86,6 @@ public class DisplayController {
 			captionArea.setText(photos.get(photoIndex).getCaption());
 		}
 		// set tags
-		tagsList = new ListView<String>();
 		tagsList.setItems(tags);
 		tagsList.getItems().addAll();
 		
@@ -104,7 +103,7 @@ public class DisplayController {
 	}
 	
 	public void addTag(){
-		
+
 		String name = "";
 		String value = "";
 		
@@ -128,10 +127,12 @@ public class DisplayController {
 		
 		Tag newTag = new Tag(name, value);
 		
-		currentPhoto.addTag(newTag);		
+		currentPhoto.addTag(name, value);
+		
+		//currentPhoto.addTag(newTag);		
 		UserList.writeToUserDatabase(currentUser);
-		tagsList.getItems().add(newTag.toString());
-		ObservableList<String> tags = FXCollections.observableArrayList(currentPhoto.getDisplayTags());
+		tagsList.getItems().add(newTag);
+		ObservableList<Tag> tags = FXCollections.observableArrayList(currentPhoto.getDisplayTags());
 		tagsList.setItems(tags);
 		
 	}

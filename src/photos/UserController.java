@@ -140,7 +140,7 @@ public class UserController {
 				}
 
 				//Debug statement
-				System.out.println(image.getAbsolutePath());
+				if(Photos.DEBUG) System.out.println(image.getAbsolutePath());
 				
 				//create photo instance
 
@@ -459,6 +459,7 @@ public class UserController {
 	/**
 	 * Creates a new album based on the search results.
 	 */
+	@SuppressWarnings("unchecked")
 	public void create() {
 		TextInputDialog dialog = new TextInputDialog();
 		dialog.setTitle("New Album");
