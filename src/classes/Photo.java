@@ -43,7 +43,7 @@ public class Photo implements Serializable{
 		this.calendar = Calendar.getInstance();
 		this.calendar.set(Calendar.MILLISECOND, 0);
 		this.calendar.setTimeInMillis(f.lastModified());
-		this.name = UserList.removeExtension(f.getName());
+		this.name = f.getName();
 		this.filePath = filePath;
 		this.caption = "";
 	}
@@ -78,7 +78,7 @@ public class Photo implements Serializable{
 	 * @return true if the add was successful, false otherwise
 	 */
 	public boolean addTag(Tag addTag){
-		
+
 		if(this.tags.contains(addTag)){
 			return false;
 		}else{
@@ -107,7 +107,7 @@ public class Photo implements Serializable{
 	public ArrayList<Tag> getTags(){
 		return this.tags;
 	}
-	
+
 	/**
 	 * Returns this photo's calendar object.
 	 * 

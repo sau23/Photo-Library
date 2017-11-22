@@ -95,5 +95,5 @@ public class Album implements Serializable{
 		desAlbum.addPhoto(pic);
 		return;	
 	}
-
+	
 }

@@ -25,7 +25,7 @@ public class LoginController {
 	 * the global users list in UserList.
 	 * 
 	 * @param event
-	 * @throws Exception
+	 * @throws Exception Throws IOException
 	 */
 	@FXML public void login() throws Exception{
 		
@@ -63,10 +63,8 @@ public class LoginController {
 	/**
 	 * Attempts to create a new user if the provided user name has not yet
 	 * been taken.
-	 * 
-	 * @throws Exception
 	 */
-	@FXML public void createNewUser() throws Exception{
+	@FXML public void createNewUser(){
 		
 		String name = newUsername.getText();
 		String password = newPassword.getText();

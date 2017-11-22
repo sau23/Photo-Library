@@ -125,7 +125,6 @@ public class UserController {
 	public void addPhoto() throws Exception {
 		
 		//create a file chooser instance
-
 		FileChooser photoChooser = new FileChooser();
 		photoChooser.setTitle("Choose an Image");
 			
@@ -145,27 +144,38 @@ public class UserController {
 			alert.showAndWait();
 		}
 				
-		//set photo date
-		if(image == null){
-					
+		// check if image exists
+		if(image == null){		
 			return;
 		}
-
 		if(Photos.DEBUG) System.out.println(image.getAbsolutePath());
 
 		//create photo instance
-
 		Photo newPhoto = new Photo(image.getAbsolutePath());
 
-		//check if there's a duplicate; if not the photo is added to the pool
-		int i = singleSelectionModel.getSelectedIndex();
-		user.checkInPhotos(newPhoto, albums.get(i));
+		//check if photo exists in album already
+		int albumIndex = singleSelectionModel.getSelectedIndex();
+		for(Photo p : user.getAlbums().get(albumIndex).getPhotos()) {
+			if(newPhoto.toString().equals(p.toString())) {
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Error Adding Photo");
+				alert.setHeaderText(null);
+				alert.setContentText("Album already contains same file.");
+				alert.showAndWait();
+				if(Photos.DEBUG) System.out.println("File of same path already exists in album.");
+				return;
+			}
+		}
+		
+		//check if there's a duplicate in the pool; if not the photo is added to the pool
+		user.checkInPhotos(newPhoto, albums.get(albumIndex));
 
 		//User .ser file is updated for the selected user.
-
 		((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems().add(newPhoto);
 		((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getSelectionModel().select(newPhoto);
 		UserList.writeToUserDatabase(user);
+		
+		// update buttons
 		updatePhotoButtons();
 		updateCopyMove();
 		updateSearch();
@@ -241,7 +251,6 @@ public class UserController {
 			    }
 			  }
 			});
-			
 			window.show();
 		}
 	}
@@ -274,7 +283,7 @@ public class UserController {
 		// create choice dialog box
 		ChoiceDialog<String> dialog = new ChoiceDialog<String>(choices.get(0), choices);
 		dialog.setTitle("Copy Photo to Different Album");
-		dialog.setContentText("Choose an album to copy this photo to:");
+		dialog.setContentText("Choose an album to copy photo to:");
 		dialog.setHeaderText(null);
 		dialog.setGraphic(null);
 		
@@ -294,9 +303,9 @@ public class UserController {
 				
 				// check if the album already has a photo of same name
 				for(Photo p : album.getPhotos()) {
-					if(photo.getFilePath().equals(p.getFilePath())) {
-						dialog.setContentText("Album already has file of same path");
-						if(Photos.DEBUG )System.out.println("Album already has file of same path");
+					if(photo.toString().equals(p.toString())) {
+						dialog.setContentText("Album already has same file");
+						if(Photos.DEBUG )System.out.println("Album already has same file");
 						event.consume();
 					}
 				}
@@ -349,7 +358,7 @@ public class UserController {
 		// create choice dialog box
 		ChoiceDialog<String> dialog = new ChoiceDialog<String>(choices.get(0), choices);
 		dialog.setTitle("Move Photo to Different Album");
-		dialog.setContentText("Choose an album to move this photo to:");
+		dialog.setContentText("Choose an album to move photo to:");
 		dialog.setHeaderText(null);
 		dialog.setGraphic(null);
 		
@@ -369,9 +378,9 @@ public class UserController {
 
 				// check if the album already has a photo of the same name
 				for(Photo p : album.getPhotos()) {
-					if(photo.getFilePath().equals(p.getFilePath())) {
-						dialog.setContentText("Album already has file of same path");
-						if(Photos.DEBUG )System.out.println("Album already has file of same path");
+					if(photo.toString().equals(p.toString())) {
+						dialog.setContentText("Album already has same file");
+						if(Photos.DEBUG )System.out.println("Album already has same file");
 						event.consume();
 					}
 				}
@@ -559,7 +568,7 @@ public class UserController {
 	/**
 	 * Switches back to the login screen.
 	 * 
-	 * @throws Exception
+	 * @throws Exception Throws IOException
 	 */
 	public void logout() throws Exception {
 		Photos.showLogin();
@@ -871,7 +880,7 @@ public class UserController {
             	image.setCache(true);
             	image.setImage(new Image(f.toURI().toString()));
                 
-                name.setText(item.toString());
+                name.setText(UserList.removeExtension(item.toString()));
                 caption.setText(item.getCaption());
                 
                 hbox.getChildren().addAll(image, name, caption);

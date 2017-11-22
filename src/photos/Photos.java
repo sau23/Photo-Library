@@ -64,7 +64,7 @@ public class Photos extends Application {
 	/**
 	 * Switches display to login scene.
 	 * 
-	 * @throws Exception
+	 * @throws Exception Throws IOException
 	 */
 	public static void showLogin() throws Exception{
 		loginLoader = new FXMLLoader();
@@ -83,7 +83,7 @@ public class Photos extends Application {
 	/**
 	 * Switches display to admin scene.
 	 * 
-	 * @throws Exception
+	 * @throws Exception Throws IOException
 	 */
 	public static void showAdmin() throws Exception{
 		adminLoader = new FXMLLoader();
@@ -102,7 +102,7 @@ public class Photos extends Application {
 	/**
 	 * Switches display to user scene.
 	 * 
-	 * @throws Exception
+	 * @throws Exception Throws IOException
 	 */
 	public static void showUser(int index) throws Exception{
 		userLoader = new FXMLLoader();
@@ -121,7 +121,7 @@ public class Photos extends Application {
 	/**
 	 * Creates new display for display scene.
 	 * 
-	 * @throws Exception
+	 * @throws Exception Throws IOException
 	 */
 	public static Stage showDisplay(int userIndex, int photoIndex, ObservableList<Photo> photos) throws Exception{
 		displayLoader = new FXMLLoader();
