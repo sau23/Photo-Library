@@ -6,8 +6,8 @@ import classes.User;
 import classes.UserList;
 import java.io.File;
 import java.util.Optional;
-import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,7 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
- * DiplayController displays each photo individually; 
+ * DisplayController displays each photo individually; 
  * it shows their dates in a label, captions in a textField and lists
  * the Tags in a ListView. It also gives the ability to 
  * go through all photos in an album the photo is in 

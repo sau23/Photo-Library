@@ -1,1 +1,4 @@
 *.ser
+*.class
+*.class
+bin/photos/DisplayController.class
