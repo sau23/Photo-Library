@@ -36,6 +36,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
@@ -122,25 +123,34 @@ public class UserController {
 	 */
 	@SuppressWarnings("unchecked")
 	public void addPhoto() throws Exception {
+		
 		//create a file chooser instance
+
 		FileChooser photoChooser = new FileChooser();
 		photoChooser.setTitle("Choose an Image");
-
+			
 		//Set filter for images only
-		//TODO need to make filters work
-		FileChooser.ExtensionFilter exten = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.bmp", "*.jpeg", "*.jpe", "*.jif", "*.jfif", ".jfi");
-		photoChooser.getExtensionFilters();
-
+		photoChooser.getExtensionFilters().addAll( 
+				new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.bmp", "*.jpeg", "*.jpe", "*.jif", "*.jfif", ".jfi"));
+				
 		//get image
-		File image = photoChooser.showOpenDialog(null);
-
+		File image;
+		try{
+			image = photoChooser.showOpenDialog(null);
+		}catch(Exception e){
+			image = null;
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("File Error");
+			alert.setContentText("Invalid file: can't make a shortcut an image.");
+			alert.showAndWait();
+		}
+				
 		//set photo date
 		if(image == null){
-
+					
 			return;
 		}
 
-		//Debug statement
 		if(Photos.DEBUG) System.out.println(image.getAbsolutePath());
 
 		//create photo instance

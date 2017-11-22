@@ -102,5 +102,4 @@ public class Tag implements Serializable{
 		return this.type + "-" + this.value;
 	}
 		
-	
 }

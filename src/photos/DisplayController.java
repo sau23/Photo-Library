@@ -26,12 +26,14 @@ public class DisplayController {
 	@FXML private ImageView imageView;
 	@FXML private Button prev, next, reCaption, addTag, deleteTag;
 	@FXML private TextArea captionArea;
-	@FXML private ListView<Tag> tagsList = new ListView<Tag>();
+	@FXML private ListView<String> tagsList = new ListView<String>();
 	
 	private File f;
 	private ObservableList<Photo> photos;
 	private Photo currentPhoto;
 	private User currentUser;
+	
+	private ObservableList<String> displayTags = FXCollections.observableArrayList();
 	
 	public void setAlbum(int userIndex, int photoIndex, ObservableList<Photo> photos) {
 		this.photos = photos;
@@ -39,14 +41,6 @@ public class DisplayController {
 		currentPhoto = photos.get(photoIndex);
 		currentUser = UserList.getUser(userIndex);
 	}
-	/*
-	public void setAlbum(int userIndex, int albumIndex, int photoIndex) {
-		photos = UserList.getUser(userIndex).getAlbums().get(albumIndex).getPhotos();
-		setData(photoIndex);
-		currentPhoto = photos.get(photoIndex);
-		currentUser = UserList.getUser(userIndex);
-	}
-	*/
 	
 	public void prevPhoto() {
 		
@@ -72,7 +66,6 @@ public class DisplayController {
 	private void setData(int photoIndex) {
 		
 		Photo photo = photos.get(photoIndex);
-		ObservableList<Tag> tags = FXCollections.observableArrayList(photo.getDisplayTags());
 		
 		// set image view
 		f = new File(photo.getFilePath());
@@ -92,15 +85,25 @@ public class DisplayController {
 			captionArea.setText(photos.get(photoIndex).getCaption());
 		}
 		// set tags
-		tagsList.setItems(tags);
-		tagsList.getItems().addAll();
+		displayTags.clear();
+		if(photo.getTags().size() == 0){
+			
+			displayTags.add("Add some tags");
+		}else{
+			
+			displayTags.addAll(photo.getDisplayTags());
+		}
+		
+		tagsList.setItems(displayTags);
+
 		
 	}
 	
 	public void reCaption(){
 		String newCaption = captionArea.getText();
 		if(newCaption == null || newCaption.compareTo("") == 0){
-			return;
+			captionArea.setText("");
+			captionArea.setPromptText("Add a caption");
 		}
 		currentPhoto.setCaption(newCaption);
 		UserList.writeToUserDatabase(currentUser);
@@ -132,18 +135,31 @@ public class DisplayController {
 		}
 		
 		Tag newTag = new Tag(name, value);
-		
-		currentPhoto.addTag(name, value);
-		
-		//currentPhoto.addTag(newTag);		
+
+		displayTags.add(newTag.toString());
+		currentPhoto.addTag(newTag);
 		UserList.writeToUserDatabase(currentUser);
-		tagsList.getItems().add(newTag);
-		ObservableList<Tag> tags = FXCollections.observableArrayList(currentPhoto.getDisplayTags());
-		tagsList.setItems(tags);
-		
+		tagsList.setItems(displayTags);
+
 	}
 	
 	public void deleteTag(){
+		
+		String delDisplayTag = tagsList.getSelectionModel().getSelectedItem();
+		if(delDisplayTag == null || delDisplayTag.compareTo("Add some tags") == 0){
+			displayTags.clear();
+			tagsList.getItems().clear();
+			displayTags.add("Add some tags");
+			tagsList.setItems(displayTags);
+			return;
+		}
+		String tag[] = delDisplayTag.split("-");
+		Tag delTag = new Tag(tag[0], tag[1]);
+		currentPhoto.deleteTag(delTag);
+		UserList.writeToUserDatabase(currentUser);
+		setData(photos.indexOf(delTag));
+		
+		
 		
 	}
 	
