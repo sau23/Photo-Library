@@ -39,7 +39,7 @@ public class Photos extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			
+
 			window = primaryStage;
 			
 			showLogin();
@@ -123,7 +123,7 @@ public class Photos extends Application {
 	 * 
 	 * @throws Exception
 	 */
-	public static void showDisplay(int userIndex, int photoIndex, ObservableList<Photo> photos) throws Exception{
+	public static Stage showDisplay(int userIndex, int photoIndex, ObservableList<Photo> photos) throws Exception{
 		displayLoader = new FXMLLoader();
 		displayLoader.setLocation(Photos.class.getResource("/Display.fxml"));
 		
@@ -136,6 +136,6 @@ public class Photos extends Application {
 		
 		stage.setTitle("");
 		stage.setScene(displayScene);
-		stage.show();
+		return stage;
 	}
 }
