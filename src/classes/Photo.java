@@ -43,13 +43,13 @@ public class Photo implements Serializable{
 		this.calendar = Calendar.getInstance();
 		this.calendar.set(Calendar.MILLISECOND, 0);
 		this.calendar.setTimeInMillis(f.lastModified());
-		this.name = UserList.removeExtension(f.getName());
+		this.name = f.getName();
 		this.filePath = filePath;
 		this.caption = "";
 	}
 	
 	/**
-	 * Returns this photo's name.
+	 * Returns this photo's name without an extension.
 	 */
 	@Override
 	public String toString() {
