@@ -171,8 +171,14 @@ public class Photo implements Serializable{
 	 * @throws Exception Parse exception ignored due to proper formatting
 	 */
 	public boolean isWithinRange(String startDate, String endDate) throws Exception {
-		return !(this.calendar.getTime().before(new SimpleDateFormat("MM-dd-yyyy").parse(startDate)) 
-				|| this.calendar.getTime().after(new SimpleDateFormat("MM-dd-yyyy").parse(endDate)));
+		
+		// format end date to be 1 day ahead
+		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+		Calendar c = Calendar.getInstance();
+		c.setTime(sdf.parse(endDate));
+		c.add(Calendar.DATE, 1);
+		return sdf.parse(startDate).compareTo(this.calendar.getTime()) * 
+				this.calendar.getTime().compareTo(c.getTime()) >= 0;
 	}
 }
 
