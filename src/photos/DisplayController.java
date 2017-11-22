@@ -28,7 +28,7 @@ public class DisplayController {
 	@FXML private ImageView imageView;
 	@FXML private Button prev, next, reCaption, addTag, deleteTag;
 	@FXML private TextArea captionArea;
-	@FXML private ListView tagsList;
+	@FXML private ListView<String> tagsList;
 	
 	private File f;
 	private ArrayList<Photo> photos;
@@ -44,17 +44,29 @@ public class DisplayController {
 	
 	public void prevPhoto() {
 		
+		if(photos.indexOf(currentPhoto) == 0){
+			setData(photos.size() - 1);
+			currentPhoto = photos.get(photos.size() - 1);
+		}else{
+			setData(photos.indexOf(currentPhoto) - 1);
+			currentPhoto = photos.get(photos.indexOf(currentPhoto) - 1);
+		}
 	}
 	
 	public void nextPhoto() {
-		
+		if(photos.indexOf(currentPhoto) == photos.size() - 1){
+			setData(0);
+			currentPhoto = photos.get(0);
+		}else{
+			setData(photos.indexOf(currentPhoto) + 1);
+			currentPhoto = photos.get(photos.indexOf(currentPhoto) + 1);
+		}
 	}
 	
 	private void setData(int photoIndex) {
 		
 		Photo photo = photos.get(photoIndex);
-		ObservableList<Tag> tags = FXCollections.observableArrayList();
-		
+		ObservableList<String> tags = FXCollections.observableArrayList(photo.getDisplayTags());		
 		
 		// set image view
 		f = new File(photo.getFilePath());
@@ -68,12 +80,15 @@ public class DisplayController {
 		
 		// set captions
 		if(photos.get(photoIndex).getCaption() == null || photos.get(photoIndex).getCaption().compareTo("") == 0){
+			captionArea.setText("");
 			captionArea.setPromptText("Add a caption");
 		}else{
 			captionArea.setText(photos.get(photoIndex).getCaption());
 		}
 		// set tags
-		ListView tagList = new ListView(tags);
+		tagsList = new ListView<String>();
+		tagsList.setItems(tags);
+		tagsList.getItems().addAll();
 		
 	}
 	
@@ -115,7 +130,9 @@ public class DisplayController {
 		
 		currentPhoto.addTag(newTag);		
 		UserList.writeToUserDatabase(currentUser);
-		
+		tagsList.getItems().add(newTag.toString());
+		ObservableList<String> tags = FXCollections.observableArrayList(currentPhoto.getDisplayTags());
+		tagsList.setItems(tags);
 		
 	}
 	
