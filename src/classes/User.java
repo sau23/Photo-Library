@@ -59,7 +59,7 @@ public class User implements Serializable{
 	/**
 	 * Returns user name of user.
 	 * 
-	 * @return name
+	 * @return User's user name
 	 */
 	public String getName() {
 		return this.name;
@@ -68,7 +68,7 @@ public class User implements Serializable{
 	/**
 	 * Returns password of user.
 	 * 
-	 * @return pass
+	 * @return User's password
 	 */
 	public String getPass() {
 		return this.pass;
@@ -77,7 +77,7 @@ public class User implements Serializable{
 	/**
 	 * Returns list of albums of user.
 	 * 
-	 * @return albums
+	 * @return User's albums
 	 */
 	public ArrayList<Album> getAlbums(){
 		return this.albums;
@@ -86,13 +86,12 @@ public class User implements Serializable{
 	/**
 	 * Returns list of photos used in all albums of this user.
 	 * 
-	 * @return
+	 * @return User's photo pools
 	 */
 	public ArrayList<Photo> getPhotosPool(){
 		return this.photosPool;
 	}
-	
-	// TODO: Review check in photos
+
 	/**
 	 * Attempts to add a photo to the master photo list. If it finds a duplicate by file
 	 * path, simple add the photo to the given album. Otherwise, add the given photo to
@@ -105,19 +104,16 @@ public class User implements Serializable{
 		
 		// check for duplicates
 		for(int i = 0; i < this.photosPool.size(); i++) {
-			
 			if(this.photosPool.get(i).getFilePath().equals(photo.getFilePath())) {
 				if(UserList.DEBUG) System.out.println(photo.toString() + " found in " + this.getName() + "'s pool");
 				album.addPhoto(photo);
 				return;
 			}
-			
 		}
 		// otherwise add it
 		this.photosPool.add(photo);
 		album.addPhoto(photo);
 		if(UserList.DEBUG) System.out.println("Adding " + photo.toString() + " to " + this.getName() + "'s pool");
-		
 	}
 	
 	/**
@@ -126,22 +122,18 @@ public class User implements Serializable{
 	 * Otherwise, if it is the only album to contain the photo, the photo will then be
 	 * deleted from the master photo list.
 	 * 
-	 * @param photo Photo to be deleted from 
+	 * @param photo The photo to delete
 	 */
 	public void deletePhoto(Photo photo) {
 		
 		// check all albums in this user to see if any more albums have same reference to photo
 		int i = 0;
 		for(Album a : this.albums) {
-			
 			for(Photo p : a.getPhotos()) {
-				
 				if(p.getFilePath().equals(photo.getFilePath())) {
 					i++;
 				}
-				
 			}
-			
 		}
 		
 		// if it not found anywhere else, delete it
@@ -151,7 +143,6 @@ public class User implements Serializable{
 			this.photosPool.remove(photo);
 			if(UserList.DEBUG) System.out.println("Deleted " + photo.toString() + " from " + this.getName() + "'s pool.");
 		}
-		
 	}
 
 	/**
@@ -159,7 +150,7 @@ public class User implements Serializable{
 	 * contained in the list exists. If a photo does not exist at its given file
 	 * path, delete it from all albums then update the user's .ser file.
 	 * 
-	 * @param index
+	 * @return A list of photos that could not be found
 	 */
 	public ArrayList<String> checkPhotosPool() {
 		
@@ -177,23 +168,18 @@ public class User implements Serializable{
 					a.removePhoto(p);
 				}
 				toRemove.add(p);
-			}
-			
+			}	
 		}
 		
 		//Check albums for instance and remove
 		for(Photo p : toRemove) {
-			
 			for(Album a : this.albums) {
 				a.removePhoto(p);
 			}
 			deletePhoto(p);
 			ret.add(p.getFilePath());
-			
 		}
 		UserList.writeToUserDatabase(this);
 		return ret;
-		
 	}
-	
 }

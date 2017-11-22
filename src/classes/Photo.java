@@ -22,7 +22,7 @@ public class Photo implements Serializable{
 	private static final long serialVersionUID = 3063382592784005045L;
 
 	/**
-	 * Photo object's calendar, name, filepath, caption and list of tags.
+	 * Photo object's calendar, name, file path, caption and list of tags.
 	 */
 	private ArrayList<Tag> tags;
 	private Calendar calendar;
@@ -49,9 +49,9 @@ public class Photo implements Serializable{
 	}
 	
 	/**
-	 * Returns this photo's name.
+	 * Returns this photo's name without an extension.
 	 * 
-	 * @return String of name for photo
+	 * @return Photo's name
 	 */
 	@Override
 	public String toString() {
@@ -67,14 +67,13 @@ public class Photo implements Serializable{
 	 * @return true if the add was successful, false otherwise
 	 */
 	public void addTag(Tag addTag) {
-		
+
 		if(this.tags.contains(addTag)){
 			return;
 		}else{
 			this.tags.add(addTag);
 			return;
 		}
-		
 	}
 	
 	/**
@@ -91,7 +90,7 @@ public class Photo implements Serializable{
 	/**
 	 * Returns this photo's list of tags.
 	 * 
-	 * @return
+	 * @return Photo's tags
 	 */
 	public ArrayList<Tag> getTags(){
 		return this.tags;
@@ -100,7 +99,7 @@ public class Photo implements Serializable{
 	/**
 	 * Returns this photo's calendar object.
 	 * 
-	 * @return
+	 * @return Photo's held time
 	 */
 	public Calendar getCalendar(){
 		return this.calendar;
@@ -109,19 +108,10 @@ public class Photo implements Serializable{
 	/**
 	 * Returns this photo's file path.
 	 * 
-	 * @return
+	 * @return Photo's file path
 	 */
 	public String getFilePath() {
 		return this.filePath;
-	}
-	
-	/**
-	 * Changes this photo's caption to the given caption.
-	 * 
-	 * @param newCap The new caption to set
-	 */
-	public void setCaption(String newCap){
-		this.caption = newCap;
 	}
 	
 	/**
@@ -144,6 +134,15 @@ public class Photo implements Serializable{
 	}
 	
 	/**
+	 * Changes this photo's caption to the given caption.
+	 * 
+	 * @param newCap The new caption to set
+	 */
+	public void setCaption(String newCap){
+		this.caption = newCap;
+	}
+
+	/**
 	 * Returns whether or not this photo contains a tag with the given type and
 	 * value.
 	 * 
@@ -153,16 +152,12 @@ public class Photo implements Serializable{
 	 * @return Whether the tag is contained in this photo
 	 */
 	public boolean searchTags(String type, String value) {
-		
 		for(Tag t : this.tags) {
-			
 			if(t.getTagType().equalsIgnoreCase(type) && t.getTagValue().equals(value)) {
 				return true;
 			}
-			
 		}
 		return false;
-		
 	}
 	
 	/**

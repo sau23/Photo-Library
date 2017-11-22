@@ -38,6 +38,7 @@ public class Tag implements Serializable{
 	 * Tag
 	 * 
 	 * @param compare The Tag to be compared with
+	 * 
 	 * @return int showing how similar to the caller Tag
 	 * is to compare. 0 = equal.
 	 */
@@ -76,25 +77,31 @@ public class Tag implements Serializable{
 	}
 	
 	/**
-	 * Returns this tag's type
+	 * Returns this tag's type.
 	 * 
-	 * @return
+	 * @return Tag's type
 	 */
 	public String getTagType(){
 		return this.type;
 	}
 	
 	/**
-	 * Returns this tag's value
+	 * Returns this tag's value.
 	 * 
-	 * @return
+	 * @return Tag's value
 	 */
 	public String getTagValue(){
 		return this.value;
 	}
 	
+	/**
+	 * Returns this tag's type and value with a hyphen in
+	 * between.
+	 * 
+	 * @return Formatted to print "tag-value"
+	 */
+	@Override
 	public String toString(){
 		return this.type + "-" + this.value;
 	}
-		
 }

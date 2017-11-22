@@ -45,6 +45,7 @@ public class UserList {
 	 * Returns a user at the given index.
 	 * 
 	 * @param index The index of user to get
+	 * 
 	 * @return The user at the given index
 	 */
 	public static User getUser(int index) {
@@ -59,7 +60,7 @@ public class UserList {
 	 * @param name The user name to add
 	 * @param pass The user's chosen password
 	 * 
-	 * @return 
+	 * @return  Whether the user was added
 	 */
 	public static boolean addUser(String name, String pass) {
 
@@ -82,7 +83,7 @@ public class UserList {
 	 * Searches database for the given user name and deletes it, deleting the
 	 * corresponding .ser file from the database.
 	 * 
-	 * @param index The index of user to remove
+	 * @param index The index of user to delete
 	 */
 	public static void deleteUser(int index) {
 		File f = new File("data/" + users.get(index).getName() + ".ser");
@@ -211,34 +212,18 @@ public class UserList {
 		
 	/**
 	 * Adds a stock user account to the list of users with pre-determined file
-	 * locations. Only run once per program start-up.
+	 * locations. Only run once per program start-up. Can be toggled on and off.
 	 */
 	public static void addStockUser() {
 		User stock = new User("stock", "");
 		
 		// set album 1 contents
 		Album album1 = new Album("Album 1");
-		Photo niko = new Photo("data/stock/niko.png");
+		Photo niko, lions, orbweaver, owl;
+		niko = new Photo("data/stock/niko.png");
 		niko.setCaption("A picture of a not-cat");
 		niko.addTag(new Tag("family", "feline"));
 		stock.checkInPhotos(niko, album1);
-		stock.getAlbums().add(album1);
-		
-		// set album 2 contents
-		Album album2 = new Album("Album 2");
-		Photo bird, catarpillar, hedhogs, lions, orbweaver, owl;
-		bird = new Photo("data/stock/bird.jpg");
-		bird.setCaption("A picture of a bird");
-		bird.addTag(new Tag("family", "avian"));
-		stock.checkInPhotos(bird, album2);
-		catarpillar = new Photo("data/stock/catarpillar.jpg");
-		catarpillar.setCaption("A picture of a caterpillar");
-		catarpillar.addTag(new Tag("family", "lepidoptera"));
-		stock.checkInPhotos(catarpillar, album2);
-		hedhogs = new Photo("data/stock/hedhogs.jpg");
-		hedhogs.setCaption("A picture of a hedgehog");
-		hedhogs.addTag(new Tag("family", "erinaceinae"));
-		stock.checkInPhotos(hedhogs, album2);
 		lions = new Photo("data/stock/lions.jpg");
 		lions.setCaption("A picture of a lion");
 		lions.addTag(new Tag("family", "feline"));
@@ -251,6 +236,23 @@ public class UserList {
 		owl.setCaption("A picture of an owl");
 		owl.addTag(new Tag("family", "avian"));
 		stock.checkInPhotos(owl, album1);
+		stock.getAlbums().add(album1);
+		
+		// set album 2 contents
+		Album album2 = new Album("Album 2");
+		Photo bird, catarpillar, hedhogs;
+		bird = new Photo("data/stock/bird.jpg");
+		bird.setCaption("A picture of a bird");
+		bird.addTag(new Tag("family", "avian"));
+		stock.checkInPhotos(bird, album2);
+		catarpillar = new Photo("data/stock/catarpillar.jpg");
+		catarpillar.setCaption("A picture of a caterpillar");
+		catarpillar.addTag(new Tag("family", "lepidoptera"));
+		stock.checkInPhotos(catarpillar, album2);
+		hedhogs = new Photo("data/stock/hedhogs.jpg");
+		hedhogs.setCaption("A picture of a hedgehog");
+		hedhogs.addTag(new Tag("family", "erinaceinae"));
+		stock.checkInPhotos(hedhogs, album2);
 		stock.checkInPhotos(niko, album2);
 		stock.getAlbums().add(album2);
 		

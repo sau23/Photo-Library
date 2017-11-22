@@ -24,7 +24,6 @@ public class LoginController {
 	 * Login controller checks if the fields correspond to a matching user in
 	 * the global users list in UserList.
 	 * 
-	 * @param event
 	 * @throws Exception Throws IOException
 	 */
 	@FXML public void login() throws Exception{

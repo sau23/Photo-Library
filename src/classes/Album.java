@@ -22,7 +22,7 @@ public class Album implements Serializable{
 	/**
 	 * Album object's name and list of different photos.
 	 */
-	private ArrayList<Photo> photos;//the list that holds the Photos
+	private ArrayList<Photo> photos;
 	private String name;
 	
 	/**
@@ -56,8 +56,7 @@ public class Album implements Serializable{
 	}
 	
 	/**
-	 * addPhoto() inserts a Photo to the Album
-	 * list.
+	 * addPhoto() inserts a Photo to the Album list.
 	 * 
 	 * @param pic The Photo to be added
 	 */
@@ -81,7 +80,7 @@ public class Album implements Serializable{
 	public boolean removePhoto(Photo pic){
 		return this.photos.remove(pic);
 	}
-	
+
 	/**
 	 * movePhoto() takes a given photo and inserts it
 	 * into the desAlbum; the copy in the Album list
@@ -95,5 +94,4 @@ public class Album implements Serializable{
 		desAlbum.addPhoto(pic);
 		return;	
 	}
-	
 }
