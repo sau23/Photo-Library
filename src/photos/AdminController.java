@@ -63,10 +63,10 @@ public class AdminController {
 			public void changed(ObservableValue<? extends User> obs, User o, User n) {
 				if(n != null) {
 					// enable delete button
-					enableDelete(true);
+					delete.setDisable(false);
 				} else {
 					// disable delete button
-					enableDelete(false);
+					delete.setDisable(true);
 				}
 			}
 		});
@@ -104,6 +104,7 @@ public class AdminController {
 		pass.setText("");
 		if(UserList.addUser(userName, passWord)) {
 			userList.add(new User(userName,passWord));
+			user.setPromptText("");
 		} else {
 			user.setPromptText("Username taken");
 		}
@@ -130,6 +131,7 @@ public class AdminController {
 	 */
 	public void toggleStock() {
 		UserList.generateStock = !UserList.generateStock;
+		
 		// if switched back on
 		if(UserList.generateStock) {
 			
@@ -165,17 +167,5 @@ public class AdminController {
 	 */
 	public void logout() throws Exception{
 		Photos.showLogin();
-	}
-	
-	// Helper Functions
-	
-	/**
-	 * Helper function to turn off delete button when no user is detected from
-	 * reading in the database.
-	 * 
-	 * @param isEnabled True enables buttons, false disables buttons
-	 */
-	private void enableDelete(boolean isEnabled) {
-		delete.setDisable(!isEnabled);
 	}
 }

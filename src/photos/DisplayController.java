@@ -4,12 +4,10 @@ import classes.Photo;
 import classes.Tag;
 import classes.User;
 import classes.UserList;
-
 import java.io.File;
 import java.util.Optional;
-
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;

@@ -22,7 +22,7 @@ public class Photo implements Serializable{
 	private static final long serialVersionUID = 3063382592784005045L;
 
 	/**
-	 * Photo object's calendar, name, filepath, caption and list of tags.
+	 * Photo object's calendar, name, file path, caption and list of tags.
 	 */
 	private ArrayList<Tag> tags;
 	private Calendar calendar;
@@ -50,6 +50,8 @@ public class Photo implements Serializable{
 	
 	/**
 	 * Returns this photo's name without an extension.
+	 * 
+	 * @return Photo's name
 	 */
 	@Override
 	public String toString() {
@@ -59,7 +61,9 @@ public class Photo implements Serializable{
 	/**
 	 * addTag() inserts a given addTag into the tags
 	 * list of a Photo
+	 * 
 	 * @param addTag Tag to be added to the Photo's tag list
+	 * 
 	 * @return true if the add was successful, false otherwise
 	 */
 	public boolean addTag(Tag addTag){
@@ -72,62 +76,49 @@ public class Photo implements Serializable{
 	
 	/**
 	 * deleteTag() finds the tag and deletes it, if its in the list.
+	 * 
 	 * @param delTag The tag String to be deleted
+	 * 
 	 * @return true if it was removed; false otherwise
 	 */
 	public boolean deleteTag(Tag delTag){
-		
 		return this.tags.remove(delTag);
-		
 	}
 	
 	/**
 	 * Returns this photo's list of tags.
 	 * 
-	 * @return
+	 * @return Photo's tags
 	 */
 	public ArrayList<Tag> getTags(){
-		
 		return this.tags;
 	}
 
 	/**
 	 * Returns this photo's calendar object.
 	 * 
-	 * @return
+	 * @return Photo's held time
 	 */
 	public Calendar getCalendar(){
-		
 		return this.calendar;
 	}
 
 	/**
 	 * Returns this photo's file path.
-	 * @return
+	 * 
+	 * @return Photo's file path
 	 */
 	public String getFilePath() {
 		return this.filePath;
 	}
 	
 	/**
-	 * Changes this photo's caption to the given caption.
-	 * 
-	 * @param newCap The new caption to set
-	 */
-	public void setCaption(String newCap){
-		
-		this.caption = newCap;
-		
-	}
-	
-	/**
 	 * Returns this photo's caption.
-	 * @return
+	 * 
+	 * @return Photo's caption
 	 */
 	public String getCaption(){
-		
 		return this.caption;
-		
 	}
 	
 	/**
@@ -140,6 +131,15 @@ public class Photo implements Serializable{
 		return new SimpleDateFormat("MM-dd-yyyy").format(this.calendar.getTime());
 	}
 	
+	/**
+	 * Changes this photo's caption to the given caption.
+	 * 
+	 * @param newCap The new caption to set
+	 */
+	public void setCaption(String newCap){
+		this.caption = newCap;
+	}
+
 	/**
 	 * Returns whether or not this photo contains a tag with the given type and
 	 * value.
@@ -166,7 +166,9 @@ public class Photo implements Serializable{
 	 * 
 	 * @param startDate The start of the range
 	 * @param endDate The end of the range
+	 * 
 	 * @return Whether this photo fits in the given range
+	 * 
 	 * @throws Exception Parse exception ignored due to proper formatting
 	 */
 	public boolean isWithinRange(String startDate, String endDate) throws Exception {

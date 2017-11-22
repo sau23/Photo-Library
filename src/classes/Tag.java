@@ -29,10 +29,8 @@ public class Tag implements Serializable{
 	 * @param tagValue This is the value of the Tag
 	 */
 	public Tag(String tagType, String tagValue){
-		
 		this.type = tagType;
 		this.value = tagValue;
-		
 	}
 	
 	/**
@@ -40,14 +38,13 @@ public class Tag implements Serializable{
 	 * Tag
 	 * 
 	 * @param compare The Tag to be compared with
+	 * 
 	 * @return int showing how similar to the caller Tag
 	 * is to compare. 0 = equal.
 	 */
 	public int compareTo(Tag compare){
-		
 		return this.type.compareTo(compare.type) + 
 				this.value.compareTo(compare.value);
-		
 	}
 	
 	/**
@@ -57,49 +54,54 @@ public class Tag implements Serializable{
 	 * 
 	 * @param compare The Tag whose name is to be compared
 	 * with
+	 * 
 	 * @return int showing how similar to the caller Tag
 	 * is to compare. 0 = equal.
 	 */
 	public int compareNames(Tag compare){
-		
 		return this.type.compareTo(compare.type);
-		
 	}
 	
 	/**
 	 * compareValues() does what {@link #compareTo(Tag)}
 	 * does but restricts the comparison to the values of the
 	 * Tags.
+	 * 
 	 * @param compare The Tag whose value is to be compared with
+	 * 
 	 * @return int showing how similar to the caller Tag 
 	 * is to compare. 0 = equal.
 	 */
 	public int compareValues(Tag compare){
-		
 		return this.value.compareTo(compare.value);
-		
 	}
 	
 	/**
-	 * Returns this tag's type
+	 * Returns this tag's type.
 	 * 
-	 * @return
+	 * @return Tag's type
 	 */
 	public String getTagType(){
 		return this.type;
 	}
 	
 	/**
-	 * Returns this tag's value
+	 * Returns this tag's value.
 	 * 
-	 * @return
+	 * @return Tag's value
 	 */
 	public String getTagValue(){
 		return this.value;
 	}
 	
+	/**
+	 * Returns this tag's type and value with a hyphen in
+	 * between.
+	 * 
+	 * @return Formatted to print "tag-value"
+	 */
+	@Override
 	public String toString(){
 		return this.type + "-" + this.value;
 	}
-		
 }
