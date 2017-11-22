@@ -39,7 +39,7 @@ public class Album implements Serializable{
 	/**
 	 * Returns this album's name.
 	 * 
-	 * @return Album's name
+	 * @return Name of the album
 	 */
 	@Override
 	public String toString() {
@@ -61,11 +61,14 @@ public class Album implements Serializable{
 	 * @param pic The Photo to be added
 	 */
 	public boolean addPhoto(Photo pic){
-		if(this.photos.contains(pic))
+	
+		if(this.photos.contains(pic)){
 			return false;
-		else
+		}else{
 			this.photos.add(pic);
 			return true;
+		}
+		
 	}
 	
 	/**
@@ -76,5 +79,19 @@ public class Album implements Serializable{
 	 */
 	public boolean removePhoto(Photo pic){
 		return this.photos.remove(pic);
+	}
+
+	/**
+	 * movePhoto() takes a given photo and inserts it
+	 * into the desAlbum; the copy in the Album list
+	 * will be deleted.
+	 * 
+	 * @param pic The Photo to be moved
+	 * @param desAlbum The Album where the Photo will go
+	 */
+	public void movePhoto(Photo pic, Album desAlbum){
+		this.photos.remove(pic);
+		desAlbum.addPhoto(pic);
+		return;	
 	}
 }

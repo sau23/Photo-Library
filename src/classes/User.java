@@ -110,7 +110,6 @@ public class User implements Serializable{
 				return;
 			}
 		}
-		
 		// otherwise add it
 		this.photosPool.add(photo);
 		album.addPhoto(photo);
@@ -154,18 +153,25 @@ public class User implements Serializable{
 	 * @return A list of photos that could not be found
 	 */
 	public ArrayList<String> checkPhotosPool() {
+		
 		ArrayList<String> ret = new ArrayList<String>();
 		ArrayList<Photo> toRemove = new ArrayList<Photo>();
 		File f;
+		
+		//Check photo pool
 		for(Photo p : this.photosPool) {
+			
+			//create instance of target photo
 			f = new File(p.getFilePath());
 			if(!f.exists()) {
 				for(Album a : this.albums) {
 					a.removePhoto(p);
 				}
 				toRemove.add(p);
-			}
+			}	
 		}
+		
+		//Check albums for instance and remove
 		for(Photo p : toRemove) {
 			for(Album a : this.albums) {
 				a.removePhoto(p);

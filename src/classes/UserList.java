@@ -76,6 +76,7 @@ public class UserList {
 		writeToUserDatabase(toAdd);
 		if(DEBUG) System.out.println("Successfully added new user " + name + ", " + pass + ".");
 		return true;
+		
 	}
 
 	/**

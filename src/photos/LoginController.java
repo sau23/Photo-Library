@@ -30,25 +30,33 @@ public class LoginController {
 		
 		String name = useName.getText();
 		String passWord = pass.getText();
-
+		
+		//checks to see if user is an admin
 		if(name.compareTo("admin") == 0 && passWord.compareTo("admin") == 0){
 			
+			//displays admin view
 			Photos.showAdmin();
 			
 		}else{
+			
+			//check to see if credentials match those of a returning user
 			int checkForUser = UserList.verifyFromUserDatabase(name, passWord);
-			if(checkForUser == -1){
+			
+			if(checkForUser == -1){//both username and password are wrong
 				useName.setText("");
 				useName.setPromptText("Not a recognized user");
 				pass.setText("");
 				useName.setPromptText("Please try again");
-			}else if(checkForUser == -2){
+			}else if(checkForUser == -2){//password is wrong
 				pass.setText("");
 				pass.setPromptText("Incorrect password ");
 			}else{
+				//if successfully matched, show user display
 				Photos.showUser(checkForUser);
-			}			
+			}	
+			
 		}
+		
 	}
 	
 	/**
@@ -60,12 +68,18 @@ public class LoginController {
 		String name = newUsername.getText();
 		String password = newPassword.getText();
 		
+		//checking for user
 		int checkForUser = UserList.verifyFromUserDatabase(name, password);
+		
+		//can't make a new account with an empty name
 		if(name.isEmpty()) {
 			newUsername.setText("");
 			newUsername.setPromptText("Username cannot be empty");
 			return;
 		}
+		
+		//check to see if given credentials for new
+		//user are already taken or not
 		if(checkForUser == -1){
 			UserList.addUser(name, password);
 			newUsername.setText("");
@@ -79,5 +93,7 @@ public class LoginController {
 			newPassword.setPromptText("Try another name and pass");
 			
 		}
+		
 	}
+	
 }

@@ -18,21 +18,44 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * DiplayController displays each photo individually; 
+ * it shows their dates in a label, captions in a textField and lists
+ * the Tags in a ListView. It also gives the ability to 
+ * go through all photos in an album the photo is in 
+ * 
+ * @author Nicholas Petriello
+ * @author Samuel Uganiza
+ */
 public class DisplayController {
 
+	/**
+	 * FXML references to devices in the Display.fxml
+	 */
 	@FXML private Label photoLabel, dateField;
 	@FXML private ImageView imageView;
 	@FXML private Button prev, next, reCaption, addTag, deleteTag;
 	@FXML private TextArea captionArea;
 	@FXML private ListView<Tag> tagsList = new ListView<Tag>();
 	
+	/**
+	 * Fields which correspond to the current photo 
+	 * being displayed. 
+	 */
 	private File f;
-	private ObservableList<Photo> photos;
+	private ObservableList<Photo> photos;//pool of photos from user
 	private Photo currentPhoto;
 	private User currentUser;
 	
-	private ObservableList<Tag> displayTags = FXCollections.observableArrayList();
+	private ObservableList<Tag> displayTags = FXCollections.observableArrayList();//used to set the Listview after modifications are made
 	
+	/**
+	 * 
+	 * 
+	 * @param userIndex current index in UserList
+	 * @param photoIndex current index in Photo pool
+	 * @param photos reference to the album's Photo pool
+	 */
 	public void setAlbum(int userIndex, int photoIndex, ObservableList<Photo> photos) {
 		this.photos = photos;
 		setData(photoIndex);
@@ -40,9 +63,12 @@ public class DisplayController {
 		currentUser = UserList.getUser(userIndex);
 	}
 	
-	public void prevPhoto() {
-		
-		if(photos.indexOf(currentPhoto) == 0){
+	/**
+	 * prevPhoto() changes the view of the Photo that is 
+	 * before the current photo in the album
+	 */
+	public void prevPhoto() {	
+		if(photos.indexOf(currentPhoto) == 0){//check if the current photo is first in the list, goes to last
 			setData(photos.size() - 1);
 			currentPhoto = photos.get(photos.size() - 1);
 		}else{
@@ -51,8 +77,12 @@ public class DisplayController {
 		}
 	}
 	
+	/**
+	 * nextPhoto() changes the view of the Photo that is
+	 * after the current photo in the album
+	 */
 	public void nextPhoto() {
-		if(photos.indexOf(currentPhoto) == photos.size() - 1){
+		if(photos.indexOf(currentPhoto) == photos.size() - 1){//check if the current photo is the last in the list, goes to first
 			setData(0);
 			currentPhoto = photos.get(0);
 		}else{
@@ -61,6 +91,10 @@ public class DisplayController {
 		}
 	}
 	
+	/**
+	 * setData
+	 * @param photoIndex
+	 */
 	private void setData(int photoIndex) {
 		
 		Photo photo = photos.get(photoIndex);
@@ -91,7 +125,7 @@ public class DisplayController {
 			
 			displayTags.addAll(photo.getTags());
 		}
-		
+		//initialize tagsList with current photo info
 		tagsList.setItems(displayTags);
 
 		
