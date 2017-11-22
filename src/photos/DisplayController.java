@@ -45,7 +45,8 @@ public class DisplayController {
 	public void prevPhoto() {
 		
 		if(photos.indexOf(currentPhoto) == 0){
-			;
+			setData(photos.size() - 1);
+			currentPhoto = photos.get(photos.size() - 1);
 		}else{
 			setData(photos.indexOf(currentPhoto) - 1);
 			currentPhoto = photos.get(photos.indexOf(currentPhoto) - 1);
@@ -54,7 +55,8 @@ public class DisplayController {
 	
 	public void nextPhoto() {
 		if(photos.indexOf(currentPhoto) == photos.size() - 1){
-			;
+			setData(0);
+			currentPhoto = photos.get(0);
 		}else{
 			setData(photos.indexOf(currentPhoto) + 1);
 			currentPhoto = photos.get(photos.indexOf(currentPhoto) + 1);
