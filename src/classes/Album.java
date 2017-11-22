@@ -93,17 +93,6 @@ public class Album implements Serializable{
 		desAlbum.addPhoto(pic);
 		return;
 	}
-	
-	/**
-	 * 
-	 * @param pic
-	 * @param otherAlbum
-	 */
-	public void copyPhoto(Photo pic, Album otherAlbum){
-		
-		
-		return;
-	}
-	
+
 
 }

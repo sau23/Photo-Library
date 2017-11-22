@@ -100,17 +100,6 @@ public class Photo implements Serializable{
 	 * 
 	 * @return
 	 */
-	
-	public ArrayList<String> getDisplayTags(){
-		ArrayList<String> list = new ArrayList<String>();
-		if(this.tags.size() == 0){
-			return list;
-		}
-		for(Tag tag: this.tags){
-			list.add(tag.toString());
-		}
-		return list;
-	}
 
 	/**
 	 * Returns this photo's calendar object.
