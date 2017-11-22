@@ -36,6 +36,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Pair;
 
@@ -189,6 +190,7 @@ public class UserController {
 			UserList.writeToUserDatabase(user);
 			
 			updatePhotoButtons();
+			updateCopyMove();
 			updateSearch();
 			
 			if(Photos.DEBUG) System.out.println("Successfully deleted " + photo.toString() + " from album " + album.toString());
@@ -206,7 +208,31 @@ public class UserController {
 		int photoIndex = ((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getSelectionModel().getSelectedIndex();
 		if(photoIndex > -1) {
 			ObservableList<Photo> photos = ((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems();
-			Photos.showDisplay(index, photoIndex, photos);
+			Stage window = Photos.showDisplay(index, photoIndex, photos);
+			window.focusedProperty().addListener(new ChangeListener<Boolean>()
+			{
+			  @Override
+			  public void changed(ObservableValue<? extends Boolean> obs, Boolean o, Boolean n)
+			  {
+			    if(o) {
+			    	// redraw the current opened tab
+			    	((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems();
+			    	
+			    	// get currently selected tab
+			    	Tab curTab = singleSelectionModel.getSelectedItem();
+			    	
+			    	// create a new listview
+			    	ListView<Photo> nlv = new ListView<Photo>();
+					changeCellFactory(nlv);
+					
+					// set items in currently selected tab
+					nlv.setItems(FXCollections.observableArrayList(((ListView<Photo>)curTab.getContent()).getItems()));
+					curTab.setContent(nlv);
+			    }
+			  }
+			});
+			
+			window.show();
 		}
 	}
 
@@ -599,7 +625,6 @@ public class UserController {
 	 * Initializes the tab pane to hold any albums that the user at the
 	 * stored index has when the database is read.
 	 */
-	@SuppressWarnings("unchecked")
 	private void setupTabPane() {
 		
 		// toggle buttons besides add button depending on whether the album is empty
@@ -613,23 +638,16 @@ public class UserController {
 						tabPane.getTabs().remove(albums.size());
 						create.setDisable(true);
 						if(Photos.DEBUG) System.out.println("Removed search tab.");
-					}
-					
-					ListView<Photo> lv = (ListView<Photo>)n.getContent();
+					}	
+
 					int albumIndex = singleSelectionModel.getSelectedIndex();
 					if(albumIndex < albums.size()) {
-						lv.setItems(FXCollections.observableArrayList(albums.get(albumIndex).getPhotos()));
-					}
-						// TODO: is creating a new listview necessary?
-						/*
 						ListView<Photo> nlv = new ListView<Photo>();
 						changeCellFactory(nlv);
 						nlv.setItems(FXCollections.observableArrayList(albums.get(albumIndex).getPhotos()));
 						n.setContent(nlv);
-						*/
-						
-					// check if attempting to create a search tab while the old search tab is already open
-					
+					}
+
 				}
 				updateAlbumButtons();
 				updatePhotoButtons();
