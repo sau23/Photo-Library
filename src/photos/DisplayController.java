@@ -6,8 +6,6 @@ import classes.User;
 import classes.UserList;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import javafx.collections.FXCollections;
@@ -31,16 +29,24 @@ public class DisplayController {
 	@FXML private ListView<Tag> tagsList = new ListView<Tag>();
 	
 	private File f;
-	private ArrayList<Photo> photos;
+	private ObservableList<Photo> photos;
 	private Photo currentPhoto;
 	private User currentUser;
 	
+	public void setAlbum(int userIndex, int photoIndex, ObservableList<Photo> photos) {
+		this.photos = photos;
+		setData(photoIndex);
+		currentPhoto = photos.get(photoIndex);
+		currentUser = UserList.getUser(userIndex);
+	}
+	/*
 	public void setAlbum(int userIndex, int albumIndex, int photoIndex) {
 		photos = UserList.getUser(userIndex).getAlbums().get(albumIndex).getPhotos();
 		setData(photoIndex);
 		currentPhoto = photos.get(photoIndex);
 		currentUser = UserList.getUser(userIndex);
 	}
+	*/
 	
 	public void prevPhoto() {
 		

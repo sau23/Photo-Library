@@ -1,7 +1,9 @@
 package photos;
 
+import classes.Photo;
 import classes.UserList;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -121,14 +123,14 @@ public class Photos extends Application {
 	 * 
 	 * @throws Exception
 	 */
-	public static void showDisplay(int userIndex, int albumIndex, int photoIndex) throws Exception{
+	public static void showDisplay(int userIndex, int photoIndex, ObservableList<Photo> photos) throws Exception{
 		displayLoader = new FXMLLoader();
 		displayLoader.setLocation(Photos.class.getResource("/Display.fxml"));
 		
 		displayScene = new Scene((AnchorPane)displayLoader.load());
 
 		DisplayController dc = displayLoader.getController();
-		dc.setAlbum(userIndex, albumIndex, photoIndex);
+		dc.setAlbum(userIndex, photoIndex, photos);
 		
 		Stage stage = new Stage();
 		

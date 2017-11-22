@@ -122,42 +122,43 @@ public class UserController {
 	@SuppressWarnings("unchecked")
 	public void addPhoto() throws Exception {
 		//create a file chooser instance
-				FileChooser photoChooser = new FileChooser();
-				photoChooser.setTitle("Choose an Image");
-				
-				//Set filter for images only
-				//TODO need to make filters work
-				FileChooser.ExtensionFilter exten = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.bmp", "*.jpeg", "*.jpe", "*.jif", "*.jfif", ".jfi");
-				photoChooser.getExtensionFilters();
-				
-				//get image
-				File image = photoChooser.showOpenDialog(null);
-				
-				//set photo date
-				if(image == null){
-					
-					return;
-				}
+		FileChooser photoChooser = new FileChooser();
+		photoChooser.setTitle("Choose an Image");
 
-				//Debug statement
-				if(Photos.DEBUG) System.out.println(image.getAbsolutePath());
-				
-				//create photo instance
+		//Set filter for images only
+		//TODO need to make filters work
+		FileChooser.ExtensionFilter exten = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif", "*.bmp", "*.jpeg", "*.jpe", "*.jif", "*.jfif", ".jfi");
+		photoChooser.getExtensionFilters();
 
-				Photo newPhoto = new Photo(image.getAbsolutePath());
-				
-				//check if there's a duplicate; if not the photo is added to the pool
-				int i = singleSelectionModel.getSelectedIndex();
-				user.checkInPhotos(newPhoto, albums.get(i));
-				
-				//User .ser file is updated for the selected user.
+		//get image
+		File image = photoChooser.showOpenDialog(null);
 
-				((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems().add(newPhoto);
-				UserList.writeToUserDatabase(user);
-				updatePhotoButtons();
-				updateCopyMove();
-				updateSearch();
-				if(Photos.DEBUG) System.out.println("Successfully added " + newPhoto.toString() + " to " + singleSelectionModel.getSelectedItem().getText());
+		//set photo date
+		if(image == null){
+
+			return;
+		}
+
+		//Debug statement
+		if(Photos.DEBUG) System.out.println(image.getAbsolutePath());
+
+		//create photo instance
+
+		Photo newPhoto = new Photo(image.getAbsolutePath());
+
+		//check if there's a duplicate; if not the photo is added to the pool
+		int i = singleSelectionModel.getSelectedIndex();
+		user.checkInPhotos(newPhoto, albums.get(i));
+
+		//User .ser file is updated for the selected user.
+
+		((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems().add(newPhoto);
+		((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getSelectionModel().select(newPhoto);
+		UserList.writeToUserDatabase(user);
+		updatePhotoButtons();
+		updateCopyMove();
+		updateSearch();
+		if(Photos.DEBUG) System.out.println("Successfully added " + newPhoto.toString() + " to " + singleSelectionModel.getSelectedItem().getText());
 	}
 	
 	/**
@@ -201,11 +202,11 @@ public class UserController {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	public void displayPhoto() throws Exception {
-		// create new window
+	public void displayPhoto() throws Exception {		
 		int photoIndex = ((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getSelectionModel().getSelectedIndex();
 		if(photoIndex > -1) {
-			Photos.showDisplay(index, singleSelectionModel.getSelectedIndex(), photoIndex);
+			ObservableList<Photo> photos = ((ListView<Photo>)singleSelectionModel.getSelectedItem().getContent()).getItems();
+			Photos.showDisplay(index, photoIndex, photos);
 		}
 	}
 
@@ -451,8 +452,6 @@ public class UserController {
 			move.setDisable(true);
 			
 			create.setDisable(false);
-			// TODO: Add button to add to albums, allow display of photos, disable everything else
-			
 		}
 	}
 
