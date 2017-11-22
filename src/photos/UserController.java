@@ -157,13 +157,17 @@ public class UserController {
 		int albumIndex = singleSelectionModel.getSelectedIndex();
 		for(Photo p : user.getAlbums().get(albumIndex).getPhotos()) {
 			if(newPhoto.toString().equals(p.toString())) {
-				System.out.println(image.getName());
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Error Adding Photo");
+				alert.setHeaderText(null);
+				alert.setContentText("Album already contains same file.");
+				alert.showAndWait();
 				if(Photos.DEBUG) System.out.println("File of same path already exists in album.");
 				return;
 			}
 		}
 		
-		//check if there's a duplicate in the pool; if not the photo is added to the poo
+		//check if there's a duplicate in the pool; if not the photo is added to the pool
 		user.checkInPhotos(newPhoto, albums.get(albumIndex));
 
 		//User .ser file is updated for the selected user.
@@ -247,7 +251,6 @@ public class UserController {
 			    }
 			  }
 			});
-			
 			window.show();
 		}
 	}
@@ -565,7 +568,7 @@ public class UserController {
 	/**
 	 * Switches back to the login screen.
 	 * 
-	 * @throws Exception
+	 * @throws Exception Throws IOException
 	 */
 	public void logout() throws Exception {
 		Photos.showLogin();

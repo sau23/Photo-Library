@@ -58,13 +58,11 @@ public class Album implements Serializable{
 	 * @param pic The Photo to be added
 	 */
 	public boolean addPhoto(Photo pic){
-		
 		if(this.photos.contains(pic))
 			return false;
 		else
 			this.photos.add(pic);
 			return true;
-			
 	}
 	
 	/**
@@ -74,9 +72,7 @@ public class Album implements Serializable{
 	 * @param pic The target Photo.
 	 */
 	public boolean removePhoto(Photo pic){
-		
 		return this.photos.remove(pic);
-		
 	}
 	
 	/**
@@ -88,11 +84,8 @@ public class Album implements Serializable{
 	 * @param desAlbum The Album where the Photo will go
 	 */
 	public void movePhoto(Photo pic, Album desAlbum){
-		
 		this.photos.remove(pic);
 		desAlbum.addPhoto(pic);
 		return;
 	}
-
-
 }

@@ -55,11 +55,7 @@ public class Photo implements Serializable{
 	public String toString() {
 		return this.name;
 	}
-	
-	public void addTag(String type, String value) {
-		this.tags.add(new Tag(type, value));
-	}
-	
+
 	/**
 	 * addTag() inserts a given addTag into the tags
 	 * list of a Photo
@@ -67,7 +63,6 @@ public class Photo implements Serializable{
 	 * @return true if the add was successful, false otherwise
 	 */
 	public boolean addTag(Tag addTag){
-		
 		if(this.tags.contains(addTag))
 			return false;
 		else
@@ -95,11 +90,6 @@ public class Photo implements Serializable{
 		
 		return this.tags;
 	}
-	
-	/**
-	 * 
-	 * @return
-	 */
 
 	/**
 	 * Returns this photo's calendar object.

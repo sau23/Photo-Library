@@ -218,8 +218,8 @@ public class UserList {
 		// set album 1 contents
 		Album album1 = new Album("Album 1");
 		Photo niko = new Photo("data/stock/niko.png");
-		niko.setCaption("Meow");
-		niko.addTag("animal", "cat");
+		niko.setCaption("A picture of a not-cat");
+		niko.addTag(new Tag("family", "feline"));
 		stock.checkInPhotos(niko, album1);
 		stock.getAlbums().add(album1);
 		
@@ -227,16 +227,28 @@ public class UserList {
 		Album album2 = new Album("Album 2");
 		Photo bird, catarpillar, hedhogs, lions, orbweaver, owl;
 		bird = new Photo("data/stock/bird.jpg");
+		bird.setCaption("A picture of a bird");
+		bird.addTag(new Tag("family", "avian"));
 		stock.checkInPhotos(bird, album2);
 		catarpillar = new Photo("data/stock/catarpillar.jpg");
+		catarpillar.setCaption("A picture of a caterpillar");
+		catarpillar.addTag(new Tag("family", "lepidoptera"));
 		stock.checkInPhotos(catarpillar, album2);
 		hedhogs = new Photo("data/stock/hedhogs.jpg");
+		hedhogs.setCaption("A picture of a hedgehog");
+		hedhogs.addTag(new Tag("family", "erinaceinae"));
 		stock.checkInPhotos(hedhogs, album2);
 		lions = new Photo("data/stock/lions.jpg");
+		lions.setCaption("A picture of a lion");
+		lions.addTag(new Tag("family", "feline"));
 		stock.checkInPhotos(lions, album1);
 		orbweaver = new Photo("data/stock/substock/orbweaver.jpg");
+		orbweaver.setCaption("A picture of a spider");
+		orbweaver.addTag(new Tag("family", " araneid"));
 		stock.checkInPhotos(orbweaver, album1);
 		owl = new Photo("data/stock/substock/owl.jpg");
+		owl.setCaption("A picture of an owl");
+		owl.addTag(new Tag("family", "avian"));
 		stock.checkInPhotos(owl, album1);
 		stock.checkInPhotos(niko, album2);
 		stock.getAlbums().add(album2);
@@ -245,11 +257,17 @@ public class UserList {
 		Album album3 = new Album("Album 3");
 		Photo cat, fox, frog;
 		cat = new Photo("data/stock/substock/cat.jpg");
+		cat.setCaption("A picture of a cat");
+		cat.addTag(new Tag("family", "feline"));
 		stock.checkInPhotos(cat, album3);
 		stock.checkInPhotos(niko, album3);
 		fox = new Photo("data/stock/substock/fox.jpg");
+		fox.setCaption("A picture of a fox");
+		fox.addTag(new Tag("family", "canine"));
 		stock.checkInPhotos(fox, album3);
 		frog = new Photo("data/stock/substock/frog.jpg");
+		frog.setCaption("A picture of a frog");
+		frog.addTag(new Tag("family", "amphibian"));
 		stock.checkInPhotos(frog, album3);
 		stock.getAlbums().add(album3);
 		

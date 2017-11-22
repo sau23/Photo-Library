@@ -161,7 +161,7 @@ public class AdminController {
 	/**
 	 * Switches back to the login screen.
 	 * 
-	 * @throws Exception
+	 * @throws Exception Throws IOException
 	 */
 	public void logout() throws Exception{
 		Photos.showLogin();
