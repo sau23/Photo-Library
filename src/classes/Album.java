@@ -59,6 +59,8 @@ public class Album implements Serializable{
 	 * addPhoto() inserts a Photo to the Album list.
 	 * 
 	 * @param pic The Photo to be added
+	 * 
+	 * @return Whether or not a photo has been added
 	 */
 	public boolean addPhoto(Photo pic){
 	
@@ -76,6 +78,8 @@ public class Album implements Serializable{
 	 * find and remove the target picture.
 	 * 
 	 * @param pic The target Photo.
+	 * 
+	 * @return Whether or not a photo has been removed
 	 */
 	public boolean removePhoto(Photo pic){
 		return this.photos.remove(pic);

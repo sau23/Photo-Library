@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class UserList {
 
 	// classy debug boolean
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 
 	/**
 	 * Global list of users that holds all users in one machine.
@@ -151,6 +151,8 @@ public class UserList {
 	/**
 	 * Updates the user database by writing changes to the given user's .ser
 	 * file.
+	 * 
+	 * @param user The user to write to the database
 	 */
 	public static void writeToUserDatabase(User user) {
 		try{

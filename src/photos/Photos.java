@@ -19,7 +19,7 @@ import javafx.scene.layout.AnchorPane;
 public class Photos extends Application {
 	
 	// classy debug boolean
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	
 	/**
 	 * Overall reference to primaryStage accessible to switching functions.
@@ -55,7 +55,7 @@ public class Photos extends Application {
 	/**
 	 * Main function.
 	 * 
-	 * @param args
+	 * @param args Main
 	 */
 	public static void main(String[] args) {
 		launch(args);
@@ -102,6 +102,8 @@ public class Photos extends Application {
 	/**
 	 * Switches display to user scene.
 	 * 
+	 * @param index The index of the logged in user
+	 * 
 	 * @throws Exception Throws IOException
 	 */
 	public static void showUser(int index) throws Exception{
@@ -119,7 +121,14 @@ public class Photos extends Application {
 	}
 	
 	/**
-	 * Creates new display for display scene.
+	 * Creates new display for display scene. Returns a reference to the
+	 * stage for event handling.
+	 * 
+	 * @param userIndex The index of the logged in user
+	 * @param photoIndex The index of the selected photo
+	 * @param photos The list of photos that is currently being shown
+	 * 
+	 * @return The reference to the stage created 
 	 * 
 	 * @throws Exception Throws IOException
 	 */

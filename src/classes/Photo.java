@@ -63,8 +63,6 @@ public class Photo implements Serializable{
 	 * list of a Photo
 	 * 
 	 * @param addTag Tag to be added to the Photo's tag list
-	 * 
-	 * @return true if the add was successful, false otherwise
 	 */
 	public void addTag(Tag addTag) {
 

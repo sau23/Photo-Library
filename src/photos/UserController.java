@@ -119,7 +119,7 @@ public class UserController {
 	/**
 	 * Adds a photo by popping up a file choosing window.
 	 * 
-	 * @throws Exception
+	 * @throws Exception Throws IOException
 	 */
 	@SuppressWarnings("unchecked")
 	public void addPhoto() throws Exception {
@@ -228,7 +228,7 @@ public class UserController {
 	 * Pops up display window for viewing all the photos in one album and
 	 * sets the display to be the currently selected photo.
 	 * 
-	 * @throws Exception
+	 * @throws Exception Throws IOEXception
 	 */
 	@SuppressWarnings("unchecked")
 	public void displayPhoto() throws Exception {		
@@ -433,6 +433,8 @@ public class UserController {
 	 * but will not count towards the user's list of albums. This tab cannot
 	 * be manipulated unless it is added to the user's list of albums, but
 	 * photos from the tab can still be displayed normally. 
+	 * 
+	 * @throws Exception IOException
 	 */
 	public void search() throws Exception {
 		
