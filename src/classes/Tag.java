@@ -48,44 +48,6 @@ public class Tag implements Serializable{
 	}
 	
 	/**
-	 * compareNames() does what {@link #compareTo(Tag)}
-	 * does but restricts the comparison to the names
-	 * of the Tags.
-	 * 
-	 * @param compare The Tag whose name is to be compared
-	 * with
-	 * 
-	 * @return int showing how similar to the caller Tag
-	 * is to compare. 0 = equal.
-	 */
-	public int compareNames(Tag compare){
-		return this.type.compareTo(compare.type);
-	}
-	
-	/**
-	 * compareValues() does what {@link #compareTo(Tag)}
-	 * does but restricts the comparison to the values of the
-	 * Tags.
-	 * 
-	 * @param compare The Tag whose value is to be compared with
-	 * 
-	 * @return int showing how similar to the caller Tag 
-	 * is to compare. 0 = equal.
-	 */
-	public int compareValues(Tag compare){
-		return this.value.compareTo(compare.value);
-	}
-	
-	/**
-	 * Returns this tag's type.
-	 * 
-	 * @return Tag's type
-	 */
-	public String getTagType(){
-		return this.type;
-	}
-	
-	/**
 	 * Returns this tag's value.
 	 * 
 	 * @return Tag's value

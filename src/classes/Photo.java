@@ -152,8 +152,9 @@ public class Photo implements Serializable{
 	 * @return Whether the tag is contained in this photo
 	 */
 	public boolean searchTags(String type, String value) {
+		Tag comp = new Tag(type, value);
 		for(Tag t : this.tags) {
-			if(t.getTagType().equalsIgnoreCase(type) && t.getTagValue().equals(value)) {
+			if(t.compareTo(comp) == 0) {
 				return true;
 			}
 		}
