@@ -46,16 +46,7 @@ public class Tag implements Serializable{
 		return this.type.compareTo(compare.type) + 
 				this.value.compareTo(compare.value);
 	}
-	
-	/**
-	 * Returns this tag's value.
-	 * 
-	 * @return Tag's value
-	 */
-	public String getTagValue(){
-		return this.value;
-	}
-	
+
 	/**
 	 * Returns this tag's type and value with a hyphen in
 	 * between.

@@ -188,12 +188,13 @@ public class UserController {
 	 */
 	@SuppressWarnings("unchecked")
 	public void removePhoto() {
+		int albumIndex = singleSelectionModel.getSelectedIndex();
 		Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this photo?");
 		alert.setHeaderText(null);
 		alert.setGraphic(null);
 		Optional<ButtonType> result = alert.showAndWait();
 		if (result.isPresent() && result.get() == ButtonType.OK) {
-			int albumIndex = singleSelectionModel.getSelectedIndex();
+			
 			ListView<Photo> lv = (ListView<Photo>)singleSelectionModel.getSelectedItem().getContent();
 
 			// remove photo from user pool if necessary
@@ -206,6 +207,11 @@ public class UserController {
 			
 			// update list view in tab
 			lv.setItems(FXCollections.observableArrayList(albums.get(albumIndex).getPhotos()));
+			
+			// update selection after delete
+			if(!albums.get(albumIndex).getPhotos().isEmpty()) {
+				lv.getSelectionModel().select(0);
+			}
 			
 			UserList.writeToUserDatabase(user);
 			
