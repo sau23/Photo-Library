@@ -230,7 +230,7 @@ public class UserList {
 		stock.checkInPhotos(lions, album1);
 		orbweaver = new Photo("data/stock/substock/orbweaver.jpg");
 		orbweaver.setCaption("A picture of a spider");
-		orbweaver.addTag(new Tag("family", " araneid"));
+		orbweaver.addTag(new Tag("family", "araneid"));
 		stock.checkInPhotos(orbweaver, album1);
 		owl = new Photo("data/stock/substock/owl.jpg");
 		owl.setCaption("A picture of an owl");
