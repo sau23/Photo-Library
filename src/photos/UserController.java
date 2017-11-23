@@ -443,15 +443,17 @@ public class UserController {
 		// pop up dialog box
 		Optional<ButtonType> result = alert.showAndWait();
 		ArrayList<Photo> toDisplay = new ArrayList<Photo>();
-		Pair<String, String> reponse;
+		Pair<String, String> response;
 		
 		// switch to new dialog depending on output
 		if (result.get() == buttonTypeOne){
-		    reponse = createDialog(true);
-		    if(reponse != null) {
-		    	String startDate = reponse.getKey();
-		    	String endDate = reponse.getValue();
+		    response = createDialog(true);
+		    if(response != null) {
+		    	String startDate = response.getKey();
+		    	String endDate = response.getValue();
 		    	for(Photo p : photosPool) {
+		    		
+		    		// only choose photos that are in range
 		    		if(p.isWithinRange(startDate, endDate)) {
 		    			toDisplay.add(p);
 		    			if(Photos.DEBUG) System.out.println("Added " + p.toString() + " to search list.");
@@ -459,17 +461,42 @@ public class UserController {
 		    	}
 		    }
 		} else if (result.get() == buttonTypeTwo) {
-			reponse = createDialog(false);
-			if(reponse != null) {
-				String tagType = reponse.getKey();
-				String tagValue = reponse.getValue();
-				for(Photo p : photosPool) {
-					if(p.searchTags(tagType, tagValue)) {
-						toDisplay.add(p);
-						if(Photos.DEBUG) System.out.println("Added " + p.toString() + " to search list.");
-					}
+			
+			ArrayList<Pair<String, String>> results = new ArrayList<Pair<String, String>>();
+			
+			// create an initial dialog
+			response = createDialog(false);
+			if(response != null) {
+				results.add(response);
+			} else {
+				return;
+			}
+			
+			// see if the user wants to add any more tags
+			while(response != null) {
+				response = createDialog(false);
+				if(response != null) {
+					results.add(response);
 				}
 			}
+			
+			// for every tag added, do a recursive-like check on resulting lists
+			toDisplay = null;
+			ArrayList<Photo> listToAddTo;
+			for(Pair<String, String> p : results) {
+				if(toDisplay == null) {
+					toDisplay = user.getPhotosPool();
+				}
+				listToAddTo = new ArrayList<Photo>();
+				
+				for(Photo photo : toDisplay) {
+					if(photo.searchTags(p.getKey(), p.getValue())) {
+						listToAddTo.add(photo);
+					}
+				}
+				toDisplay = listToAddTo;
+			}
+			// creates a list of photos who has all the given tags
 		}
 		
 		// if results did not come up empty
@@ -665,6 +692,11 @@ public class UserController {
 						changeCellFactory(nlv);
 						nlv.setItems(FXCollections.observableArrayList(albums.get(albumIndex).getPhotos()));
 						n.setContent(nlv);
+						if(!albums.get(albumIndex).getPhotos().isEmpty()) {
+							nlv.getSelectionModel().select(0);
+						} else {
+							updateCopyMove();
+						}
 					}
 
 				}
