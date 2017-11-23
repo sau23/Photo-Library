@@ -143,6 +143,12 @@ public class DisplayController {
 		
 		Tag newTag = new Tag(name, value);
 		
+		for(Tag tag : currentPhoto.getTags()){
+			if(tag.compareTo(newTag) == 0){
+				return;
+			}
+		}
+		
 		//check if the photo has any tags
 		if(currentPhoto.getTags().size() == 0){
 			displayTags.clear();//clears "-add some tags-" tag from ObservableList
