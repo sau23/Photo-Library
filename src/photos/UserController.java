@@ -140,6 +140,7 @@ public class UserController {
 			image = null;
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("File Error");
+			alert.setHeaderText(null);
 			alert.setContentText("Invalid file: can't make a shortcut an image.");
 			alert.showAndWait();
 		}

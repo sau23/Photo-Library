@@ -9,11 +9,13 @@ import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -143,8 +145,24 @@ public class DisplayController {
 		
 		Tag newTag = new Tag(name, value);
 		
+		//check if any part of the tag is blank
+		if(newTag.getTagType().compareTo("") == 0 || newTag.getTagValue().compareTo("") == 0){
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Error Adding Tag");
+			alert.setHeaderText(null);
+			alert.setContentText("No empty types or values allowed");
+			alert.showAndWait();
+			return;
+		}
+		
+		//inform user of duplicate tag
 		for(Tag tag : currentPhoto.getTags()){
 			if(tag.compareTo(newTag) == 0){
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Error Adding Tag");
+				alert.setHeaderText(null);
+				alert.setContentText("Photo already has this tag");
+				alert.showAndWait();
 				return;
 			}
 		}
@@ -166,16 +184,22 @@ public class DisplayController {
 	 */
 	public void deleteTag(){
 		
+		tagsList.scrollTo(0);
+		tagsList.getSelectionModel().select(0);
+		
 		Tag delTag = tagsList.getSelectionModel().getSelectedItem();
+		
 		if(delTag.compareTo(new Tag("-Add some tags", "")) == 0 && currentPhoto.getTags().size() == 0){
 			return;
+		}else{
+			currentPhoto.getTags().remove(delTag);
+			displayTags.remove(delTag);
+			if(currentPhoto.getTags().size() == 0){
+				displayTags.add(new Tag("-Add some tags", ""));
+			}
+			tagsList.setItems(displayTags);
 		}
-		currentPhoto.getTags().remove(delTag);
-		displayTags.remove(delTag);
-		if(currentPhoto.getTags().size() == 0){
-			displayTags.add(new Tag("-Add some tags", ""));
-		}
-		tagsList.setItems(displayTags);
+		
 		
 	}
 	
